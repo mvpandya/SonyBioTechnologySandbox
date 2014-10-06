@@ -1,0 +1,91 @@
+<apex:page controller="awduplicate2.AWControllerGettingStarted" action="{!AddUsage}" tabStyle="awGettingStarted__tab">
+    
+    <apex:sectionHeader title="Getting Started with Duplicate Check for Salesforce 2.0" subtitle="Guides, tips and frequenty asked questions to get you deduplicating in no time." /> 
+    
+    <table cellspacing="0" cellpadding="5" border="0" style="font-size: 12px; line-height: 1.4; font-family: Arial,Helvetica,sans-serif;">
+        <tbody>
+            <tr>
+                <td>
+                    <a href="http://kb.duplicatecheck.com/guide/installation-guide/4444?utm_source=dup_for_sfdc&utm_medium=app&utm_campaign=dup_for_sfdc" target="_blank">
+                        <apex:image url="{!URLFOR($Resource.awduplicate2__GettingStarted, 'client_libraries.png')}"/>
+                    </a>
+                </td>
+                <td>
+                    <p style="font-size: 14px; margin-bottom: 0px;">
+                        <a style="text-decoration: none;" href="http://kb.duplicatecheck.com/guide/installation-guide/4444?utm_source=dup_for_sfdc&utm_medium=app&utm_campaign=dup_for_sfdc" target="_blank">
+                            Installation Steps
+                        </a>
+                    </p>
+                    <p style="color: rgb(153, 144, 140); margin-top: 0px;">Actions which are needed before Duplicate Check for Salesforce can function properly.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="http://kb.duplicatecheck.com/guide/usage-guide/4425?utm_source=dup_for_sfdc&utm_medium=app&utm_campaign=dup_for_sfdc" target="_blank">
+                        <apex:image url="{!URLFOR($Resource.awduplicate2__GettingStarted, 'user-guide.png')}"/>
+                    </a>
+                </td>
+                
+                <td>
+                    <p style="font-size: 14px; margin-bottom: 0px;">
+                        <a style="text-decoration: none;" href="http://kb.duplicatecheck.com/guide/usage-guide/4425?utm_source=dup_for_sfdc&utm_medium=app&utm_campaign=dup_for_sfdc" target="_blank">
+                            Using Duplicate Check for Salesforce
+                        </a>
+                    </p>
+                    
+                    <p style="color: rgb(153, 144, 140); margin-top: 0px;">What are the options and features when using Duplicate Check for Salesforce.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="http://kb.duplicatecheck.com/guide/configuration-guide/4432?utm_source=dup_for_sfdc&utm_medium=app&utm_campaign=dup_for_sfdc" target="_blank">
+                        <apex:image url="{!URLFOR($Resource.awduplicate2__GettingStarted, 'installation.png')}"/>
+                    </a>
+                </td>
+                
+                <td>
+                    <p style="font-size: 14px; margin-bottom: 0px;">
+                        <a style="text-decoration: none;" href="http://kb.duplicatecheck.com/guide/configuration-guide/4432?utm_source=dup_for_sfdc&utm_medium=app&utm_campaign=dup_for_sfdc" target="_blank">
+                            Customize how duplicates are detected
+                        </a>
+                    </p>
+                    
+                    <p style="color: rgb(153, 144, 140); margin-top: 0px;">Having different needs for detecting duplicates, check how you can customize these.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="http://kb.duplicatecheck.com/faq/duplicate-check-for-salesforce?utm_source=dup_for_sfdc&utm_medium=app&utm_campaign=dup_for_sfdc" target="_blank">
+                        <apex:image url="{!URLFOR($Resource.awduplicate2__GettingStarted, 'help.png')}"/>
+                    </a>
+                </td>
+                
+                <td>
+                    <p style="font-size: 14px; margin-bottom: 0px;">
+                        <a style="text-decoration: none;" href="http://kb.duplicatecheck.com/faq/duplicate-check-for-salesforce?utm_source=dup_for_sfdc&utm_medium=app&utm_campaign=dup_for_sfdc" target="_blank">
+                            Frequently asked questions
+                        </a>
+                    </p>
+                    <p style="color: rgb(153, 144, 140); margin-top: 0px;">List of common questions and issues with answers and solutions.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="mailto:support@duplicatecheck.com" target="_blank">
+                        <apex:image url="{!URLFOR($Resource.awduplicate2__GettingStarted, 'notes.png')}"/>
+                    </a>
+                </td>
+                
+                <td>
+                    <p style="font-size: 14px; margin-bottom: 0px;">
+                        <a style="text-decoration: none;" href="mailto:support@duplicatecheck.com" target="_blank">
+                            Provide feedback
+                        </a>
+                    </p>
+                    <p style="color: rgb(153, 144, 140); margin-top: 0px;">Please let us know what you think or missing.</p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</apex:page>

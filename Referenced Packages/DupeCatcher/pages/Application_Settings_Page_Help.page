@@ -1,0 +1,88 @@
+<apex:page standardStyleSheets="false" showHeader="false">
+
+<!-- CSS Starts Here -->
+<style type="text/css">
+
+body { 
+    font-family: Calibri, Arial; font-size:13px;
+    background-color: #f8f8f8;
+    background-image:url('http://www.dupecatcher.com/images/common/footer-shade.gif');
+    background-repeat:repeat-x;
+    padding-top: 6px;
+    padding-left: 20px
+}
+
+.header{
+    padding-bottom: 15px;
+}
+
+table .col1{
+    background-color: #F2F2F2;
+    width: 150px;
+}
+
+</style>
+<!-- CSS Ends Here -->
+
+<head>
+
+	<title>DupeCatcher Help</title>
+  
+</head>
+
+<body>
+
+	<a name="top"></a>
+	<div class="header"><img src="http://www.dupecatcher.com/images/common/dupecatcher-logo.png" alt="DupeCatcher Logo" width="231" height="80" border="0"/></div>
+	<p>DupeCatcher offers real time identification and blocking of duplicate leads, accounts, and contacts as they are manually entered into Salesforce.   It functions based on Filters and Rules set by a Salesforce administrator.</p>
+	
+	<h3 style="COLOR: #575232; FONT-FAMILY: Calibri, Arial">What are DupeCatcher Filters and Rules?</h3>
+	<p>Filters and Rules are used to set up the logic that you would like DupeCatcher to use when blocking or reporting duplicates.  A Filter contains a set of Rules and  designates which type(s) of Salesforce Objects to match against (Account, Contact, or Lead) and what action to take.  The rules within a Filter simply indicate which fields to match against and what type of matching approach to use (e.g. Exact, Numeric_Only).</p>
+	
+	<h3 style="COLOR: #575232; FONT-FAMILY: Calibri, Arial">How does the Filters and Rules logic work?</h3>
+	<p>You can have multiple Filters and multiple Rules within individual Filters running at the same time.  The Filters operate on an OR logic, and Rules operate on an AND logic.  That is, only one filter out of multiple Filters needs to identify a duplicate for an alert to trigger.  The first Filter to trigger an alert is reported, and all subsequent Filters are not processed.  All Rules within an individual Filter must match for that Filter to trigger an alert.</p>
+	
+	<h1 style="COLOR: #000; FONT-FAMILY: Calibri, Arial">How to Set Up DupeCatcher Web Lead Resources</h1>
+	<p>DupeCatcher "Web Lead Resources" Application Settings field can be used to override DupeCatcher's Rule enforcement behavior when new web based leads are generated.   New Leads whose Lead Resource is listed in this field will always be created but a DupeCatcher Alert will be generated even if a Filter indicates the lead should be blocked.  Also, a task will be generated if the matching filter has "Create Task for Alerts" set.  By using this feature, you can set up a rule to block manual entry of a lead, but allow new duplicate web leads to be created.</p>
+	<p>To set up this feature, web leads must be added each on a new a separate line.   Here are a few examples:</p>
+
+	<table cellspacing="15"  >
+		<tr>
+			<td></td>
+		<td>
+			<table frame="border"  rules="all" cellpadding="8" >
+				<tr>
+					<td>
+				 		Example 1:
+					</td>
+					<td>
+					 	Example 2:
+					</td>
+					<td>
+					 	Example 3:
+					</td>
+				</tr>
+				<tr valign="top">
+					<td>
+						Web<br/>
+					</td>
+					<td>
+						Web<br/>Web Lead
+					</td>
+					<td>
+						Web<br/>Web Lead<br/>Web-to-Lead<br/>
+					</td>
+				</tr>
+			</table>
+		</td>
+			<td></td>
+			<td></td>
+		</tr>
+	</table>
+
+	<h1 style="COLOR: #000; FONT-FAMILY: Calibri, Arial">How to Set Up DupeCatcher Reminders</h1>
+	<p>DupeCatcher can be configured to add an immediate reminder to tasks that are created when DupeCatcher generates Duplicate Alerts.  This can be done simply by checking the "Set Immediate Reminder For Tasks" check box on the DupeCatcher Application Settings tab.</p>
+	<p>Once the "Set Immediate Reminder For Tasks" field is checked, if task reminders are available to your users, DupeCatcher will set an immediate reminder on DupeCatcher Duplicate Alert tasks that are created as a result of a Filter that has "Report Duplicate" as its insert/update action.  This feature allows users to be immediately alerted to the fact that a duplicate was detected when "Report Duplicate" is used.</p>
+
+</body>   
+</apex:page>

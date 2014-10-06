@@ -1,0 +1,3 @@
+<apex:page controller="awduplicate2.AWControllerBatchTools" showHeader="false" sidebar="false" action="{!doAction}">
+
+</apex:page>

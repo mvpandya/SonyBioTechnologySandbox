@@ -1,0 +1,329 @@
+<apex:page >
+<head>
+    <apex:stylesheet value="{!URLFOR($Resource.SFSSDupeCatcher__jQuery, 'css/ui-lightness/jquery-ui-1.8.21.custom.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.SFSSDupeCatcher__Styles, 'dccss.css')}"/>
+    <script src="{!URLFOR($Resource.jQuery, 'js/jquery-1.7.2.min.js')}"/>
+    <script src="{!URLFOR($Resource.jQuery, 'js/jquery-ui-1.8.21.custom.min.js')}"/>
+    <script src="{!URLFOR($Resource.jQuery, 'js/dcjquery.js')}"/>
+    <script src="{!URLFOR($Resource.jQuery, 'js/jquery.tools.min.js')}"/>
+    
+<style type="text/css">
+
+h1{
+font-size: 25px;
+}
+
+h2{
+font-size: 18px;
+}
+
+
+</style>
+
+<script>
+var j$ = jQuery.noConflict();
+  j$(document).ready(function() {
+      j$("img[rel]").overlay();
+      j$("button[rel]").overlay();
+    });
+</script>
+    
+</head>
+
+<!-- Begin Default Content-->
+  <div id="main">
+      <h1>Getting Started</h1>
+      <div id="nav">
+          <ui>
+              <li class="4"><button>About</button></li>
+              <li class="1"><button>Creating a Filter</button></li>
+              <li class="2"><button>Creating a Rule</button></li>
+              <li class="3"><button>Application Settings</button></li>
+              <li class="5"><button>Watch Tutorial</button></li>
+          </ui>
+      </div>
+      <br />
+      <br />
+      <div id="content">
+      <div id="wp">
+        <div class="div1">
+            <h2>How to Create a Filter</h2>
+            <p>The first step in identifying and blocking duplicates is to set Filters and Rules.  Click on the DupeCatcher Filters tab from the DupeCatcher home page, then click “New” in the Recent DupeCatcher Filters area.</p>
+            <img src="{!URLFOR($Resource.DupeCatcherImages, 'images/newFilter.png')}" class="dcImage" width="500px" height="216px" rel="#img3"/>
+            <div class="simple_overlay" id="img3"><img src="{!URLFOR($Resource.DupeCatcherImages, 'images/newFilter.png')}" width="675px"/></div>
+            <p>The Filters setup screen is very easy to use.  Set the following parameters by either entering information, or by making selections from the drop down menus:</p>
+            <img src="{!URLFOR($Resource.DupeCatcherImages, 'images/newFilterPage.png')}" class="dcImage" width="500px" height="273px" rel="#img4"/>
+            <div class="simple_overlay" id="img4"><img src="{!URLFOR($Resource.DupeCatcherImages, 'images/newFilterPage.png')}" width="675px"/></div>
+            <br />
+            <br />
+            <div id="accordion">
+                <div class="changeDiv"><div class="spacer"></div><h3>Filter Name:</h3><br />
+                    Create your own unique name for the filter. We recommend using something descriptive.</div>
+                <div id="filterType" class="changeDiv"><h3>Filter Type:</h3><br />
+                    Select the type of record for which you want to block duplicates.</div>
+                    <div id="filterTypeImg"><apex:image url="{!URLFOR($Resource.SFSSDupeCatcher__DupeCatcherImages, 'images/filterType.png')}"/></div>
+                <div id="matchInsert" class="changeDiv"><h3>Match on Insert Action:</h3><br />
+                    Select the action you want DupeCatcher to take when it identifies a duplicate that is being inserted into the Salesforce org.</div>
+                    <div id="matchOnInsertImg"><apex:image url="{!URLFOR($Resource.SFSSDupeCatcher__DupeCatcherImages, 'images/matchOnInsert.png')}"/></div>
+                <div id="matchUpdate" class="changeDiv"><h3>Match on Update Action:</h3><br />
+                    Select the action you want DupeCatcher to take when it identifies a duplicate record that is being updated in the Salesforce org.</div>
+                    <div id="matchOnUpdateImg"><apex:image url="{!URLFOR($Resource.SFSSDupeCatcher__DupeCatcherImages, 'images/matchOnUpdate.png')}"/></div>
+                <div id="matchingActions" class="changeDiv">(Matching Actions)<br />
+                	<div class="indent"><h4>Do Not Insert/Update:</h4>&nbsp; blocks the record, presents a warning message to the user, stays on the edit page,  lists matches as hyperlinks, allows Override if enabled (Enterprise Edition and higher only)</div>
+             		<div class="indent"><h4>Display Matching Records:</h4>&nbsp; blocks the record, presents a warning message to the user,  lists matches as hyperlinks in a table</div>
+             		<div class="indent"><h4>Report Duplicate:</h4>&nbsp; Allows the record into the database, triggers an alert (and a task if set) to be handled later by the admin (or possibly the user), allows Merge/Convert</div>		
+               	</div>
+                <div class="changeDiv"><h3>Error Message:</h3><br />
+                    Create an optional customized error message to display when DupeCatcher identifies a duplicate based on the filter.</div>
+                <div class="changeDiv"><h3>Bypass Security:</h3><br />
+                    Checking this box directs DupeCatcher to check for matches against ALL records within the Salesforce org. Leaving this box unchecked directs DupeCatcher to check for matches ONLY against the records visible to the individual user entering new data.  We recommend checking this box.</div>
+                <div class="changeDiv"><h3>Active:</h3><br />
+                    This box must be checked in order for the filter to function.  Note:  You can toggle this box to turn filters on and off as needed without deleting them.</div>
+                <div id="taskAlert" class="changeDiv"><h3>Create Tasks for Alerts:</h3><br />
+                    Tasks are set ONLY when the Match on Insert/Update Action is set to “Report Duplicate.”  If you are using this action, you can optionally have a task created when a duplicate alert is triggered. Alerts can be set for the user or for the owner/admin of the Filter. You also have the option of setting pop-up reminders for all tasks that get created. You choose to create these reminders on the Application Settings tab.</div>
+                    <div id="taskAlertImg"><apex:image url="{!URLFOR($Resource.SFSSDupeCatcher__DupeCatcherImages, 'images/taskForAlerts.png')}"/></div>
+            </div>
+            <p>Once all of your options have been set, click Save to create the Filter.  You will be redirected to the Filter Details page, which shows the settings you made, metrics on duplicates, Rules that apply to this Filter, and any alerts that have been triggered when a duplicate is identified.</p>
+            <p class="important">IMPORTANT: In order for a filter to work, you must set a rule for that filter.</p>
+        </div>
+        
+        
+        <div class="div2">
+            <h2>How to Create a Rule</h2>
+            <p>From the Filter Details page, click New DupeCatcher Filter Rule in the DupeCatcher Filter Rules section.</p>
+            <img src="{!URLFOR($Resource.DupeCatcherImages, 'images/creatingRules.png')}" class="dcImage" width="500px" height="230px" rel="#img5"/>
+            <div class="simple_overlay" id="img5"><img src="{!URLFOR($Resource.DupeCatcherImages, 'images/creatingRules.png')}" width="675px"/></div>
+            <p>From the Filter Rule Edit page, you can select the fields (both standard and custom) you want DupeCatcher to use to identify duplicates, and you can select the matching methods for those filters. Your options will vary slightly depending on the type of Filter you’ve created in Step 1, and the fields you choose.</p>
+            <div id="accordion">
+                <div class="changeDiv"><h3>Field:</h3><br />
+                    The field drop down lists both standard and custom fields on the record object.  Select the field you want to use to identify duplicates.  To choose multiple fields, you will need to create multiple DupeCatcher Rules.</div>
+                <div class="changeDiv"><h3>Matching Approach:</h3><br />
+                    Allows you to select the kind and degree of match of your selected field. Matching Approach options include Exact, First N Letters/Numbers, Domain, etc., and will vary based on the field you’ve selected.</div>
+                <div id="matchBlanks" class="changeDiv"><h3>Match Blanks:</h3><br />
+                    If selected, when a record is inserted with no data in a field the DupeCatcher is checking based on your Rules, and there are other records in the database with no data in that field, DupeCatcher will block the insert. For example, if the Rule checks the email field, and the email field is left blank, DupeCatcher will return a list of records whose email field is blank.</div>
+                    <div id="matchBlanksImg"><apex:image url="{!URLFOR($Resource.SFSSDupeCatcher__DupeCatcherImages, 'images/editRule.png')}"/></div>
+            </div>
+            
+            <p>Once you save a Rule, you will be redirected to the Filter Summary page.  All Rules for an individual Filter will be listed on this page.  From this page, you can Edit and Delete Rules, or view a Rule summary page using hyperlinks.</p>
+            <img src="{!URLFOR($Resource.DupeCatcherImages, 'images/viewRules.png')}" class="dcImage" width="500px" height="171px" rel="#img6"/>
+            <div class="simple_overlay" id="img6"><img src="{!URLFOR($Resource.DupeCatcherImages, 'images/viewRules.png')}" width="675px"/></div>
+            <p>You can have multiple Filters and multiple Rules within individual Filters running at the same time, but please note that Filters operate on an OR logic, and Rules operate on an AND logic. That is, only one Filter out of multiple Filters needs to identify a duplicate for that duplicate to be blocked, but all Rules within an individual Filter must match for that Filter to block the duplicate.</p>
+            <p>Once you have your Filters and Rules set, DupeCatcher is ready to work.  As long as you have selected Active in at least one of your Filters, DupeCatcher will function as records are added to Salesforce.</p>
+        </div>
+        
+        <div class="div3">
+        <h2>Web Lead Sources</h2>
+            <p>DupeCatcher is designed with flexibility to enable you to manage leads in the way that best suits your organization, while still maintaining a high level of data quality.  Merely blocking duplicate records from entering a database is not the only solution to data management and data quality. Sometimes there are reasons for allowing duplicates to be created at the point of entry and managed later.  One example is leads that get automatically entered into Salesforce from a web site registration form.  Because there is no human sitting between the web form and the Salesforce database, there is no way to check if new data is being entered beyond the matching fields set in DupeCatcher.</p>
+            <p>To accommodate this need, DupeCatcher provides an Application Settings tab where users can enter web lead sources (standard or custom).  By default, DupeCatcher has the following lead sources set on the Application Settings tab: Web, Web Lead, Web to Lead (these lead sources can be removed).</p>
+            <p>If you sue web-to-lead in your Salesforce org, add the lead sources of your web lead records to this text box so that DupeCatcher will NOT block them.  Instead, DupeCatcher will handle web leads as if your filters had a matching action of “Report Duplicate.”  That is, DupeCatcher will allow duplicate web leads into the database, but will attach an alert to those duplicates.</p>
+            <p>When a web lead source is NOT listed on the Application Settings Tab, DupeCatcher may block the lead based on the Filters and Rules you have set.  But, as a user, you are not alerted that the lead has been blocked.</p>
+            <p>Be sure to add the lead source EXACTLY as it appears on the records that come from web sources.</p>
+            <p>Be sure to click the “Save” button after making any changes on the Application Settings tab.</p>
+            <img src="{!URLFOR($Resource.DupeCatcherImages, 'images/webLeadSource.png')}" class="dcImage" width="500px" height="277px" rel="#img7"/>
+            <div class="simple_overlay" id="img7"><img src="{!URLFOR($Resource.DupeCatcherImages, 'images/webLeadSource.png')}" width="675px"/></div>
+            <br />
+            <br />
+            <h2>Bypass Filters for Listed Users</h2>
+            <p>In certain cases, some organizations have a need to periodically bypass DupeCatcher Filters—in other words, create new records or update records in the database that are not subject to DupeCatcher filtering.  To accommodate this need, DupeCatcher’s Application Settings tab has an area where a Salesforce login ID can be entered.  Any access to the Salesforce org using a login ID that is listed here will NOT be subject to DupeCatcher filtering.</p>
+            <p>Be sure to click the “Save” button after making any changes on the Application Settings tab.</p>
+            <img src="{!URLFOR($Resource.DupeCatcherImages, 'images/bypassFilter.png')}" class="dcImage" width="500px" height="267px" rel="#img8"/>
+            <div class="simple_overlay" id="img8"><img src="{!URLFOR($Resource.DupeCatcherImages, 'images/bypassFilter.png')}" width="675px"/></div>
+            <br />
+            <br />
+            <h2>Set Immediate Reminder for Tasks</h2>
+            <p>The Application Settings tab also provides the ability to set pop-up reminders for all tasks that get created (if selected) when the Match on Insert/Update Action is set to “Report Duplicate” (see the Creating Filters section above).  Set these pop-up reminders by checking the box labeled “Set Immediate Reminder for Tasks” on the Application Settings tab.</p>
+            <p>Be sure to click the “Save” button after making any changes on the Application Settings tab.</p>
+            <img src="{!URLFOR($Resource.DupeCatcherImages, 'images/reminder.png')}" class="dcImage" width="500px" height="267px" rel="#img9"/>
+            <div class="simple_overlay" id="img9"><img src="{!URLFOR($Resource.DupeCatcherImages, 'images/reminder.png')}" width="675px"/></div>
+            <br />
+            <br />
+            <h2>Allow Override</h2>
+            <p>DupeCatcher allows admins to control whether or not users can override a DupeCatcher block of an insert. Selecting the “Allow Override” checkbox enables the feature and displays an Override button as part of the blocked duplicate warning message when the Match on Insert/Update Action is set to “Do Not Insert/Update.” NOTE: Due to API limitations, the Override function is only available in Enterprise Edition and higher. In addition, certain permissions may need to be set for Override to be enabled for all users.</p>
+            <p>Be sure to click the “Save” button after making any changes on the Application Settings tab.</p>
+            <img src="{!URLFOR($Resource.DupeCatcherImages, 'images/override.png')}" class="dcImage" width="500px" height="281px" rel="#img10"/>
+            <div class="simple_overlay" id="img10"><img src="{!URLFOR($Resource.DupeCatcherImages, 'images/override.png')}" width="675px"/></div>
+            <br />
+            <br />
+            <h2>Email Domains to Ignore</h2>
+            <p>For DupeCatcher Filter Rules that match on email domain, you can limit results by entering domains of common, web-based email systems (Gmail, Hotmail, Yahoo, etc.) in the “Email Domains to Ignore” area.  DupeCatcher will then ignore these domains when performing its scan.  For example, enter “gmail.com” to prevent returning all records with email addresses with the gmail.com domain as duplicates.</p>
+            <p>Be sure to click the “Save” button after making any changes on the Application Settings tab.</p>
+            <img src="{!URLFOR($Resource.DupeCatcherImages, 'images/ignoreDomains.png')}" class="dcImage" width="500px" height="218px" rel="#img11"/>
+            <div class="simple_overlay" id="img11"><img src="{!URLFOR($Resource.DupeCatcherImages, 'images/ignoreDomains.png')}" width="675px"/></div>
+            <br />
+            <button type="button" rel="#list">Click here to view Ignored Domain list</button>
+            <div class="table_overlay" id="list">          
+	            <table class="theTable" border="0px" cellpadding="0px" cellspacing="0px" width="499px" style="border-collapse:collapse;table-layout:fixed" align="center" >
+		             <col width="164px">
+		             <col width="115px">
+		             <col width="117px">
+		             <col width="103px">
+		             <tr height="20px">
+		              <td height="20px" class="tableStyle" width="164px">abv.bg</td>
+		              <td class="tableStyle" width="115px">hotmail.fr</td>
+		              <td class="tableStyle" width="117px">primehome.com</td>
+		              <td class="tableStyle" width="103px">yahoo.com.ph</td>
+		             </tr>
+		             <tr height="20px">
+		              <td height="20px" class="tableStyle">aol.com</td>
+		              <td class="tableStyle">ig.com.br</td>
+		              <td class="tableStyle">rediffmail.com</td>
+		              <td class="tableStyle">yahoo.de</td>
+		             </tr>
+		             <tr height="20px">
+		              <td height="20px" class="tableStyle">arcor.de</td>
+		              <td class="tableStyle">inbox.com</td>
+		              <td class="tableStyle">rocketmail.com</td>
+		              <td class="tableStyle">yahoo.fr</td>
+		             </tr>
+		             <tr height="20px">
+		              <td height="20px" class="tableStyle">bezeqint.net</td>
+		              <td class="tableStyle">indiatimes.com</td>
+		              <td class="tableStyle">rtrtr.com</td>
+		              <td class="tableStyle">yahoo.in</td>
+		             </tr>
+		             <tr height="20px">
+		              <td height="20px" class="tableStyle">email.com</td>
+		              <td class="tableStyle">live.com</td>
+		              <td class="tableStyle">spam.la</td>
+		              <td class="tableStyle">yahoomail.com</td>
+		             </tr>
+		             <tr height="20px">
+		              <td height="20px" class="tableStyle">fastmail.fm</td>
+		              <td class="tableStyle">live.fr</td>
+		              <td class="tableStyle">spidernet.com.cy</td>
+		              <td class="tableStyle">ymail.com</td>
+		             </tr>
+		             <tr height="20px">
+		              <td height="20px" class="tableStyle">freenet.de</td>
+		              <td class="tableStyle">lycos.com</td>
+		              <td class="tableStyle">t-online.de</td>
+		              <td class="tableStyle">&nbsp;</td>
+		             </tr>
+		             <tr height="20px">
+		              <td height="20px" class="tableStyle">gmail.ca</td>
+		              <td class="tableStyle">lycos.de</td>
+		              <td class="tableStyle">web.de</td>
+		              <td class="tableStyle">&nbsp;</td>
+		             </tr>
+		             <tr height="20px">
+		              <td height="20px" class="tableStyle">gmail.co.jp</td>
+		              <td class="tableStyle">mail.com</td>
+		              <td class="tableStyle">windowslive.com</td>
+		              <td class="tableStyle">&nbsp;</td>
+		             </tr>
+		             <tr height="20px">
+		              <td height="20px" class="tableStyle">gmail.co.uk</td>
+		              <td class="tableStyle">mail.ru</td>
+		              <td class="tableStyle">wp.pl</td>
+		              <td class="tableStyle">&nbsp;</td>
+		             </tr>
+		             <tr height="20px">
+		              <td height="20px" class="tableStyle">gmail.com</td>
+		              <td class="tableStyle">mailinator.com</td>
+		              <td class="tableStyle">ya.ru</td>
+		              <td class="tableStyle">&nbsp;</td>
+		             </tr>
+		             <tr height="20px">
+		              <td height="20px" class="tableStyle">gmail.de</td>
+		              <td class="tableStyle">me.com</td>
+		              <td class="tableStyle">yahoo.ca</td>
+		              <td class="tableStyle">&nbsp;</td>
+		             </tr>
+		             <tr height="20px">
+		              <td height="20px" class="tableStyle">gmx.de</td>
+		              <td class="tableStyle">msn.com</td>
+		              <td class="tableStyle">yahoo.co.id</td>
+		              <td class="tableStyle">&nbsp;</td>
+		             </tr>
+		             <tr height="20px">
+		              <td height="20px" class="tableStyle">gmx.deorange.fr</td>
+		              <td class="tableStyle">naver.com</td>
+		              <td class="tableStyle">yahoo.co.in</td>
+		              <td class="tableStyle">&nbsp;</td>
+		             </tr>
+		             <tr height="20px">
+		              <td height="20px" class="tableStyle">gmx.net</td>
+		              <td class="tableStyle">netcabo.pt</td>
+		              <td class="tableStyle">yahoo.co.jp</td>
+		              <td class="tableStyle">&nbsp;</td>
+		             </tr>
+		             <tr height="20px">
+		              <td height="20px" class="tableStyle">google.com</td>
+		              <td class="tableStyle">online.de</td>
+		              <td class="tableStyle">yahoo.co.th</td>
+		              <td class="tableStyle">&nbsp;</td>
+		             </tr>
+		             <tr height="20px">
+		              <td height="20px" class="tableStyle">guerrillamailblock.com</td>
+		              <td class="tableStyle">optusnet.com.au</td>
+		              <td class="tableStyle">yahoo.co.uk</td>
+		              <td class="tableStyle">&nbsp;</td>
+		             </tr>
+		             <tr height="20px">
+		              <td height="20px" class="tableStyle">hcl.in</td>
+		              <td class="tableStyle">orange.frme.com</td>
+		              <td class="tableStyle">yahoo.com</td>
+		              <td class="tableStyle">&nbsp;</td>
+		             </tr>
+		             <tr height="20px">
+		              <td height="20px" class="tableStyle">hotmail.co.za</td>
+		              <td class="tableStyle">plasa.com</td>
+		              <td class="tableStyle">yahoo.com.au</td>
+		              <td class="tableStyle">&nbsp;</td>
+		             </tr>
+		             <tr height="20px">
+		              <td height="20px" class="tableStyle">hotmail.com</td>
+		              <td class="tableStyle">posta.ge</td>
+		              <td class="tableStyle">yahoo.com.br</td>
+		              <td class="tableStyle">&nbsp;</td>
+		             </tr>
+		             </col>
+		             </col>
+		             </col>
+		             </col>
+	            </table>
+            </div>
+
+            <br />
+            <br />
+            <h2>Person Account Support</h2>
+            <p>DupeCatcher supports deduplication of Person Accounts for Enterprise Edition orgs that have Person Accounts enabled. Some advanced setup is required.  Please see DupeCatcher documentation or contact Symphonic Source for detailed instructions.  Once setup is complete, selecting the “Person Account Support” checkbox enables this function.</p>
+            <p>Be sure to click the “Save” button after making any changes on the Application Settings tab.</p>
+            <img src="{!URLFOR($Resource.DupeCatcherImages, 'images/personAccount.png')}" class="dcImage" width="500px" height="218px" rel="#img12"/>
+            <div class="simple_overlay" id="img12"><img src="{!URLFOR($Resource.DupeCatcherImages, 'images/personAccount.png')}" width="675px"/></div>
+            <br />
+        </div>
+        
+        <div class="div4">
+            <h2>About DupeCatcher</h2>
+            <p>DupeCatcher functions based on Filters and Rules set by a Salesforce administrator.  Once installed, admins will see a DupeCatcher option in the Salesforce dropdown menu on the top right.</p>
+            <img src="{!URLFOR($Resource.DupeCatcherImages, 'images/menu.png')}" class="dcImage" width="500px" height="303px" rel="#img1"/>
+            <div class="simple_overlay" id="img1"><img src="{!URLFOR($Resource.DupeCatcherImages, 'images/menu.png')}" width="675px"/></div>
+            <p>Selecting the DupeCatcher option will display DupeCatcher tabs in the main Salesforce window. Your options will be as follows:</p>
+            <div id="accordion">
+                <div class="changeDiv"><h3>DupeCatcher Filters:</h3><br />
+                    Select to set and activate Filters and Rules.  Once Filters are set, you can view them from this tab by clicking the “Go” button next to the “View” drop down menu.</div>
+                <div class="changeDiv"><h3>DupeCatcher Duplicate Alerts:</h3><br />
+                    Filters set with a matching action of “Report Duplicate” will create alerts when a duplicate is identified, and those alerts will be viewable from this tab. Once Alerts are created, you can view them from this tab by clicking the “Go” button next to the “View” drop down menu. (Note: Alerts are also viewable from within the individual Filter details view.)</div>
+                <div class="changeDiv"><h3>DupeCatcher Application Settings:</h3><br />
+                    The DupeCatcher Applications Settings tab is used to enable certain functions within DupeCatcher such as: override of filters (Enterprise Edition and higher only), support for dedupe of web-to-lead inserts, exempting specified user IDs from DupeCatcher filtering, setting notifications for DupeCatcher tasks (based on filter settings), and listing public web domains to ignore on domain matches.</div>
+                    <div id="matchBlanksImg"><apex:image url="{!URLFOR($Resource.SFSSDupeCatcher__DupeCatcherImages, 'images/editRule.png')}"/></div>
+            </div>
+            <img src="{!URLFOR($Resource.DupeCatcherImages, 'images/tabs.png')}" class="dcImage" width="500px" height="282px" rel="#img2"/>
+            <div class="simple_overlay" id="img2"><img src="{!URLFOR($Resource.DupeCatcherImages, 'images/tabs.png')}" width="675px"/></div>
+        </div>
+        
+        <div class="div5">
+        <h2>Tutorial</h2>
+        <br />
+        <br />
+        <div class="dcImage" style="width:640px;height:390px"><apex:iframe height="390" width="640" src="http://www.youtube.com/embed/FZnGciZ1yMI" frameborder="false" ></apex:iframe></div>
+        <br />
+        <a href="http://www.youtube.com/watch?feature=player_embedded&v=FZnGciZ1yMI" target="_blank">Click here if you can't see the video (YouTube)</a>
+        </div>
+        
+        </div>
+        </div>
+    </div>
+  
+</apex:page>

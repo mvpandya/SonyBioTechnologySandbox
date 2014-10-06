@@ -1,0 +1,16 @@
+<apex:page controller="SFSSDupeCatcher.MergeDuplicatesController"
+    showHeader="true"
+>
+
+<apex:form id="showpagescreenid">
+
+    <div style="text-align:left;font-family: 'Verdana', 'Geneva', sans-serif">
+		<font size="5"><b>DupeCatcher Merge<BR/><BR/></b></font>
+        <font size="3">  An error has occurred and the potential duplicates cannot be merged. If you continue to see this message, please notify your system administrator.
+        </font>
+	</div>
+	
+	<apex:pageMessages escape="false"/>
+</apex:form>
+
+</apex:page>

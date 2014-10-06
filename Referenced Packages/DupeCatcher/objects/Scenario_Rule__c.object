@@ -1,0 +1,908 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <content>Scenario_Rule</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <content>Scenario_Rule</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <customHelpPage>Filter_Rules_Page_Help</customHelpPage>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <enableActivities>false</enableActivities>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <fields>
+        <fullName>First_N_Letters__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The number of initial letters you would like to match in the chosen field(s).</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The number of initial letters you would like to match in the chosen field(s).</inlineHelpText>
+        <label>First N Letters</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Fuzzy_Match__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Fuzzy Match</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Mapping_Approach__c</fullName>
+        <deprecated>false</deprecated>
+        <description>&quot;Exact&quot; exact field value match.
+&quot;Domain&quot;  match domain part of a field.
+&quot;First N Letters&quot; match first N characters.
+&quot;Numeric Only&quot; strictly numeric characters.
+&quot;First 5 Zip&quot; match first 5 digits of Zip.
+&quot;Relaxed NA Phone&quot; match last 7 digits only.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicates the type of matching that will be used on the chosen field(s).</inlineHelpText>
+        <label>Matching Technique</label>
+        <picklist>
+            <controllingField>Match_field__c</controllingField>
+            <picklistValues>
+                <fullName>Exact</fullName>
+                <controllingFieldValues>Account ID</controllingFieldValues>
+                <controllingFieldValues>Account Name</controllingFieldValues>
+                <controllingFieldValues>Account Number</controllingFieldValues>
+                <controllingFieldValues>Billing City</controllingFieldValues>
+                <controllingFieldValues>Billing Country</controllingFieldValues>
+                <controllingFieldValues>Billing Postal Code</controllingFieldValues>
+                <controllingFieldValues>Billing State</controllingFieldValues>
+                <controllingFieldValues>Billing Street</controllingFieldValues>
+                <controllingFieldValues>City</controllingFieldValues>
+                <controllingFieldValues>Company</controllingFieldValues>
+                <controllingFieldValues>Country</controllingFieldValues>
+                <controllingFieldValues>Email</controllingFieldValues>
+                <controllingFieldValues>Fax</controllingFieldValues>
+                <controllingFieldValues>First Name</controllingFieldValues>
+                <controllingFieldValues>Home Phone</controllingFieldValues>
+                <controllingFieldValues>Last Name</controllingFieldValues>
+                <controllingFieldValues>Mailing City</controllingFieldValues>
+                <controllingFieldValues>Mailing Country</controllingFieldValues>
+                <controllingFieldValues>Mailing Postal</controllingFieldValues>
+                <controllingFieldValues>Mailing State</controllingFieldValues>
+                <controllingFieldValues>Mailing Street</controllingFieldValues>
+                <controllingFieldValues>Mobile Phone</controllingFieldValues>
+                <controllingFieldValues>Other City</controllingFieldValues>
+                <controllingFieldValues>Other Country</controllingFieldValues>
+                <controllingFieldValues>Other Phone</controllingFieldValues>
+                <controllingFieldValues>Other Postal Code</controllingFieldValues>
+                <controllingFieldValues>Other State</controllingFieldValues>
+                <controllingFieldValues>Other Street</controllingFieldValues>
+                <controllingFieldValues>Owner ID</controllingFieldValues>
+                <controllingFieldValues>Phone</controllingFieldValues>
+                <controllingFieldValues>Postal Code</controllingFieldValues>
+                <controllingFieldValues>Record Type</controllingFieldValues>
+                <controllingFieldValues>Shipping City</controllingFieldValues>
+                <controllingFieldValues>Shipping Country</controllingFieldValues>
+                <controllingFieldValues>Shipping Postal</controllingFieldValues>
+                <controllingFieldValues>Shipping State</controllingFieldValues>
+                <controllingFieldValues>Shipping Street</controllingFieldValues>
+                <controllingFieldValues>Site</controllingFieldValues>
+                <controllingFieldValues>State</controllingFieldValues>
+                <controllingFieldValues>Street</controllingFieldValues>
+                <controllingFieldValues>Ticker Symbol</controllingFieldValues>
+                <controllingFieldValues>Website</controllingFieldValues>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Domain</fullName>
+                <controllingFieldValues>Email</controllingFieldValues>
+                <controllingFieldValues>Website</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>First N Letters</fullName>
+                <controllingFieldValues>Account Name</controllingFieldValues>
+                <controllingFieldValues>Account Number</controllingFieldValues>
+                <controllingFieldValues>Billing City</controllingFieldValues>
+                <controllingFieldValues>Billing Country</controllingFieldValues>
+                <controllingFieldValues>Billing Postal Code</controllingFieldValues>
+                <controllingFieldValues>Billing State</controllingFieldValues>
+                <controllingFieldValues>Billing Street</controllingFieldValues>
+                <controllingFieldValues>City</controllingFieldValues>
+                <controllingFieldValues>Company</controllingFieldValues>
+                <controllingFieldValues>Country</controllingFieldValues>
+                <controllingFieldValues>Email</controllingFieldValues>
+                <controllingFieldValues>Fax</controllingFieldValues>
+                <controllingFieldValues>First Name</controllingFieldValues>
+                <controllingFieldValues>Home Phone</controllingFieldValues>
+                <controllingFieldValues>Last Name</controllingFieldValues>
+                <controllingFieldValues>Mailing City</controllingFieldValues>
+                <controllingFieldValues>Mailing Country</controllingFieldValues>
+                <controllingFieldValues>Mailing Postal</controllingFieldValues>
+                <controllingFieldValues>Mailing State</controllingFieldValues>
+                <controllingFieldValues>Mailing Street</controllingFieldValues>
+                <controllingFieldValues>Mobile Phone</controllingFieldValues>
+                <controllingFieldValues>Other City</controllingFieldValues>
+                <controllingFieldValues>Other Country</controllingFieldValues>
+                <controllingFieldValues>Other Phone</controllingFieldValues>
+                <controllingFieldValues>Other Postal Code</controllingFieldValues>
+                <controllingFieldValues>Other State</controllingFieldValues>
+                <controllingFieldValues>Other Street</controllingFieldValues>
+                <controllingFieldValues>Phone</controllingFieldValues>
+                <controllingFieldValues>Postal Code</controllingFieldValues>
+                <controllingFieldValues>Shipping City</controllingFieldValues>
+                <controllingFieldValues>Shipping Country</controllingFieldValues>
+                <controllingFieldValues>Shipping Postal</controllingFieldValues>
+                <controllingFieldValues>Shipping State</controllingFieldValues>
+                <controllingFieldValues>Shipping Street</controllingFieldValues>
+                <controllingFieldValues>Site</controllingFieldValues>
+                <controllingFieldValues>State</controllingFieldValues>
+                <controllingFieldValues>Street</controllingFieldValues>
+                <controllingFieldValues>Ticker Symbol</controllingFieldValues>
+                <controllingFieldValues>Website</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Numeric Only</fullName>
+                <controllingFieldValues>Account Number</controllingFieldValues>
+                <controllingFieldValues>Billing Postal Code</controllingFieldValues>
+                <controllingFieldValues>Fax</controllingFieldValues>
+                <controllingFieldValues>Home Phone</controllingFieldValues>
+                <controllingFieldValues>Mailing Postal</controllingFieldValues>
+                <controllingFieldValues>Mobile Phone</controllingFieldValues>
+                <controllingFieldValues>Other Phone</controllingFieldValues>
+                <controllingFieldValues>Other Postal Code</controllingFieldValues>
+                <controllingFieldValues>Phone</controllingFieldValues>
+                <controllingFieldValues>Postal Code</controllingFieldValues>
+                <controllingFieldValues>Shipping Postal</controllingFieldValues>
+                <controllingFieldValues>Site</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Relaxed NA Phone</fullName>
+                <controllingFieldValues>Fax</controllingFieldValues>
+                <controllingFieldValues>Home Phone</controllingFieldValues>
+                <controllingFieldValues>Mobile Phone</controllingFieldValues>
+                <controllingFieldValues>Other Phone</controllingFieldValues>
+                <controllingFieldValues>Phone</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>First 5 Zip</fullName>
+                <controllingFieldValues>Mailing Postal</controllingFieldValues>
+                <controllingFieldValues>Other Postal Code</controllingFieldValues>
+                <controllingFieldValues>Postal Code</controllingFieldValues>
+                <controllingFieldValues>Shipping Postal</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>First Name</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Clean Name</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Country Match</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Street Address Match</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Match_Blanks__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Activates matching on blank fields.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If checked, DupeCatcher will match fields left blank.</inlineHelpText>
+        <label>Match Blanks</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Match_field__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The field in a newly created or edited record that you would like this rule to use for matching against potential duplicates.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The field used by the rule to identify duplicates.</inlineHelpText>
+        <label>Source Field</label>
+        <picklist>
+            <controllingField>Scenario_Type__c</controllingField>
+            <picklistValues>
+                <fullName>Mobile Phone</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>First Name</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Last Name</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Email</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Company</fullName>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Account Name</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Account ID</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Account Number</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Site</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Billing Street</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Billing City</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Billing State</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Billing Postal Code</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Billing Country</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Shipping Street</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Shipping City</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Shipping State</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Shipping Postal</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Shipping Country</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Street</fullName>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>City</fullName>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>State</fullName>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Postal Code</fullName>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Country</fullName>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mailing Street</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mailing City</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mailing State</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mailing Postal</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mailing Country</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other Street</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other City</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other State</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other Postal Code</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other Country</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Phone</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Home Phone</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other Phone</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Fax</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Ticker Symbol</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Owner ID</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Record Type</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Website</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Scenario_Formula__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>Scenario__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Filter</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Scenario_Type_Formula__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>TEXT(Scenario__r.Scenario_Type__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Filter Type - From Filter</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Scenario_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The Filter Type of the parent filter</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Read only field that shows the Filter Type of the parent filter for this rule.</inlineHelpText>
+        <label>Filter Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Lead to Contact</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lead to Account</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lead</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Contact</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Account</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Scenario__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The parent filter for this rule.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The filter under which this rule has been created.</inlineHelpText>
+        <label>Filter</label>
+        <referenceTo>Scenario__c</referenceTo>
+        <relationshipLabel>DupeCatcher Filter Rules</relationshipLabel>
+        <relationshipName>Scenario_Rules</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Target_Match_Field__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The Contact or Account field  that you would like this rule to use for matching against potential duplicates.  This field is only valid if the filter type is &quot;Lead to Contact&quot; and &quot;Lead to Account&quot;.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The field used by the rule to identify duplicates for Lead to Account or Lead to Contact scenarios.</inlineHelpText>
+        <label>Target Field</label>
+        <picklist>
+            <controllingField>Scenario_Type__c</controllingField>
+            <picklistValues>
+                <fullName>First Name</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Last Name</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Email</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Company</fullName>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Account Name</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Account ID</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Account Number</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Site</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Billing Street</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Billing City</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Billing State</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Billing Postal Code</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Billing Country</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Shipping Street</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Shipping City</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Shipping State</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Shipping Postal</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Shipping Country</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Street</fullName>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>City</fullName>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>State</fullName>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Postal Code</fullName>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Country</fullName>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mailing Street</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mailing City</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mailing State</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mailing Postal</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mailing Country</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other Street</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other City</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other State</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other Postal Code</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other Country</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Phone</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mobile Phone</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Home Phone</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other Phone</fullName>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Fax</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Ticker Symbol</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Owner ID</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Record Type</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Website</fullName>
+                <controllingFieldValues>Account</controllingFieldValues>
+                <controllingFieldValues>Contact</controllingFieldValues>
+                <controllingFieldValues>Lead</controllingFieldValues>
+                <controllingFieldValues>Lead to Account</controllingFieldValues>
+                <controllingFieldValues>Lead to Contact</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <label>DupeCatcher Filter Rule</label>
+    <nameField>
+        <displayFormat>Rule-{0}</displayFormat>
+        <label>Rule Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>DupeCatcher Filter Rules</pluralLabel>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>Match_field__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Target_Match_Field__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Mapping_Approach__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>First_N_Letters__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Match_Blanks__c</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Match_field__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Target_Match_Field__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Mapping_Approach__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>First_N_Letters__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Match_Blanks__c</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>Match_field__c</searchFilterFields>
+        <searchFilterFields>Target_Match_Field__c</searchFilterFields>
+        <searchFilterFields>Mapping_Approach__c</searchFilterFields>
+        <searchFilterFields>First_N_Letters__c</searchFilterFields>
+        <searchFilterFields>Match_Blanks__c</searchFilterFields>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>Validate_Scenario_Type</fullName>
+        <active>true</active>
+        <description>This field should match the scenario type for the parent scenario.</description>
+        <errorConditionFormula>CASE(Scenario_Type__c, &quot;Account&quot;, 1, &quot;Contact&quot;, 2, &quot;Lead&quot;, 3, &quot;Lead to Account&quot;, 4, &quot;Lead to Contact&quot;, 5, 100 ) &lt;&gt; CASE( Scenario__r.Scenario_Type__c, &quot;Account&quot;, 1, &quot;Contact&quot;, 2, &quot;Lead&quot;, 3, &quot;Lead to Account&quot;, 4, &quot;Lead to Contact&quot;, 5, 99 )</errorConditionFormula>
+        <errorDisplayField>Scenario_Type__c</errorDisplayField>
+        <errorMessage>This field should match the scenario type for the parent scenario.</errorMessage>
+    </validationRules>
+</CustomObject>

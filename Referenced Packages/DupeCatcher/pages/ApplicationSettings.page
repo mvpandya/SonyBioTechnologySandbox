@@ -1,0 +1,32 @@
+<apex:page standardController="SFSSDupeCatcher__DC_Application_Properties__c" 
+    showHeader="true"
+    extensions="SFSSDupeCatcher.DCApplicationSettingsExtension"
+>
+
+    <apex:sectionHeader title="DupeCatcher Application Setting XXXX" subTitle="{!SFSSDupeCatcher__DC_Application_Properties__c.Name}" />
+    <apex:pageMessages />
+     <apex:form title="DupeCatcher Application Setting XXXXX" >
+
+        <apex:pageBlock title="DupeCatcher Application Setting XXXXX" >
+             <apex:pageBlockButtons >
+                <apex:commandButton value="Save" action="{!save}"/>
+                <apex:commandButton value="Cancel" action="{!cancel}"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection >
+                 <apex:outputField value="{!SFSSDupeCatcher__DC_Application_Properties__c.Name}">
+                </apex:outputField>
+
+                 <apex:outputText value=""/> 
+
+                 <apex:inputField value="{!SFSSDupeCatcher__DC_Application_Properties__c.SFSSDupeCatcher__Immediate_Reminder_For_Tasks__c}">
+                </apex:inputField>
+                
+                 <apex:outputText value=""/> 
+                 
+                  <apex:inputField value="{!SFSSDupeCatcher__DC_Application_Properties__c.SFSSDupeCatcher__Web_Lead_Sources__c}">
+                </apex:inputField>                                                               
+            </apex:pageBlockSection>
+
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

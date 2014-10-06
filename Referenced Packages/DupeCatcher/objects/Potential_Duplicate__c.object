@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <enableActivities>true</enableActivities>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <fields>
+        <fullName>Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>The Account record associated with this potential duplicate record.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The Account record associated with this potential duplicate record.</inlineHelpText>
+        <label>Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>DupeCatcher Potential Duplicates</relationshipLabel>
+        <relationshipName>Potential_Duplicates</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Contact_Display__c</fullName>
+        <deprecated>false</deprecated>
+        <description>A link to the Contact record associated with this potential duplicate record.</description>
+        <externalId>false</externalId>
+        <formula>HYPERLINK( &apos;/&apos; &amp; Contact__c, Contact__r.FirstName &amp; IF(Contact__r.FirstName &lt;&gt; &apos;&apos;, &apos; &apos;, &apos;&apos; ) &amp; Contact__r.LastName, &apos;_self&apos;) &amp; IF( AND( Contact__r.AccountId &lt;&gt; &apos;&apos;, NOT( ISNULL( Contact__r.AccountId ) ) ), &apos; at &apos; &amp; HYPERLINK( &apos;/&apos; &amp; Contact__r.AccountId, Contact__r.Account.Name, &apos;_self&apos; ), &apos;&apos; )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>A link to the Contact record associated with this potential duplicate record.</inlineHelpText>
+        <label>Contact Record</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Contact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>The Contact record associated with this potential duplicate record.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The Contact record associated with this potential duplicate record.</inlineHelpText>
+        <label>Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>DupeCatcher Potential Duplicates</relationshipLabel>
+        <relationshipName>Potential_Duplicates</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Criteria__c</fullName>
+        <defaultValue>&quot;null&quot;</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Values used to match potential duplicates</description>
+        <externalId>false</externalId>
+        <label>Criteria</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Duplicate_Warning__c</fullName>
+        <deprecated>false</deprecated>
+        <description>A link to the Duplicate Alert record that is the parent of this record</description>
+        <externalId>false</externalId>
+        <inlineHelpText>A link to the Duplicate Alert record that is the parent of this record</inlineHelpText>
+        <label>Duplicate Alert</label>
+        <referenceTo>Duplicate_Warning__c</referenceTo>
+        <relationshipLabel>DupeCatcher Potential Duplicates</relationshipLabel>
+        <relationshipName>Potential_Duplicates</relationshipName>
+        <relationshipOrder>1</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Email__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The email address of the duplicate lead/contact/account.</description>
+        <externalId>false</externalId>
+        <formula>CASE( Object_Type__c, &apos;Contact&apos;, Contact__r.Email, &apos;Lead&apos;, Lead__r.Email, &apos;&apos; )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>The email address of the duplicate lead/contact/account.</inlineHelpText>
+        <label>Email</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Lead_Display__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The Lead record associated with this potential duplicate record.</description>
+        <externalId>false</externalId>
+        <formula>HYPERLINK( &apos;/&apos; &amp; Lead__c, Lead__r.FirstName &amp; IF(Lead__r.FirstName &lt;&gt; &apos;&apos;, &apos; &apos;, &apos;&apos; ) &amp; Lead__r.LastName &amp; IF( Lead__r.Company &lt;&gt; &apos;&apos;, &apos; at &apos; &amp; Lead__r.Company, &apos;&apos; ), &apos;_self&apos; )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>The Lead record associated with this potential duplicate record.</inlineHelpText>
+        <label>Lead Record</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Lead__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>The Lead record associated with this potential duplicate record.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The Lead record associated with this potential duplicate record.</inlineHelpText>
+        <label>Lead</label>
+        <referenceTo>Lead</referenceTo>
+        <relationshipLabel>DupeCatcher Potential Duplicates</relationshipLabel>
+        <relationshipName>Potential_Duplicates</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Object_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Indicator as to whether the duplicate was lead, contact or account.</description>
+        <externalId>false</externalId>
+        <formula>IF( AND( NOT( ISNULL( Account__c ) ), Account__c &lt;&gt; &apos;&apos; ), &apos;Account&apos;, IF( AND( NOT( ISNULL( Contact__c ) ), Contact__c &lt;&gt; &apos;&apos; ), &apos;Contact&apos;, IF( AND( NOT( ISNULL( Lead__c ) ), Lead__c &lt;&gt; &apos;&apos; ), &apos;Lead&apos;, &apos;&apos; ) ) )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Indicator as to whether the duplicate is a lead, contact or account.</inlineHelpText>
+        <label>Duplicate Type</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Phone__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The phone number of the duplicate lead/contact/account.</description>
+        <externalId>false</externalId>
+        <formula>CASE( Object_Type__c, &apos;Account&apos;, Account__r.Phone, &apos;Contact&apos;, Contact__r.Phone, &apos;Lead&apos;, Lead__r.Phone, &apos;&apos; )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>The phone number of the duplicate lead/contact/account.</inlineHelpText>
+        <label>Phone</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Scenario_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The type of records triggered the potential duplicate (e.g. Lead, Account, Lead to Contact, etc.) .   
+
+This value always matches the Filter Type of the parent filter.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The type of records triggered the potential duplicate (e.g. Lead, Account, Lead to Contact, etc.) .   
+
+This value always matches the Filter Type of the parent filter.</inlineHelpText>
+        <label>Filter Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Lead</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Scenario__c</fullName>
+        <deprecated>false</deprecated>
+        <description>A link to the parent filter that triggered the potential duplicate.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>A link to the parent filter that triggered the potential duplicate.</inlineHelpText>
+        <label>Filter</label>
+        <referenceTo>Scenario__c</referenceTo>
+        <relationshipLabel>DupeCatcher Potential Duplicates</relationshipLabel>
+        <relationshipName>Potential_Duplicates</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Warning_Display__c</fullName>
+        <deprecated>false</deprecated>
+        <description>A link to the duplicate contact/account/lead record associated with this potential duplicate record.</description>
+        <externalId>false</externalId>
+        <formula>CASE( Object_Type__c, &apos;Account&apos;, HYPERLINK( &apos;/&apos; &amp; Account__c, IF( Duplicate_Warning__r.Scenario__r.Person_Account_Filter__c, Account__r.Id, Account__r.Name), &apos;_self&apos; ), &apos;Contact&apos;, Contact_Display__c , &apos;Lead&apos;, Lead_Display__c, &apos;&apos; )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>A link to the duplicate contact/account/lead record associated with this potential duplicate record.</inlineHelpText>
+        <label>Duplicate Record</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>DupeCatcher Potential Duplicate</label>
+    <nameField>
+        <displayFormat>Dupe-{0}</displayFormat>
+        <label>Duplicate Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>DupeCatcher Potential Duplicates</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+</CustomObject>

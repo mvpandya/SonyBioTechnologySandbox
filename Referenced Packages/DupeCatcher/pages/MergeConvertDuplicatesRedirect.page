@@ -1,0 +1,12 @@
+<apex:page controller="SFSSDupeCatcher.MergeConvertRedirectController" 
+           action="{!DoRedirect}"
+>
+
+<apex:form rendered="{!showPageError}" >
+
+		<font size="5"><b>DupeCatcher Merge/Convert<BR/><BR/></b></font>
+        <font size="3"><b>  An error has occurred and the Leads cannot be converted. If you continue to see this message, please notify your system administrator.
+        </b></font>
+</apex:form>
+
+</apex:page>

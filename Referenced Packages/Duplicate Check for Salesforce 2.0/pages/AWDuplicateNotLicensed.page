@@ -1,0 +1,28 @@
+<apex:page controller="awduplicate2.AWControllerNotLicensed" action="{!AddUsage}" title="Duplicate Check Licensing" tabStyle="awDuplicateCheckSearch__tab">
+    <apex:sectionHeader title="Duplicate Check Licensing" help=""/> 
+    <apex:pageMessages />
+    <apex:form >
+        <apex:pageBlock title="You're not licensed to use this feature." rendered="{!isOrgLicense}">
+            <p>For several features in Duplicate Check for Salesforce a paid license is needed. You can have a look at our <a target="_blank" href="http://www.addressedworld.com/salesforce/duplicatecheckedition">website</a> for which features the enterprise license is needed.</p>
+            <ul>
+                <li><strong>Trial</strong> -- You can request a trial to have unlimited access to Duplicate Check for Salesforce. <a href="{!TrialUrl}" target="_blank">Please request your trial here.</a></li>
+                <li><strong>Order</strong> -- You can order your license for Duplicate Check for Salesforce at our website. <a href="{!OrderUrl}" target="_blank">Please order your license here.</a></li>
+            </ul>
+            
+            <apex:pageBlockSection columns="1" Title="Save license code" collapsible="false">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="License Code" for="lc"/>
+                    <apex:inputText value="{!inputLicense}" id="lc" dir="ltr"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <div>&nbsp;</div>
+                    <apex:commandButton value="Save" action="{!saveLicense}"/> 
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+    <apex:pageBlock title="You're not licensed to use this feature." rendered="{!isUserLicense}">
+        <p>For several features in Duplicate Check for Salesforce a license is needed. Your organisation is licensed to use this feature, but you as a user are not enabled -by your Salesforce Administrator- to use the Duplice Check for Salesforce features. Please contact your Salesforce Administrator for getting access.</p>
+    </apex:pageBlock>
+
+</apex:page>

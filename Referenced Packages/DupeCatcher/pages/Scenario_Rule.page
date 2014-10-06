@@ -1,0 +1,90 @@
+<apex:page standardController="SFSSDupeCatcher__Scenario_Rule__c"
+	showHeader="true"
+	extensions="SFSSDupeCatcher.ScenarioRulesControllerExtension"
+>
+
+
+	<apex:sectionHeader title="DupeCatcher Filter Rule Edit" subTitle="{!SFSSDupeCatcher__Scenario_Rule__c.Name}" />
+    <apex:pageMessages />
+     <apex:form title="DupeCatcher Filter Rule Edit" >
+	    <apex:outputPanel id="theErrorPanel"  rendered="{!showPageError}"> 
+	        <font size="4"><b>  An error has occurred and the filter rule cannot be displayed. If you continue to see this message, please notify your system administrator.
+	        </b></font>
+	    </apex:outputPanel> 
+
+
+    	<apex:outputPanel id="theDisplayPanel" layout="block" style="warningArea"  rendered="{!NOT(showPageError)}" >
+        <apex:pageBlock title="DupeCatcher Filter Rule Edit" id="infosection"  mode="edit" >
+             <apex:pageBlockButtons >
+                <apex:commandButton value="Save" action="{!save}"/>
+                <apex:commandButton value="Cancel" action="{!cancel}"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection >
+                 <apex:outputField value="{!SFSSDupeCatcher__Scenario_Rule__c.SFSSDupeCatcher__Scenario__c}">
+                </apex:outputField>
+               
+                <apex:outputField id="ssdupecatcherscentype" value="{!SFSSDupeCatcher__Scenario_Rule__c.SFSSDupeCatcher__Scenario_Type__c}" >
+                 </apex:outputField>      
+            </apex:pageBlockSection>
+            
+            
+            <apex:pageBlockSection title="Information" columns="2" collapsible="false" showHeader="true">   
+                     
+ 			   <apex:pageblocksectionitem helpText="{!$ObjectType.SFSSDupeCatcher__Scenario_Rule__c.fields.SFSSDupeCatcher__Match_field__c.inlineHelpText}" >
+				<apex:outputLabel value="{!SourceMatchLabel}" for="sourcematchlabel" />
+               <apex:selectList id="sourcematchlabel" value="{!SourceField}" size="1" required="true">
+                   <apex:selectOptions value="{!SourceFields}"/>
+                	<apex:actionSupport event="onchange" rerender="infosection" status="status"/>
+               </apex:selectList>
+			   </apex:pageblocksectionitem>
+			  
+               <apex:inputField value="{!SFSSDupeCatcher__Scenario_Rule__c.SFSSDupeCatcher__Match_Blanks__c}">
+                 </apex:inputField>
+                 
+                 
+                 
+			   <apex:pageblocksectionitem id="matchingapproachid" helpText="{!$ObjectType.SFSSDupeCatcher__Scenario_Rule__c.fields.SFSSDupeCatcher__Mapping_Approach__c.inlineHelpText}">
+				<apex:outputLabel value="Matching Approach" for="{!MatchApproach}" />
+               <apex:selectList value="{!MatchApproach}"  size="1"  required="true">
+                   <apex:selectOptions value="{!MatchApproaches}"/>
+					        <apex:actionStatus id="refreshFields" startText="Please wait..." />
+                	<apex:actionSupport event="onchange" rerender="infosection" status="refreshFields"/>
+               </apex:selectList>
+			   </apex:pageblocksectionitem>
+                
+                <apex:outputText value="" rendered="true">   <!-- right side blank -->
+                 </apex:outputText>
+			   
+
+			   <apex:pageblocksectionitem rendered="{!TargetMatchRequired}" id="targetmatchsection" helpText="{!$ObjectType.SFSSDupeCatcher__Scenario_Rule__c.fields.SFSSDupeCatcher__Target_Match_Field__c.inlineHelpText}" >
+				<apex:outputLabel value="{!TargetMatchLabel}" for="targetmatchfield" />
+               <apex:selectList id="targetmatchfield" value="{!TargetField}" size="1" rendered="{!TargetMatchRequired}" required="{!TargetMatchRequired}">
+                   <apex:selectOptions value="{!TargetFields}"/>
+                	<apex:actionSupport event="onchange" rerender="infosection"/>
+               </apex:selectList>
+
+			   </apex:pageblocksectionitem>
+                <apex:outputText value="" rendered="{!ShowTargetMatchPlaceHolder}"> <!-- PlaceHolder -->
+                 </apex:outputText>   
+                               
+                <apex:outputText value="" rendered="true">  <!-- right side blank always rendered -->
+                 </apex:outputText>
+
+				<!-- Display the next two lines if we need the FirstNLetters field  -->
+                <apex:inputField value="{!SFSSDupeCatcher__Scenario_Rule__c.SFSSDupeCatcher__First_N_Letters__c}" 
+                                 rendered="{!ShowFirstNLettersField}" 
+                                  >                
+                </apex:inputField>
+                <apex:outputText value="" rendered="{!NOT(ShowFirstNLettersField)}">  
+                 </apex:outputText>
+                <apex:outputText value="" rendered="{!ShowFirstNLettersField}">  <!-- Blank PlaceHolder -->
+
+                 </apex:outputText>
+
+            </apex:pageBlockSection>
+
+        </apex:pageBlock>
+    </apex:outputPanel> 
+    
+    </apex:form>
+</apex:page>

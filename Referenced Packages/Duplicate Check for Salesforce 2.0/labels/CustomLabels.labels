@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>batch</fullName>
+        <categories>features</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>batch</shortDescription>
+        <value>Batch Deduplication</value>
+    </labels>
+    <labels>
+        <fullName>check</fullName>
+        <categories>features</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>check</shortDescription>
+        <value>Duplicate Check</value>
+    </labels>
+    <labels>
+        <fullName>convert</fullName>
+        <categories>features</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>convert</shortDescription>
+        <value>Lead Convert</value>
+    </labels>
+    <labels>
+        <fullName>delta</fullName>
+        <categories>features</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>delta</shortDescription>
+        <value>Delta Processing</value>
+    </labels>
+    <labels>
+        <fullName>prevention</fullName>
+        <categories>features</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>prevention</shortDescription>
+        <value>Duplicate Prevention</value>
+    </labels>
+    <labels>
+        <fullName>search</fullName>
+        <categories>features</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>search</shortDescription>
+        <value>Fuzzy Search</value>
+    </labels>
+    <labels>
+        <fullName>web2lead</fullName>
+        <categories>features</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>web2lead</shortDescription>
+        <value>Web2Lead</value>
+    </labels>
+</CustomLabels>

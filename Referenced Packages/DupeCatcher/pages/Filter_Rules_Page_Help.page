@@ -1,0 +1,133 @@
+<apex:page standardStyleSheets="false" showHeader="false">
+
+<style> body { font-family: Arial Unicode MS; font-size:12px; background-color: #F3F3EC} </style>
+  <head>
+    <title>DupeCatcher Help</title>
+  </head>
+  <body style="font-family: Calibri, Arial; font-size:13px; background-color: #FFFFFF">
+
+
+    <table width="100%" style=" background-color:#737E96">
+      <tr>
+        <td>
+          <h1 style="color:White">DupeCatcher Help</h1>
+        </td>
+      </tr>
+    </table>
+    <p>
+      DupeCatcher offers real time identification and blocking of duplicate leads, accounts, and contacts as they are manually entered into Salesforce.   It functions based on Filters and Rules set by a Salesforce administrator.
+    </p>
+    <h3 style="COLOR: #575232; FONT-FAMILY: Calibri, Arial">What are DupeCatcher Filters and Rules?</h3>
+    <p>
+      Filters and Rules are used to set up the logic that you would like DupeCatcher to use when blocking or reporting duplicates.  A Filter contains a set of Rules and  designates which type(s) of Salesforce Objects to match against (Account, Contact, or Lead) and what action to take.  The rules within a Filter simply indicate which fields to match against and what type of matching approach to use (e.g. Exact, Numeric_Only).
+    </p>
+    <h3 style="COLOR: #575232; FONT-FAMILY: Calibri, Arial">How does the Filters and Rules logic work?</h3>
+    <p>
+      You can have multiple Filters and multiple Rules within individual Filters running at the same time.  The Filters operate on an OR logic, and Rules operate on an AND logic.  That is, only one filter out of multiple Filters needs to identify a duplicate for an alert to trigger.  The first Filter to trigger an alert is reported, and all subsequent Filters are not processed.  All Rules within an individual Filter must match for that Filter to trigger an alert.
+    </p>
+
+   <h1 style="COLOR: #0da5e6; FONT-FAMILY: Calibri, Arial">How to Set Up a DupeCatcher Rule</h1>
+    <p>
+      From the Filter Rule Edit page, you can select the record fields and methods you want DupeCatcher to check to identify duplicates.  Your options will vary slightly depending on the type of Filter under which you've created the rule (i.e Lead, Contact, Lead to Contact, etc.).
+    </p>
+    <p>
+
+    </p>
+
+    <h2 style="COLOR: #575232; FONT-FAMILY: Calibri, Arial">Rule Fields</h2>
+    <table cellspacing="15"  >
+      <tr>
+        <td></td>
+        <td>
+          <table frame="border" cellpadding="4" >
+            <tr>
+              <td>
+                <b>Source Field</b>
+              </td>
+              <td>Select from the standard Salesforce fields.  You will always have at least one field (from a Lead, Account, or Contact) to select. This field will be labeled base on the Filter Type (e.g. if the filter type for this rule is 'Lead to Contact', the field will be labeled as 'Lead Field'.</td>
+            </tr>
+            <tr>
+              <td>
+                <b>Matching Approach</b>
+              </td>
+              <td>Allows you to select the kind and degree of match for which DupeCatcher checks.  Matching Approach options include Exact, First N Letters/Numbers, Domain, etc., and will vary based on the fields you’ve selected.</td>
+            </tr>
+            <tr>
+              <td>
+                <b>Target Field (optional)</b>
+              </td>
+              <td>Select from the standard Salesforce fields.  You will always have at least one field (from a Lead, Account, or Contact) to select.  This field will appear if the filter type for the rule is 'Lead to Contact' or 'Lead to Account'.  It be labeled base on the Filter Type (e.g. if the filter type for this rule is 'Lead to Contact', the field will be labeled as 'Contact Field'.</td>
+            </tr>
+            <tr>
+              <td>
+                <b>Match Blanks</b>
+              </td>
+              <td>If selected, DupeCatcher will block duplicates based on the fields defined in the Rules users set if those fields are left blank.  For example, if the Rule checks the email field, and the email field is left blank, DupeCatcher will return a list of records whose email field is also blank.</td>
+            </tr>
+            <tr>
+              <td>
+                <b>First N Letters</b>
+              </td>
+              <td>This will not be visible on the page unless "First N Letters is chosen in the Matching Approach pulldown.</td>
+            </tr>
+          </table>
+        </td>
+        <td></td>
+        <td></td>
+      </tr>
+    </table>
+
+    <h2 style="COLOR: #575232; FONT-FAMILY: Calibri, Arial">Matching Approach</h2>
+    <p>DupeCatcher Rules support the following matching approaches.  The Matching Approach designates the matching logic that will be used to match the inserted record to the existing records.</p>
+    <table cellspacing="15"  >
+      <tr>
+        <td></td>
+        <td>
+          <table frame="border" cellpadding="4" >
+            <tr>
+              <td>
+                <b>Exact</b>
+              </td>
+              <td>Match exactly, character for character</td>
+            </tr>
+            <tr>
+              <td>
+                <b>First N Letters</b>
+              </td>
+              <td>Match on the first N number of letters (e.g. if N is chosen to be 3 then "70414" matches "70408"). If this matching approach is chosen, new field called "First N Letters" will appear on the screen for you to enter the number of letters.</td>
+            </tr>
+            <tr>
+              <td>
+                <b>Domain</b>
+              </td>
+              <td>Match on just the domain name part of an email or website. (e.g. joe@acme.com matches jack@acme.com)</td>
+            </tr>
+            <tr>
+              <td>
+                <b>Numeric Only</b>
+              </td>
+              <td>Match on just the numbers within a field ignoring the rest of the characters. (e.g. "123 1st Street" matches "1231 Main Street)</td>
+            </tr>
+            <tr>
+              <td>
+                <b>Relaxed NA phone</b>
+              </td>
+              <td>Leading zeros and ones are ignored as well as trailing phone extensions (such as "ext. 555" or "x404").  Also, any other non-digits within the phone number are ignored.  Leading area code is ignored.  (e.g. "1-(413)-566-4001 ext. 302" matches "(413)-566-4001", "566-4001", "5664001", and others.</td>
+            </tr>
+            <tr>
+              <td>
+                <b>First 5 Zip</b>
+              </td>
+              <td>Matches the first 5 digits of the zip code against 9 digit version of the zip (e.g. "70414" matches 70414-3432").</td>
+            </tr>
+          </table>
+        </td>
+        <td></td>
+        <td></td>
+      </tr>
+    </table>
+    <div style="FONT-SIZE: 10pt; COLOR: #796a4b; FONT-FAMILY: Calibri, Arial" align="center">
+      Copyright 2010 Symphonic Source, Inc., All rights reserved. | <a href="http://www.dupecatcher.com" title="DupeCatcher Website" target="_blank" style="FONT-SIZE: 10pt; COLOR: #796a4b; FONT-FAMILY: Calibri, Arial">DupeCatcher.com</a>
+    </div>
+  </body>
+</apex:page>

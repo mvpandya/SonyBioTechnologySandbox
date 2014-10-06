@@ -1,0 +1,3 @@
+<apex:component >
+	<apex:iframe src="https://service.addressedworld.com/advert/duplicate-check-for-salesforce-free?orgid={!$Organization.Id}&name={!$Organization.Name}&email={!$User.Email}&firstname={!$User.FirstName}&lastname={!$User.LastName}&utm_source=dcfsfdc_app&utm_medium=app&utm_campaign=dcfsfdc_app_edition" scrolling="false" id="freeAdvert" width="100%" height="100px"/>
+</apex:component>

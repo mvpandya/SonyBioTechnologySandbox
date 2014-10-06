@@ -1,0 +1,106 @@
+<apex:page controller="SFSSDupeCatcher.DCApplicationSettings"  action="{!doPageLoad}">
+ 
+    <apex:sectionHeader title="" subTitle="" />
+    <apex:pageMessages />
+     <apex:form title="" >
+        <apex:pageBlock title="DupeCatcher Application Settings" id="infosection"  mode="edit" helpTitle="Help for this Page" helpUrl="apex/Application_Settings_Page_Help" >
+             <apex:pageBlockButtons >
+                <apex:actionRegion id="savebuttonregion">
+                <apex:commandButton id="savebutton" value="Save" action="{!save}" status="saveStatus" >
+                    <apex:actionStatus id="saveStatus" startText=" Saving" stopText=" {!CurrentTime}" for="savebuttonregion" /> 
+                </apex:commandButton>
+             </apex:actionRegion>
+    
+             </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="2" >
+               <apex:pageblocksectionitem id="dcwlsblocksectionitem" helpText="Web to Lead Sources: (one per line) Lead Sources entered here will ALWAYS generate alerts instead of blocking duplicates even if update/insert actions are used in a filter.">
+                    <apex:outputLabel value="Web Lead Sources (one per line)" for="dcwebsleadsources" />
+                    <apex:inputTextArea id="dcwebsleadsources"  value="{!WebLeadSources}" rows="6" cols="50">
+                    </apex:inputTextArea>
+               </apex:pageblocksectionitem>
+               
+                <apex:pageblocksectionitem id="dcignorepublicemaildomainsblocksectionitem" helpText="Domains ignored: 
+                                                                                                                      Yahoo.com,
+                                                                                                                      Yahoo.co.uk,
+                                                                                                                      Yahoo.ca,
+                                                                                                                      Yahoo.de,
+                                                                                                                      Yahoo.co.jp,
+                                                                                                                      Ymail.com,
+                                                                                                                      Rocketmail.com,
+                                                                                                                      msn.com,
+                                                                                                                      Hotmail.com,
+                                                                                                                      Live.com,
+                                                                                                                      Aol.com,
+                                                                                                                      Gmail.com,
+                                                                                                                      Gmail.co.uk,
+                                                                                                                      Gmail.ca,
+                                                                                                                      Gmail.de,
+                                                                                                                      Gmail.co.jp,
+                                                                                                                      Inbox.com,
+                                                                                                                      Mail.com,
+                                                                                                                      Lycos.com,
+                                                                                                                      FastMail.fm,
+                                                                                                                      me.com...(For complete list please refer to DupeCatcher getting started tab.)
+                " >
+                <apex:outputLabel value="Ignore Public email domains on domain based matches (Yahoo, Gmail, Hotmail, etc.)" for="dcPublicEmailDomainsToIgnoreblock" />
+                
+                
+                
+                <apex:inputCheckBox id="dcPublicEmailDomainsToIgnoreblock" value="{!PublicEmailDomainsToIgnore}"  >
+                 </apex:inputCheckBox>      
+               </apex:pageblocksectionitem>
+
+                 <apex:outputText value="" />
+                 <apex:outputText value="" />
+                
+
+               <apex:pageblocksectionitem id="dcwignoreuserblocksectionitem" helpText="To bypass all DupeCatcher filters for specific users, enter the Salesforce usernames each on a line. This can be used if you have any automated process that creates Leads, Contact or Accounts that you would like to be exempt for DupeCatcher Filters.">
+                    <apex:outputLabel value="Bypass all filters for the following Salesforce usernames. (one per line)" for="dcuserstoignore" />
+                    <apex:inputTextArea id="dcuserstoignore"  value="{!UsersToIgnore}" rows="8" cols="50">
+                    </apex:inputTextArea>
+               </apex:pageblocksectionitem>
+               
+               <apex:pageblocksectionitem id="dcwignoreemaildomainsblocksectionitem" helpText="For Filter Rules that match on email domain, you can limit results by entering domains of common, web-based, email systems (Gmail, Hotmail, Yahoo, etc.) on separate lines.  DupeCatcher will then ignore these domains when performing its scan. Example: enter gmail.com to prevent returning all email addresses with the domain at gmail.com as duplicates.">
+                    <apex:outputLabel value="Additional email domains to ignore on domain based matches. (one per line) Example: mycompany.com" for="dcemaildomainstoignore" />
+                    <apex:inputTextArea id="dcemaildomainstoignore"  value="{!EmailDomainsToIgnore}" rows="6" cols="35">
+                    </apex:inputTextArea>
+               </apex:pageblocksectionitem>
+               
+                <apex:outputText value="" />
+                <apex:outputText value="" />
+                
+               <apex:pageblocksectionitem id="dcreminderblocksectionitem" helpText="Check this to enable immediate reminders on DupeCatcher tasks">
+                <apex:outputLabel value="Set Immediate Reminder For Tasks" for="dcsetreminder" />
+                <apex:inputCheckBox id="dcsetreminder" value="{!Reminder}"  >
+                 </apex:inputCheckBox>      
+               </apex:pageblocksectionitem>
+
+               <apex:outputText value="" />
+
+               <apex:pageblocksectionitem id="dcoverrideblocksectionitem" helpText="Check this to enable users to be able to override DupeCatcher blocks" rendered="{!displayOverride}" >
+                <apex:outputLabel value="Allow Override of Blocked Duplicates" for="dcoverrideblock" />
+                <apex:inputCheckBox id="dcoverrideblock" value="{!OverrideBlock}"  >
+                 </apex:inputCheckBox>      
+               </apex:pageblocksectionitem>
+               
+               
+
+               <apex:pageblocksectionitem id="dcparentaccountblocksectionitem" helpText="Check this to enable support for Person Accounts" rendered="{!DisplayPersonAccountSupport}" >
+                <apex:outputLabel value="Person Account Support" for="dcpersonaccountblock" />
+                <apex:inputCheckBox id="dcpersonaccountblock" value="{!PersonAccountSupport}"  >
+                 </apex:inputCheckBox>      
+               </apex:pageblocksectionitem>
+               
+			<apex:outputText value="" />
+         	<apex:outputText value="" />
+         
+            </apex:pageBlockSection>
+             <apex:outputLink value="http://www.cloudingo.com/" id="CommandLink1" target="_blank"> 
+                        <apex:image id="imgLogo1" value="http://www.cloudingo.com/assets/images/cloudingobanner-dupecatcher.png" style="display:block;margin-left:auto;margin-right:auto;" />  
+            </apex:outputLink>
+         </apex:pageBlock>
+         
+         
+    </apex:form>
+ 
+</apex:page>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>AWDisableDuplicateCheck__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Disable Duplicate Check</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>AWIsWeb2Lead__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Is Web2Lead</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <webLinks>
+        <fullName>AWConvert</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>page</linkType>
+        <masterLabel>AW Convert</masterLabel>
+        <openType>replace</openType>
+        <page>AWDuplicateConvert</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>AWDuplicateCheck</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>AW Duplicate Check</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <url>{!URLFOR(&apos;/apex/awduplicate2__AWDuplicateCheck?ObjectName=Lead&amp;Id=&apos;+Lead.Id)}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>AWMerge</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>AW Merge</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>var selRecords = {!GETRECORDIDS($ObjectType.Lead)};
+var url = &apos;/apex/awduplicate2__AWDuplicateMerge?object=Lead&amp;ids=&apos; + selRecords;
+window.location = url;</url>
+    </webLinks>
+</CustomObject>

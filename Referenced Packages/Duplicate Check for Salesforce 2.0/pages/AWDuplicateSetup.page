@@ -1,0 +1,468 @@
+<apex:page controller="awduplicate2.AWControllerSetup" title="Duplicate Check Setup" action="{!AddUsage}" tabStyle="awDuplicateCheckSetup__tab" sidebar="false"> 
+<script>
+    
+        
+    function getElementsByClass( searchClass, domNode, tagName) { 
+        if (domNode == null) domNode = document;
+        if (tagName == null) tagName = '*';
+        var el = new Array();
+        var tags = domNode.getElementsByTagName(tagName);
+        var tcl = " "+searchClass+" ";
+        for(i=0,j=0; i<tags.length; i++) { 
+            var test = " " + tags[i].className + " ";
+            if (test.indexOf(tcl) != -1) 
+                el[j++] = tags[i];
+        } 
+        return el;
+    } 
+    
+    function getElementByClass( searchClass, domNode, tagName) { 
+        var el = getElementsByClass( searchClass, domNode, tagName);
+        return el[0];
+    }
+    
+
+    function getRowCountByClass(Class) {
+        var table = getElementsByClass(Class);
+        
+        if (table[0].rows.length-1 > 14) {
+            alert('Only 15 rows allowed.')
+        }
+        
+    }
+    
+    function awSelectAll(s) {
+        var select = getElementsByClass(s);
+        for(i=0; i < select[0].length; i++) {
+            select[0].options[i].selected = true;
+        }
+    }
+    
+    function aworderSelect(s,d) {
+        var select = getElementsByClass(s);
+        for(i=0; i < select[0].length; i++) {
+            var o = select[0].options[i];
+            if (o.selected) {
+            
+                if (d=='up' && i != 0) {
+                    select[0].options.add(o,i-1);
+                } else if (d=='down' && i < select[0].length) {
+                    o.selected=false;
+                    select[0].options.add(o,i+2);
+                    
+                } else if (d=='top') {
+                    select[0].options.add(o,0);
+                } else if (d=='bottom') {
+                    select[0].options.add(o,null);
+                }
+            
+            }   
+        }
+        
+        
+    }
+    
+    function disableSearchKeyField(radio) {
+        
+        
+        var fldA = getElementByClass('dup__KeyLocationA');
+        var fldB = getElementByClass('dup__KeyLocationB');
+        
+        if (radio.value == 'key') {
+            fldA.disabled = true;
+            fldB.disabled = true;
+        } else {
+            fldA.disabled = false;
+            fldB.disabled = false;
+        }
+        
+    }
+    
+    function disableSearchKeyFieldStart(value) {
+        
+        var fldA = getElementByClass('dup__KeyLocationA');
+        var fldB = getElementByClass('dup__KeyLocationB');
+        
+        if (value == 'key') {
+            fldA.disabled = true;
+            fldB.disabled = true;
+        } else {
+            fldA.disabled = false;
+            fldB.disabled = false;
+        }
+    
+    } 
+    
+    function awaddSelected(f,t,l) {
+        
+        var to = getElementsByClass(t);
+        var from = getElementsByClass(f);
+        
+        
+        for(i=0; i < from[0].length; i++) {
+            var o = from[0].options[i];
+            if (o.selected) {
+                if (l != 0) {
+                    if (to[0].length >= l) {
+                        alert('Only 5 fields allowed!')
+                        break;
+                    } else {
+                        to[0].options.add(o,null);
+                        i--;
+                    }
+                } else {
+                    to[0].options.add(o,null);
+                    i--;
+                }
+                
+            }
+        }
+    }   
+ 
+</script> 
+<apex:sectionHeader title="Duplicate Check Setup" help="http://kb.duplicatecheck.com/guide/configuration-guide/4432?utm_source=dup_for_sfdc&utm_medium=app&utm_campaign=dup_for_sfdc"/> 
+<apex:pageMessages />
+<c:AWAdvertFree rendered="{!IF(Edition==0,true,false)}"/>
+<apex:tabPanel switchType="client" value="{!TabInFocus}">
+    <apex:tab label="Object" name="Object">
+        <apex:form >
+            <apex:pageBlock title="Select Object">
+                <apex:pageBlockSection columns="1">
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Object" for="dup__configobject"/>
+                        <apex:selectList value="{!KeysObjectSelected}" multiselect="false" id="dup__configobject" size="1">
+                            <apex:selectOptions value="{!ObjectList}"/>
+                        </apex:selectList>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <div>&nbsp;</div>
+                        <apex:commandButton action="{!OpenConfigKeys}" value="Open"/>
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+                
+                
+                 
+            </apex:pageBlock>
+        </apex:form>
+        <apex:tabPanel switchType="client" id="configObject" value="{!subTabInFocus}">
+            <apex:tab label="Search Keys" name="Keys" rendered="{!IF(renderKeySetup,IF(advancedfeatures,true,false),false)}">
+                <apex:form >
+                    <apex:pageBlock title="Search Key Setup" rendered="{!renderKeySetup}">
+                        <apex:pageBlockSection title="Search Key Storage Location" collapsible="false" columns="1">
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="Where are search keys stored" for="dup__keystorage"/>
+                                <apex:selectRadio value="{!KeyStorage}" id="dup__keystorage" layout="pageDirection" onchange="javascript: disableSearchKeyField(this);">
+                                    <apex:selectOption itemValue="key" itemLabel="Search key object."/>
+                                    <apex:selectOption itemValue="object" itemLabel="{!ObjectLabels[KeysObject]} object."/>
+                                </apex:selectRadio>
+                            </apex:pageBlockSectionItem>
+                            
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="Search Key Field A" for="dup__KeyLocationA"/>
+                                <apex:selectList value="{!KeyLocationA}" multiselect="false" id="dup__KeyLocationA" size="1" styleClass="dup__KeyLocationA" >
+                                    <apex:selectOptions value="{!KeyFieldAvailable}"/>
+                                </apex:selectList>
+                            </apex:pageBlockSectionItem>
+                             
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="Search Key Field B" for="dup__KeyLocationB"/>
+                                <apex:selectList value="{!KeyLocationB}" multiselect="false" id="dup__KeyLocationB" size="1" styleClass="dup__KeyLocationB">
+                                    <apex:selectOptions value="{!KeyFieldAvailable}"/>
+                                </apex:selectList>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="" for="dup__SaveKeyStorage"/>
+                                <apex:commandButton value="Save" action="{!SaveKeyStorage}" id="dup__SaveKeyStorage"/>
+                            </apex:pageBlockSectionItem>
+                            
+                            <script>
+                                disableSearchKeyFieldStart('<apex:outputText value="{!KeyStorage}"/>');
+                            </script>
+                        </apex:pageBlockSection>
+                            
+                        <apex:pageBlockSection title="Search Key Jobs" collapsible="false" columns="1">
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="Start the (re)creation of search keys." for="dup__Create"/>
+                                <apex:commandButton action="{!CreateKeys}" value="(Re)Create" id="dup__Create"/>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="Start the deletion of search keys." for="dup__Delete"/>
+                                <apex:commandButton action="{!DeleteKeys}" value="Delete" id="dup__Delete"/>
+                            </apex:pageBlockSectionItem>
+                        </apex:pageBlockSection>   
+                        <apex:pageBlockSection columns="1">
+                            <apex:pageBlockTable value="{!KeyJobList}" var="kj" id="kjlist" >
+                                    <apex:column headerValue="Name"><apex:outputText value="{!kj.jName}"/></apex:column>
+                                    <apex:column headerValue="Object"><apex:outputText value="{!ObjectLabels[kj.jObject]}"/></apex:column>
+                                    <apex:column headerValue="Start"><apex:outputText value="{!kj.jStart}"/></apex:column>
+                                    <apex:column headerValue="Status"><apex:outputText value="{!kj.jStatus}"/></apex:column>
+                            </apex:pageBlockTable>
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>
+                </apex:form>
+            </apex:tab>
+            <apex:tab label="Field Config" Name="Field" rendered="{!renderFieldSetup}">
+                <apex:form >
+                    <apex:pageBlock title="Object Field Settings" rendered="{!renderFieldSetup}" id="ObjectFieldSettings">
+                        
+                            
+                            <apex:repeat value="{!SetFieldConfig}" var="set" id="SetFieldConfigList">
+                            	<apex:pageBlockSection title="Field Group {!set}" collapsible="false" columns="1">
+                            	                            	
+                            	<apex:pageBlockTable value="{!SetFieldConfig[set]}" var="field" id="FieldConfigList" styleClass="FieldConfigList">
+	                                <apex:column headerValue="Field">
+	                                    <apex:selectList multiselect="false" value="{!field.Field__c}" size="1">
+	                                        <apex:selectOptions value="{!FieldList}"/>
+	                                    </apex:selectList>
+	                                </apex:column>
+	                                <apex:column headerValue="Weighting"><apex:inputField value="{!field.SearchWeighting__c}" /></apex:column>   
+	                                <!-- 
+	                                <apex:column headerValue="Dedup Weighting"><apex:inputField value="{!field.DedupWeighting__c}"/></apex:column> 
+	                                -->
+	                                <apex:column headerValue="Search Key" rendered="{!advancedfeatures}"><apex:inputField value="{!field.SearchKey__c}" rendered="{!advancedfeatures}"/></apex:column>
+	                                <apex:column headerValue="Phonetic Selection" rendered="{!advancedfeatures}"><apex:inputField value="{!field.PhoneticSelect__c}" rendered="{!advancedfeatures}"/></apex:column>
+	                                <apex:column headerValue="Matching Method" rendered="{!advancedfeatures}">
+	                                    <apex:selectList multiselect="false" value="{!field.Matching__c}" size="1">
+	                                        <apex:selectOption itemValue="Standard" itemLabel="Standard"/>
+	                                        <apex:selectOption itemValue="FreeText" itemLabel="Free Text"/>
+	                                        <apex:selectOption itemValue="FreeTextFuzzy" itemLabel="Free Text Fuzzy"/>
+	                                        <apex:selectOption itemValue="FreeTextFrequent" itemLabel="Free Text Frequent"/>
+	                                        <apex:selectOption itemValue="FreeTextFuzzyFrequent" itemLabel="Free Text Fuzzy Frequent"/>
+	                                        <apex:selectOption itemValue="Advanced" itemLabel="Advanced 1"/>
+	                                        <apex:selectOption itemValue="Advanced2" itemLabel="Advanced 2"/>
+	                                        <apex:selectOption itemValue="AdvancedExtra" itemLabel="Advanced Combination"/>
+	                                        <apex:selectOption itemValue="Phone" itemLabel="Phone Numbers"/>
+	                                        <apex:selectOption itemValue="Email" itemLabel="Email Address"/>
+	                                        <apex:selectOption itemValue="Product" itemLabel="Product" rendered="{!prodfeatures}"/>
+	                                        <apex:selectOption itemValue="ProductEqual" itemLabel="Product Equal" rendered="{!prodfeatures}"/>
+	                                    </apex:selectList>
+	                                </apex:column>
+	                                <!-- 
+	                                <apex:column headerValue="Group 1"><apex:inputField value="{!field.Group1__c}"/></apex:column>
+	                                <apex:column headerValue="Group 2"><apex:inputField value="{!field.Group2__c}"/></apex:column>
+	                                <apex:column headerValue="Group 3"><apex:inputField value="{!field.Group3__c}"/></apex:column>
+	                                <apex:column headerValue="Group 4"><apex:inputField value="{!field.Group4__c}"/></apex:column>
+	                                <apex:column headerValue="Group 5"><apex:inputField value="{!field.Group5__c}"/></apex:column>
+	                                <apex:column headerValue="Group 6"><apex:inputField value="{!field.Group6__c}"/></apex:column>
+	                                 -->
+	                            </apex:pageBlockTable>
+	                        	<apex:commandLink action="{!AddFieldConfigItem}" reRender="FieldConfigList" value="Add Row" onClick="getRowCountByClass('FieldConfigList');">
+	                        		<apex:param name="AddFieldConfigSet" value="{!set}" assignTo="{!AddFieldConfigSet}"/>
+	                        	</apex:commandLink>    
+	                            
+	                            </apex:pageBlockSection>
+                            </apex:repeat>
+                            
+                            
+                            
+                        
+                        <apex:pageBlockButtons location="bottom">
+                            	<apex:commandLink action="{!AddSetFieldConfig}" reRender="ObjectFieldSettings,SetFieldConfigList,FieldConfigList" value="Add Group" rendered="{!AND(Edition >= 3,SetFieldConfigSize < 3)}"/>
+                            	<apex:commandButton action="{!SaveFields}" value="Save"/>
+                            </apex:pageBlockButtons>
+                   </apex:pageBlock>
+                   <apex:pageBlock title="Object Threshold Settings" rendered="{!renderFieldSetup}" id="ObjectThresholdSettings">
+	                   <apex:pageBlockTable value="{!FieldThreshold}" var="thresh" id="FieldThresholdList" styleClass="FieldThresholdList">
+	                   		<apex:column headerValue="Feature"><apex:outputText value="{!$Label[thresh.awduplicate2__Function__c]}"/></apex:column>
+	                   		<apex:column headerValue="Threshold"><apex:inputField value="{!thresh.awduplicate2__Threshold__c}"/></apex:column>
+	                   		<apex:column headerValue="Field Group 1" rendered="{!AND(Edition >= 3,SetFieldConfigSize >= 1)}"><apex:inputField value="{!thresh.awduplicate2__Set1__c}"/></apex:column>
+	                   		<apex:column headerValue="Field Group 2" rendered="{!AND(Edition >= 3,SetFieldConfigSize >= 2)}"><apex:inputField value="{!thresh.awduplicate2__Set2__c}"/></apex:column>
+	                   		<apex:column headerValue="Field Group 3" rendered="{!AND(Edition >= 3,SetFieldConfigSize >= 3)}"><apex:inputField value="{!thresh.awduplicate2__Set3__c}"/></apex:column>	
+	                   	
+	                   </apex:pageBlockTable>
+	                   <apex:pageBlockButtons location="bottom">
+	                   		<apex:commandButton action="{!saveFieldThreshold}" value="Save"/>
+	                   </apex:pageBlockButtons>
+	                   
+                   </apex:pageBlock>
+                   <apex:pageBlock title="List View Fields" rendered="{!renderFieldSetup}" id="ListViewFields">     
+                        
+                        <div class="phSubsection">
+                            <apex:actionFunction name="ltrField" action="{!ltrField}" rerender="dup__avFields,dup__selFields"/>
+                            <apex:actionFunction name="rtlField" action="{!rtlField}" rerender="dup__avFields,dup__selFields"/>
+                            <div id="colselector" class="duelingListBox">
+                                <table class="layout">
+                                    <tbody>
+                                        <tr>
+                                            <td class="selectCell">
+                                                <div class="selectTitle">
+                                                    <label for="dup_avFields">Available Fields</label>
+                                                </div>
+                                                <apex:selectList multiselect="true" value="{!ListAvailableField}" size="20" id="dup__avFields" styleClass="dup__avFields">
+                                                    <apex:selectOptions value="{!ListViewAvailable}"/>
+                                                </apex:selectList>  
+                                            </td>
+                                            <td class="buttonCell">
+                                                <div class="text">Add</div>
+                                                <div class="text">
+                                                    <a id="clickAv" href="javascript:void(0);" onclick="javascript: ltrField();"><img class="rightArrowIcon" title="Add" alt="Add" src="/s.gif"/></a>
+                                                </div>
+                                                <div class="text">
+                                                    <a id="clickSel" href="javascript:void(0);" onclick="javascript: rtlField();"><img class="leftArrowIcon" title="Remove" alt="Remove" src="/s.gif"/></a>
+                                                </div>
+                                                <div class="text">Remove</div>
+                                            </td>
+                                            <td class="selectCell">
+                                                <div class="selectTitle">
+                                                    <label for="dup__selFields">Selected Fields</label>
+                                                </div>
+                                                <apex:selectList multiselect="true" value="{!ListSelectedField}" size="20" id="dup__selFields" styleClass="dup__selFields">
+                                                    <apex:selectOptions value="{!ListViewSelected}"/> 
+                                                </apex:selectList>
+                                            </td>
+                                            <td class="buttonCell">
+                                                <div class="text">Top</div>
+                                                <div class="text">
+                                                    <a id="clickTop" href="javascript:void(0);" onclick="aworderSelect('dup__selFields','top');"><img class="doubleArrowUp" title="Top" alt="Top" src="/s.gif"/></a>
+                                                </div>
+                                                <div class="text">Up</div>
+                                                <div class="text">
+                                                    <a id="clickUp" href="javascript:void(0);" onclick="aworderSelect('dup__selFields','up');"><img class="upArrowIcon" title="Up" alt="Up" src="/s.gif"/></a>
+                                                </div>
+                                                <div class="text">
+                                                    <a id="clickDown" href="javascript:void(0);" onclick="aworderSelect('dup__selFields','down');"><img class="downArrowIcon" title="Down" alt="Down" src="/s.gif"/></a>
+                                                </div>
+                                                <div class="text">Down</div>
+                                                <div class="text">
+                                                    <a id="clickBottom" href="javascript:void(0);" onclick="aworderSelect('dup__selFields','bottom');"><img class="doubleArrowDwn" title="Bottom" alt="Bottom" src="/s.gif"/></a>
+                                                </div>
+                                                <div class="text">Bottom</div>
+                                            </td>                               
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                        </div>
+                        <apex:pageBlockButtons location="bottom">
+                        	<apex:commandButton action="{!SaveListView}" value="Save" onclick="awSelectAll('dup__selFields');"/>
+                        </apex:pageBlockButtons>
+                    </apex:pageBlock>
+                </apex:form>
+            
+            </apex:tab>
+            <apex:tab label="Cross Object" Name="CrossObject" rendered="{!IF(renderCrossObjectSetup,IF(cofeatures,true,false),false)}">
+                <apex:form > 
+                
+                    <apex:pageBlock title="Cross Object Field Mapping" rendered="{!IF(renderCrossObjectSetup,IF(cofeatures,true,false),false)}">
+                        <apex:pageBlockButtons location="top">
+                            <apex:commandButton action="{!SaveCrossObject}" value="Save"/> 
+                        </apex:pageBlockButtons>
+                        <apex:repeat value="{!CrossObjectSetup}" var="CO" id="crList">
+                            <apex:pageBlockSection title="{!ObjectLabels[KeysObjectSelected]} >>> {!ObjectLabels[CO]}" collapsible="false" columns="1"></apex:pageBlockSection>
+                            
+                            <apex:pageBlockTable value="{!CrossObjectSetup[CO]}" var="CF" id="CrossFieldList" styleClass="CrossFieldList" >
+                                <apex:column headerValue="From {!ObjectLabels[KeysObjectSelected]}" width="50%">
+                                    <apex:selectList value="{!CF.awduplicate2__fromField__c}" multiselect="false" id="from__Field" size="1">
+                                        <apex:selectOptions value="{!CrossObjectField[KeysObjectSelected]}"/>
+                                    </apex:selectList> 
+                                </apex:column>
+                                <apex:column headerValue="To {!ObjectLabels[CO]}" width="50%">
+                                    <apex:selectList value="{!CF.awduplicate2__toField__c}" multiselect="false" id="to__Field" size="1">
+                                        <apex:selectOptions value="{!CrossObjectField[CO]}"/>
+                                    </apex:selectList> 
+                                </apex:column>
+                            
+                            </apex:pageBlockTable>
+                            <apex:commandLink action="{!AddCrossObjectField}" reRender="CrossFieldList" value="Add Row">
+                                <apex:param name="COFieldAdd" value="{!CO}" assignTo="{!COFieldAdd}"/>
+                            </apex:commandLink>
+                            
+                        
+                        </apex:repeat>
+                        <br/><br/>
+                        <hr/>
+                        <apex:selectList value="{!COObjectAdd}" multiselect="false" id="sel__Crossobject" size="1">
+                            <apex:selectOptions value="{!ObjectList}"/>
+                        </apex:selectList>
+                        <apex:commandButton action="{!AddCrossObject}" value="Add Cross Object"/>
+                    
+                    
+                    </apex:pageBlock>
+                
+                
+                
+                </apex:form>
+                
+            </apex:tab>
+        </apex:tabPanel>
+    </apex:tab>
+    
+    
+    
+    
+    
+    <apex:tab label="Settings" name="Settings">
+        <apex:form >
+            <apex:pageBlock title="Settings">
+                <apex:pageBlockButtons location="bottom"> 
+                    <apex:commandButton action="{!SaveSettings}" value="Save Settings" /> 
+                </apex:pageBlockButtons> 
+                <apex:pageBlockTable value="{!SettingList}" var="setting">
+                    <apex:column headerValue="Description"><apex:outputText value="{!setting.awduplicate2__Label__c}"/></apex:column>
+                    <apex:column headerValue="Name"><apex:outputText value="{!setting.Name}"/></apex:column>
+                    <apex:column headerValue="Value">
+                        <apex:inputField value="{!setting.awduplicate2__Checkbox__c}" rendered="{!IF(setting.awduplicate2__Type__c=='checkbox',true,false)}"/>
+                        <apex:inputField value="{!setting.awduplicate2__Text__c}" rendered="{!IF(setting.awduplicate2__Type__c=='text',IF(setting.Name='awLicense',false,true),false)}"/>
+                        <apex:outputField value="{!setting.awduplicate2__Text__c}" rendered="{!IF(setting.awduplicate2__Type__c=='text',IF(setting.Name='awLicense',true,false),false)}"/>
+                        <apex:inputField value="{!setting.awduplicate2__DateTime__c}" rendered="{!IF(setting.awduplicate2__Type__c=='datetime',true,false)}"/>
+                        <apex:inputField value="{!setting.awduplicate2__Number__c}" rendered="{!IF(setting.awduplicate2__Type__c=='number',true,false)}"/>
+                    </apex:column>
+                    
+                </apex:pageBlockTable> 
+            </apex:pageBlock>
+        </apex:form>
+    </apex:tab>
+    <apex:tab label="License" Name="License">
+        <apex:form >
+            <apex:pageBlock title="License Information">
+                
+                <apex:pageBlockSection columns="1">
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Salesforce Org Id" for="dup__orgid"/>
+                        <apex:outputText value="{!OrgId}" id="dup__orgid"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="License Code" for="dup__lic"/>
+                        <apex:outputText value="{!LicenseCode}" dir="LTR" id="dup__lic"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="License Edition" for="dup__liced"/>
+                        <apex:outputText value="{!LicenseEdition}" dir="LTR" id="dup__liced"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="License Record Limit" for="dup__liclim"/>
+                        <apex:outputText value="{!LicenseLimit}" dir="LTR" id="dup__liclim"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="License End" for="dup__licend"/>
+                        <apex:outputText value="{!LicenseEnd}" dir="LTR" id="dup__licend"/>
+                    </apex:pageBlockSectionItem>    
+                </apex:pageBlockSection>
+                
+                
+            </apex:pageBlock>
+            <apex:pageBlock title="Update License">
+                <apex:pageBlockSection >
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="License Code" for="dup__lic"/>
+                        <apex:inputText value="{!newLicenseCode}" size="40" maxlength="40" dir="LTR" id="dup__lic"/>
+                    </apex:pageBlockSectionItem>    
+                </apex:pageBlockSection>
+                <apex:pageBlockButtons location="bottom" >
+                    <apex:commandButton value="Save License Information" action="{!SaveLicense}"/>
+                </apex:pageBlockButtons>
+            </apex:pageBlock>
+            
+        </apex:form>
+    </apex:tab>
+</apex:tabPanel>
+<apex:outputText value="{!$Label.batch}" rendered="false" />
+<apex:outputText value="{!$Label.check}" rendered="false" />
+<apex:outputText value="{!$Label.convert}" rendered="false" />
+<apex:outputText value="{!$Label.delta}" rendered="false" />
+<apex:outputText value="{!$Label.prevention}" rendered="false" />
+<apex:outputText value="{!$Label.search}" rendered="false" />
+<apex:outputText value="{!$Label.web2lead}" rendered="false" />
+
+</apex:page>

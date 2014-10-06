@@ -1,0 +1,426 @@
+<apex:page controller="awduplicate2.AWControllerBatchResults" title="Duplicate Check Batch Results" readOnly="true" sidebar="false" tabStyle="awDuplicateCheckBatch__tab" action="{!AddUsage}">
+<apex:includeScript value="{!URLFOR($Resource.awduplicate2__jquery, 'js/jquery-1.7.2.min.js')}"/>
+    
+    <style>
+    table.awGroup {
+        background-color: #FFFFFF;
+    }
+    th.awGroupTitle {
+        
+        border-bottom-style: solid;
+        border-bottom-width: 2px;
+        border-bottom-color: #35B4E9;
+        height: 40px;
+        padding-left: 20px;
+        font-size: 14px;
+        color: #000000;
+    }
+    th.awGroup {
+        
+        
+        background-color: #35B4E9;
+        height: 40px;
+        font-size: 12px;
+        font-weight: normal;
+        color: #000000;
+    }
+    td.awGroupSum {
+        font-size: 12px;
+        color: #000000;
+        vertical-align: top;
+    }
+    td.awGroupSum table tr td {
+        padding: 3px 10px;
+    }
+    
+    
+    
+    td.awGroup {
+        border-left-style: solid;
+        border-left-width: 2px;
+        border-left-color: #35B4E9;
+        border-bottom-style: solid;
+        border-bottom-width: 2px;
+        border-bottom-color: #35B4E9;
+        border-right-style: solid;
+        border-right-width: 2px;
+        border-right-color: #35B4E9;
+        font-size: 12px;
+        color: #000000;
+        
+        vertical-align: top;
+        align: right;
+    
+    }
+    td.awGroup table tr th {
+        background-color: #35B4E9;
+        padding: 0px;
+        margin: 0px;
+    }
+
+
+
+    li.GroupItem {
+        margin-left: 0px;
+        margin-bottom: 20px;
+        list-style: square;
+        font-size: 20px;
+        color: #35B4E9;
+    }
+    ul.GroupList {
+        margin-left: 0px;
+        
+    }
+    
+    div.awTabButton {
+        height: 33px;
+        float: right;
+        padding-top: 7px;
+        padding-right: 10px;
+    }
+    
+    div.awTab {
+        background-color: #FFFFFF;
+        height: 24px;
+        width: 100px;
+        margin-bottom: 9px;
+        margin-left: 10px;
+        text-align: center;
+        
+        padding-top: 5px;
+        border-width: 0 1px 1px 1px;
+        border-style: solid;
+        border-color: #000000;
+        cursor:hand; cursor:pointer;
+    }
+    
+    div.awTab:hover {
+        background-color: #E3F3FF;
+        
+    }
+    
+    div.awTabSelected {
+        background-color: #C0C0C0;
+        cursor: default;
+        
+        
+    }
+    
+    div.awSpacer {
+        background-color: #35B4E9;
+        height: 2px;
+    }
+    
+    td.awDataCell, tr.awDataCell {
+        height: 19px;
+    }
+    
+</style>
+<script type="text/javascript">        
+        
+        var j$ = jQuery.noConflict();
+        
+        function toggleGroupDup(GroupId) {
+        	
+        	j$('#G'+GroupId).toggle();
+        	j$('#P'+GroupId).toggle();
+        	j$('#GB'+GroupId).toggle();
+        	j$('#PB'+GroupId).toggle();
+        
+        }
+        
+        function switchGroupDup(GroupId) {
+        	console.log("hallo");
+            //var inputElem = document.getElementsByName(GroupId);
+            var inputElem = j$('div[name="'+GroupId+'"]');
+            console.log(inputElem);
+            for(var i=0; i<inputElem.length; i++)
+            {
+                console.log(inputElem[i].style.display);
+                if (inputElem[i].style.display == "none") {
+                    inputElem[i].style.display = "block";
+                } else if(inputElem[i].style.display.length == 0) {
+                    inputElem[i].style.display = "block";
+                } else {
+                    inputElem[i].style.display = "none";
+                }
+             }   
+                 
+         }
+ </script>
+    
+    <apex:sectionHeader title="Duplicate Check Batch Results" help="http://kb.duplicatecheck.com/guide/batch-deduplication-results/4430?utm_source=dup_for_sfdc&utm_medium=app&utm_campaign=dup_for_sfdc"/> 
+    <apex:pageMessages />
+    <apex:pageBlock title="{!JobDetails.Name}">
+        <apex:outputPanel id="pbsiState"/>
+        <apex:pageBlockButtons >
+            <apex:form >
+                Score >= &nbsp;
+                <apex:selectList value="{!FilterScore}" multiselect="false" size="1">
+                    <apex:selectOptions value="{!ScoreFilter}"/>
+                    <apex:actionSupport event="onchange"  action="{!updateFilterScore}" rerender="pbsiState"/>
+                </apex:selectList>
+                &nbsp;||&nbsp;
+                <apex:commandLink action="{!gotoPrevGroups}" value="Previous <<" rendered="{!hasPrev}"/>
+                &nbsp;<strong>Group {!StartGroup} From {!HighestGroupNr}</strong>&nbsp;
+                <apex:commandLink action="{!gotoNextGroups}" value=">> Next" rendered="{!hasNext}"/>
+            </apex:form>
+
+        </apex:pageBlockButtons>
+        <ul class="GroupList">
+            <apex:repeat value="{!GroupList}" var="GL" id="GroupRepeat">
+                <li class="GroupItem">
+                    <table cellpadding="0" cellspacing="0" class="awGroup" width="100%">
+                        <thead>
+                            <tr>
+                                <th class="awGroupTitle" width="200">Group {!GL.GroupNumber}</th>
+                                <th class="awGroup" width="*">
+                                   
+                                    <div align="left" class="awGroupView" style="display:block;" name="GrView{!GL.GroupNumber}" id="PB{!GL.GroupNumber}">
+                                        <div class="awTab awTabSelected" style="float: left;">Group View</div>
+                                        <div class="awTab" style="float: left;" onClick="toggleGroupDup('{!JSENCODE(GL.GroupNumber)}');">Pair View</div>
+                                    </div>
+                                    <div align="left" class="awDuplicateView" style="display:none;" name="GrView{!GL.GroupNumber}" id="GB{!GL.GroupNumber}">
+                                        <div class="awTab" style="float: left;" onclick="toggleGroupDup('{!JSENCODE(GL.GroupNumber)}');">Group View</div>
+                                        <div class="awTab awTabSelected" style="float: left;">Pair View</div>
+                                    </div>
+                                    <div align="right" class="awTabButton" style="float: right; display:block;" name="GrView{!GL.GroupNumber}">
+                                        <apex:form >
+                                            <apex:commandButton value="Discard Group" action="{!doDiscardGroup}" rerender="hiddenBlock">
+                                                <apex:param name="SelectedMergeGroup" value="{!GL.GroupNumber}" assignTo="{!SelectedGroup}"/>
+                                            </apex:commandButton>
+                                            <apex:commandButton value="Merge Group" action="{!doMergeGroup}" rerender="hiddenBlock" rendered="{!NOT(isCrossObject)}">
+                                                <apex:param name="SelectedMergeGroup" value="{!GL.GroupNumber}" assignTo="{!SelectedGroup}"/>
+                                            </apex:commandButton>
+                                        </apex:form>
+                                    </div>
+                                
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody> 
+                            <tr>
+                                <td class="awGroupSum">
+                                    <div class="awSpacer"></div>
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                        <tbody>
+                                            <tr>
+                                                <td rowspan="4" width="20">&nbsp;</td>
+                                                <td width="140">Max Score</td>
+                                                <td width="40">{!GL.MaxScore}%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Min Score</td>
+                                                <td>{!GL.MinScore}%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Duplicate Pairs</td>
+                                                <td>{!GL.DuplicatePairs}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td> 
+                                <td class="awGroup">
+                                    <div  style="display:block;" name="GrView{!GL.GroupNumber}" id="G{!GL.GroupNumber}">
+                                        <apex:repeat value="{!MapGroupObjectIds[GL.GroupNumber]}" var="GRO" id="GRO_Repeat">
+                                            <div class="awSpacer"></div>
+                                            <apex:pageBlockTable value="{!MapGroupObjectIds[GL.GroupNumber][GRO]}" id="GROI_Repeat" var="GROI">
+                                                <apex:column width="20px" headerValue="View">
+                                                	<a href="/{!MapObjects[GROI].Id}" target="_BLANK"><div style="height: 20px; width: 20px; background-image:url('/img/func_icons/util/lookup20.gif'); background-position:0px 0px;"></div></a>
+                                                </apex:column>
+                                                <apex:repeat value="{!ViewListFields[GRO]}" var="RR" id="rowRepeat">
+                                                    <apex:column width="*" headerValue="{!ObjectLabels[GRO]} : {!FieldLabels[GRO][RR]}"><apex:outputField value="{!MapObjects[GROI][RR]}"/></apex:column>
+                                                </apex:repeat>  
+                                            </apex:pageBlockTable>
+                                        </apex:repeat>
+                                    </div>
+                                    <div style="display:none;" name="GrView{!GL.GroupNumber}" id="P{!GL.GroupNumber}">
+                                        
+                                        <apex:repeat value="{!MapGroupDuplicates[GL.GroupNumber]}" var="GRD" id="GRD_Repeat">
+                                            <div class="awSpacer"></div>
+                                            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                                                <tr>
+                                                    <td width="50" align="center" style="background: #D4DADC;"><apex:outputField value="{!GRD.awduplicate2__Score__c}"/>%</td>
+                                                    <td width="*">
+                                                        
+                                                        <!-- STANDARD MERGE -->
+                                                        <apex:outputPanel layout="block" rendered="{!IF(GRD.awduplicate2__ObjectRecordTypeA__c=GRD.awduplicate2__ObjectRecordTypeB__c,true,false)}">
+                                                            <table cellspacing="0" cellpadding="0" border="0" class="list ">
+                                                                <thead class="rich-table-thead">
+                                                                    <tr class="headerRow ">
+                                                                        <th colspan="1" scope="col" class="headerRow  ">Action</th>
+                                                                        <th colspan="1" scope="col" class="headerRow  ">View</th>
+                                                                        <apex:repeat value="{!ViewListFields[GRD.awduplicate2__ObjectRecordTypeA__c]}" var="sh1RR" id="sh1rowRepeat">
+                                                                            <th colspan="1" scope="col" class="headerRow  ">{!ObjectLabels[GRD.awduplicate2__ObjectRecordTypeA__c]} : {!FieldLabels[GRD.awduplicate2__ObjectRecordTypeA__c][sh1RR]}</th>
+                                                                        </apex:repeat>
+                                                                    </tr>
+                                                                    
+                                                                    
+                                                                </thead>
+                                                                <tbody>
+                                                                    <apex:form >
+                                                                        <tr onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);} " class="dataRow even  first  last">
+                                                                            <td width="40px" colspan="1" class="dataCell  ">
+                                                                                <apex:commandLink action="{!doDiscardPair}" value="Discard">
+                                                                                    <apex:param name="SelectedDiscardPair" value="{!GRD.Id}" assignTo="{!SelectedPair}"/>
+                                                                                </apex:commandLink>
+                                                                            </td>
+                                                                            <td width="20px" colspan="1" class="dataCell  ">
+                                                                                <a href="/{!GRD.awduplicate2__RecordA__c}" target="_BLANK"><div style="height: 20px; width: 20px; background-image:url('/img/func_icons/util/lookup20.gif'); background-position:0px 0px;"></div></a>
+                                                                            </td>
+                                                                            <apex:repeat value="{!ViewListFields[GRD.awduplicate2__ObjectRecordTypeA__c]}" var="sd1RR" id="sd1rowRepeat">
+                                                                                <td width="*" colspan="1" class="dataCell  "><apex:outputField value="{!MapObjects[GRD.awduplicate2__RecordA__c][sd1RR]}"/></td>
+                                                                            </apex:repeat>
+                                                                        </tr>
+                                                                        <tr onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);} " class="dataRow even  first  last">
+                                                                            <td width="40px" colspan="1" class="dataCell  "> 
+                                                                                <apex:commandLink action="{!doMergePair}" value="Merge">
+                                                                                    <apex:param name="SelectedMergePair" value="{!GRD.awduplicate2__RecordB__c}-{!GRD.awduplicate2__RecordA__c}" assignTo="{!SelectedPair}"/>
+                                                                                    <apex:param name="SelectedMergeGroup" value="{!GL.GroupNumber}" assignTo="{!SelectedGroup}"/>
+                                                                                </apex:commandLink>
+                                                                            </td>
+                                                                            <td width="20px" colspan="1" class="dataCell  ">
+                                                                                <a href="/{!GRD.awduplicate2__RecordB__c}" target="_BLANK"><div style="height: 20px; width: 20px; background-image:url('/img/func_icons/util/lookup20.gif'); background-position:0px 0px;"></div></a>
+                                                                            </td>
+                                                                            <apex:repeat value="{!ViewListFields[GRD.awduplicate2__ObjectRecordTypeB__c]}" var="sd2RR" id="sd2rowRepeat">
+                                                                                <td width="*" colspan="1" class="dataCell  "><apex:outputField value="{!MapObjects[GRD.awduplicate2__RecordB__c][sd2RR]}"/></td>
+                                                                            </apex:repeat>
+                                                                        </tr>
+                                                                    </apex:form>
+                                                                </tbody>
+                                                            </table>
+                                                        </apex:outputPanel>
+                                                        
+                                                        <!-- CONVERT -->
+                                                        <apex:outputPanel layout="block" rendered="{!isConvert}">
+                                                           <apex:form >
+                                                           <table cellspacing="0" cellpadding="0" border="0" class="list ">
+                                                                <thead class="rich-table-thead">
+                                                                    <tr class="headerRow ">
+                                                                    	<th colspan="1" scope="col" class="headerRow  ">Action</th>
+                                                                    	<th colspan="1" scope="col" class="headerRow  ">View</th>
+                                                                        <apex:repeat value="{!ViewListFields[GRD.awduplicate2__ObjectRecordTypeA__c]}" var="ch1RR" id="ch1rowRepeat">
+                                                                            <th colspan="1" scope="col" class="headerRow  ">{!ObjectLabels[GRD.awduplicate2__ObjectRecordTypeA__c]} : {!FieldLabels[GRD.awduplicate2__ObjectRecordTypeA__c][ch1RR]}</th>
+                                                                        </apex:repeat>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);} " class="dataRow even  first  last">
+                                                                        <td width="40px" colspan="1" class="dataCell  ">
+                                                                            <apex:commandLink action="{!doDiscardPair}" value="Discard">
+                                                                                <apex:param name="SelectedDiscardPair" value="{!GRD.Id}" assignTo="{!SelectedPair}"/>
+                                                                            </apex:commandLink>
+                                                                        </td>
+                                                                        <td width="20px" colspan="1" class="dataCell  ">
+                                                                        	<a href="/{!GRD.awduplicate2__RecordA__c}" target="_BLANK"><div style="height: 20px; width: 20px; background-image:url('/img/func_icons/util/lookup20.gif'); background-position:0px 0px;"></div></a>
+                                                                        </td>
+                                                                        <apex:repeat value="{!ViewListFields[GRD.awduplicate2__ObjectRecordTypeA__c]}" var="cd1RR" id="cd1rowRepeat">
+                                                                            <td width="*" colspan="1" class="dataCell  "><apex:outputField value="{!MapObjects[GRD.awduplicate2__RecordA__c][cd1RR]}"/></td>
+                                                                        </apex:repeat>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                            <table cellspacing="0" cellpadding="0" border="0" class="list ">
+                                                                <thead class="rich-table-thead">
+                                                                    <tr class="headerRow ">
+                                                                    	<th colspan="1" scope="col" class="headerRow  ">Action</th>
+                                                                    	<th colspan="1" scope="col" class="headerRow  ">View</th>
+                                                                        <apex:repeat value="{!ViewListFields[GRD.awduplicate2__ObjectRecordTypeB__c]}" var="ch2RR" id="ch2rowRepeat">
+                                                                            <th colspan="1" scope="col" class="headerRow  ">{!ObjectLabels[GRD.awduplicate2__ObjectRecordTypeB__c]} : {!FieldLabels[GRD.awduplicate2__ObjectRecordTypeB__c][ch2RR]}</th>
+                                                                        </apex:repeat>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);} " class="dataRow even  first  last">
+                                                                        <td width="40px" colspan="1" class="dataCell  "> 
+                                                                            <apex:commandLink action="{!doConvertPair}" value="Convert">
+                                                                                <apex:param name="SelectedMergePair" value="{!GRD.awduplicate2__RecordB__c}-{!GRD.awduplicate2__RecordA__c}" assignTo="{!SelectedPair}"/>
+                                                                                <apex:param name="SelectedMergeGroup" value="{!GL.GroupNumber}" assignTo="{!SelectedGroup}"/>
+                                                                            </apex:commandLink>
+                                                                        </td>
+                                                                        <td width="20px" colspan="1" class="dataCell  ">
+                                                                        	<a href="/{!GRD.awduplicate2__RecordB__c}" target="_BLANK"><div style="height: 20px; width: 20px; background-image:url('/img/func_icons/util/lookup20.gif'); background-position:0px 0px;"></div></a>
+                                                                        </td>
+                                                                        <apex:repeat value="{!ViewListFields[GRD.awduplicate2__ObjectRecordTypeB__c]}" var="cd2RR" id="cd2rowRepeat">
+                                                                            <td width="*" colspan="1" class="dataCell  "><apex:outputField value="{!MapObjects[GRD.awduplicate2__RecordB__c][cd2RR]}"/></td>
+                                                                        </apex:repeat>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                            </apex:form>
+                                                        </apex:outputPanel>
+                                                        
+                                                        <!-- JUST DISPLAY -->
+                                                        <apex:outputPanel layout="block" rendered="{!IF(GRD.awduplicate2__ObjectRecordTypeA__c!=GRD.awduplicate2__ObjectRecordTypeB__c,NOT(isConvert),false)}">
+                                                        
+                                                            <table cellspacing="0" cellpadding="0" border="0" class="list ">
+                                                                <thead class="rich-table-thead">
+                                                                    <tr class="headerRow ">
+                                                                    	<th colspan="1" scope="col" class="headerRow  ">View</th>
+                                                                        <apex:repeat value="{!ViewListFields[GRD.awduplicate2__ObjectRecordTypeA__c]}" var="h1RR" id="h1rowRepeat">
+                                                                            <th colspan="1" scope="col" class="headerRow  ">{!ObjectLabels[GRD.awduplicate2__ObjectRecordTypeA__c]} : {!FieldLabels[GRD.awduplicate2__ObjectRecordTypeA__c][h1RR]}</th>
+                                                                        </apex:repeat>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);} " class="dataRow even  first  last">
+                                                                        <td width="20px" colspan="1" class="dataCell  ">
+                                                                        	<a href="/{!GRD.awduplicate2__RecordA__c}" target="_BLANK"><div style="height: 20px; width: 20px; background-image:url('/img/func_icons/util/lookup20.gif'); background-position:0px 0px;"></div></a>
+                                                                        </td>
+                                                                        <apex:repeat value="{!ViewListFields[GRD.awduplicate2__ObjectRecordTypeA__c]}" var="d1RR" id="d1rowRepeat">
+                                                                            <td width="*" colspan="1" class="dataCell  "><apex:outputField value="{!MapObjects[GRD.awduplicate2__RecordA__c][d1RR]}"/></td>
+                                                                        </apex:repeat>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                            <table cellspacing="0" cellpadding="0" border="0" class="list ">
+                                                                <thead class="rich-table-thead">
+                                                                    <tr class="headerRow ">
+                                                                    	<th colspan="1" scope="col" class="headerRow  ">View</th>
+                                                                        <apex:repeat value="{!ViewListFields[GRD.awduplicate2__ObjectRecordTypeB__c]}" var="h2RR" id="h2rowRepeat">
+                                                                            <th colspan="1" scope="col" class="headerRow  ">{!ObjectLabels[GRD.awduplicate2__ObjectRecordTypeB__c]} : {!FieldLabels[GRD.awduplicate2__ObjectRecordTypeB__c][h2RR]}</th>
+                                                                        </apex:repeat>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);} " class="dataRow even  first  last">
+                                                                        <td width="20px" colspan="1" class="dataCell  ">
+                                                                        	<a href="/{!GRD.awduplicate2__RecordB__c}" target="_BLANK"><div style="height: 20px; width: 20px; background-image:url('/img/func_icons/util/lookup20.gif'); background-position:0px 0px;"></div></a>
+                                                                        </td>
+                                                                        <apex:repeat value="{!ViewListFields[GRD.awduplicate2__ObjectRecordTypeB__c]}" var="d2RR" id="d2rowRepeat">
+                                                                            <td width="*" colspan="1" class="dataCell  "><apex:outputField value="{!MapObjects[GRD.awduplicate2__RecordB__c][d2RR]}"/></td>
+                                                                        </apex:repeat>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </apex:outputPanel>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        
+                                        </apex:repeat>
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+
+                                                                        
+                                    </div>
+                                </td>
+                                
+                            </tr>
+                        </tbody>
+                         
+                    </table>
+                </li>
+            
+            </apex:repeat>
+            
+        
+        </ul>
+    
+    
+    </apex:pageBlock>
+</apex:page>

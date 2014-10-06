@@ -1,0 +1,228 @@
+<apex:page controller="awduplicate2.AWControllerMerge" title="Duplicate Check Batch Results" sidebar="false" tabStyle="awDuplicateCheckSearch__tab" action="{!AddUsage}">
+    <apex:includeScript value="{!URLFOR($Resource.awduplicate2__jquery, 'js/jquery-1.7.2.min.js')}"/>
+    <apex:sectionHeader title="Duplicate Check Merge" help="http://kb.duplicatecheck.com/guide/merge/4424?utm_source=dup_for_sfdc&utm_medium=app&utm_campaign=dup_for_sfdc"/> 
+    <apex:pageMessages />
+    <c:AWAdvertFree rendered="{!IF(LicEdition==0,true,false)}"/>
+    <apex:outputpanel layout="block" rendered="{!isCustomMerge}" styleClass="message infoM4">
+        <table border="0" cellpadding="0" cellspacing="0" class="messageTable" style="padding:0px;margin:0px;">
+            <tbody>
+                <tr valign="top">
+                    <td>
+                        <img alt="info" class="msgIcon" src="/s.gif" title="info"/>
+                    </td>
+                    <td class="messageCell">
+                        <div class="messageText">
+                            <span id="j_id0:j_id3:j_id4:j_id7">
+                                    <h4>Warning</h4>
+                            </span>
+                            When merging custom objects, the related objects which can be reparented will be reparented to the new master record. 
+                            <apex:outputText value="All other related objects will be deleted." rendered="{!NOT(isCustomMergeDuplicate)}"/>
+                            <apex:outputText value="Other object will get recreated and attached to the new master record." rendered="{!isCustomMergeDuplicate}"/>
+                                    
+                            <br/>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </apex:outputpanel>
+    <apex:form >
+        <apex:pageBlock title="Merge" rendered="{!IF(isDisplay['general'],true,false)}">
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Merge" action="{!doMerge}" onclick="SetSelectedForMerge();" rendered="{!NOT(isSetForMerge)}"/>
+                <apex:commandButton value="Set for Merge" action="{!setMerge}" onclick="SetSelectedForMerge();" rendered="{!isSetForMerge}"/>
+            </apex:pageBlockButtons>
+            <script type="text/javascript"> 
+                    
+                    var awq = jQuery.noConflict();
+                    
+                    function ChangeSelection(Fld,Id) {
+                        
+                        var OIds = document.getElementById("idlist").value.split(",");
+                        
+                        for (var j = 0;j < OIds.length; j++) {
+                            var tId = document.getElementById("td"+Fld+OIds[j]).style.backgroundColor = "#FFFFFF";
+                        }
+                        document.getElementById("td"+Fld+Id).style.backgroundColor = "#ECF3FF";
+                    }
+                     
+                    function SetSelection(Id,Fld) {
+                        
+                            document.getElementById(Fld+Id).checked=true;
+                            document.getElementById("td"+Fld+Id).style.backgroundColor = "#ECF3FF";
+                        
+                    }
+                    
+                    function SetSelectedForMerge() {
+                        
+                        var checkboxes = awq('input[name=awmergeSelect]');
+                        
+                        var selectList = [];
+                        for (var j = 0;j < checkboxes.length; j++) {
+                            if (checkboxes[j].checked == true) {
+                                selectList.push(checkboxes[j].value);
+                            }
+                        }
+                        
+                        document.getElementById("selectlist").value = selectList.join(",");
+                        return true;
+                    
+                    }
+            
+            </script>
+            <input type="hidden" id="idlist" name="idlist" value="{!ListIds}"/>
+            <input type="hidden" id="selectlist" name="selectlist" value=""/>
+            <table cellspacing="0" cellpadding="0" border="0" id="searchResults" class="list ">
+                <colgroup span="2"></colgroup>
+                <thead class="rich-table-thead">
+                    <tr class="headerRow ">
+                        <th colspan="1" scope="col" class="headerRow" width="*">Field</th>
+                        <apex:repeat value="{!MergeObjects}" var="mo" id="headerRepeat">
+                            <th colspan="1" scope="col" class="headerRow" width="*">Record</th>
+                        </apex:repeat>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);} " class="dataRow even  first">
+                        <td class="dataCell">Include in merge</td>
+                        <apex:repeat value="{!MergeObjects}" var="mo" id="mergeRepeat">
+                            <td class="dataCell" id="tdmerge{!mo['Id']}">
+                                <input type="checkbox" checked="checked" name="awmergeSelect" id="mergeSelect" value="{!mo['Id']}"/>
+                                
+                            </td>
+                        </apex:repeat>
+                    </tr>
+                    <tr onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);} " class="dataRow even  first">
+                        <td class="dataCell">Master Record</td>
+                        <apex:repeat value="{!MergeObjects}" var="mo" id="masterRepeat">
+                            <td class="dataCell" id="tdmasterrecord{!mo['Id']}">
+                                <div style="width: 30px; float: left;" >
+                                    <input type="radio" id="masterrecord{!mo['Id']}" name="awmasterrecord" value="{!mo['Id']}" onclick="ChangeSelection('masterrecord','{!JSINHTMLENCODE(mo['Id'])}');"/>
+                                </div>
+                                <div style="float: left;">
+                                    <apex:outputField value="{!mo['Id']}"/>
+                                </div>
+                                
+                                
+                            </td>
+                            
+                        </apex:repeat>
+                        <script type="text/javascript">
+                           SetSelection("{!JSINHTMLENCODE(FieldSelect['masterrecord'])}","masterrecord");
+                        </script>
+                    </tr>
+                    <tr onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);} " class="dataRow odd">
+                        <td class="dataCell">{!$ObjectType[DisplayObjectName].fields['LastModifiedDate'].Label}</td>
+                        <apex:repeat value="{!MergeObjects}" var="mo" id="lastModDateRepeat">
+                            <td class="dataCell" id="tdmasterrecord{!mo['Id']}">
+                                <div style="width: 30px; float: left;" >&nbsp;</div>
+                                <div style="float: left;">
+                                    <apex:outputField value="{!mo['LastModifiedById']}"/>,&nbsp;
+                                    <apex:outputField value="{!mo['LastModifiedDate']}"/>
+                                </div>
+                            </td>
+                        </apex:repeat>
+                    </tr>
+                    <tr onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);} " class="dataRow even">
+                        <td class="dataCell">{!$ObjectType[DisplayObjectName].fields['CreatedDate'].Label}</td>
+                        <apex:repeat value="{!MergeObjects}" var="mo" id="createddateRepeat">
+                            <td class="dataCell" id="tdmasterrecord{!mo['Id']}">
+                                <div style="width: 30px; float: left;" >&nbsp;</div>
+                                <div style="float: left;">
+                                    <apex:outputField value="{!mo['CreatedById']}"/>,&nbsp;
+                                    <apex:outputField value="{!mo['CreatedDate']}"/>
+                                </div>
+                            </td>
+                        </apex:repeat>
+                        
+                    </tr>
+                    
+                    <apex:outputPanel rendered="{!IF(isDisplay['portalaccount'],true,false)}">
+                        <tr onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);} " class="dataRow even">
+                            <td class="dataCell">{!$ObjectType[DisplayObjectName].fields['IsCustomerPortal'].Label}</td>
+                            <apex:repeat value="{!MergeObjects}" var="mo" id="IsCustomerPortalRepeat">
+                                <td class="dataCell" id="tdmasterrecord{!mo['Id']}">
+                                    <div style="width: 30px; float: left;" >&nbsp;</div>
+                                    <div style="float: left;">
+                                        <apex:outputField value="{!mo['IsCustomerPortal']}"/>
+                                    </div>
+                                </td>
+                            </apex:repeat>
+                        </tr>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!IF(isDisplay['portalroles'],true,false)}">
+                        <tr onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);} " class="dataRow even">
+                            <td class="dataCell">Portal Role</td>
+                            <apex:repeat value="{!MergeObjects}" var="mo" id="IsCustomerPortalRoleRepeat">
+                                <td class="dataCell" id="tdmasterrecord{!mo['Id']}">
+                                    <div style="width: 30px; float: left;" >&nbsp;</div>
+                                    <div style="float: left;">
+                                        <apex:outputText value="{!portalRoles[mo['Id']]}" />
+                                    </div>
+                                </td>
+                            </apex:repeat>
+                        </tr>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!IF(isDisplay['partneraccount'],true,false)}">
+                        <tr onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);} " class="dataRow even">
+                            <td class="dataCell">{!$ObjectType[DisplayObjectName].fields['IsPartner'].Label}</td>
+                            <apex:repeat value="{!MergeObjects}" var="mo" id="IsPartnerRepeat">
+                                <td class="dataCell" id="tdmasterrecord{!mo['Id']}">
+                                    <div style="width: 30px; float: left;" >&nbsp;</div>
+                                    <div style="float: left;">
+                                        <apex:outputField value="{!mo['IsPartner']}"/>
+                                    </div>
+                                </td>
+                            </apex:repeat>
+                        </tr>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!IF(isDisplay['recordtype'],true,false)}">
+                        <tr onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);} " class="dataRow even">
+                            <td class="dataCell">{!$ObjectType[DisplayObjectName].fields['RecordTypeId'].Label}</td>
+                            <apex:repeat value="{!MergeObjects}" var="mo" id="IsRecTypeRepeat">
+                                <td class="dataCell" id="tdmasterrecord{!mo['Id']}">
+                                    <div style="width: 30px; float: left;" >&nbsp;</div>
+                                    <div style="float: left;">
+                                        <apex:outputField value="{!mo['RecordTypeId']}"/>
+                                    </div>
+                                </td>
+                            </apex:repeat>
+                        </tr>
+                    </apex:outputPanel>
+                    
+                    
+                    <tr  class="dataRow odd">
+                        <td class="dataCell">&nbsp;</td>
+                        <apex:repeat value="{!MergeObjects}" var="mo" id="emptyRepeat">
+                            <td class="dataCell">
+                                &nbsp;
+                            </td>
+                        </apex:repeat>
+                    </tr>
+                    <apex:repeat value="{!FieldList}" var="fld" id="FieldRepeat">
+                        <tr onfocus="if (window.hiOn){hiOn(this);}" onblur="if (window.hiOff){hiOff(this);}" onmouseout="if (window.hiOff){hiOff(this);} " onmouseover="if (window.hiOn){hiOn(this);} " class="dataRow odd">
+                            <td class="dataCell">{!$ObjectType[DisplayObjectName].fields[fld].Label}</td>
+                            <apex:repeat value="{!MergeObjects}" var="mo" id="emptyRepeat">
+                                <td class="dataCell" id="td{!fld}{!mo['Id']}">
+                                    <div style="width: 30px; float: left;" >
+                                        <input type="radio" id="{!fld}{!mo['Id']}" name="aw{!fld}" value="{!mo['Id']}" onclick="ChangeSelection('{!JSINHTMLENCODE(fld)}','{!JSINHTMLENCODE(mo['Id'])}');"/>
+                                    </div>
+                                    <div style="float: left;">
+                                        <apex:outputField value="{!mo[fld]}"/>
+                                    </div>
+                                </td>
+                            </apex:repeat>
+                            <script type="text/javascript">
+                                SetSelection("{!JSINHTMLENCODE(FieldSelect[fld])}","{!JSINHTMLENCODE(fld)}");
+                            </script>
+                        </tr>
+                    </apex:repeat>  
+                
+                </tbody>
+            </table>
+        </apex:pageBlock>
+    </apex:form>
+<script>
+    if (location.href.match(/&inline=1/)) window.top.location=location.href.replace(/&inline=1/, '');
+</script>
+</apex:page>

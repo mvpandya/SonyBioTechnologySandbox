@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <customSettingsVisibility>Public</customSettingsVisibility>
+    <description>Contains a list of Web to Lead resources that will cause DupeCatcher to create a duplicate alert instead of executing the action designated by a scenario.</description>
+    <enableFeeds>false</enableFeeds>
+    <label>Web To Lead Sources - Obsolete</label>
+</CustomObject>

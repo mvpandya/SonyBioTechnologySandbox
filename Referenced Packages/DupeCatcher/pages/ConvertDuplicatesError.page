@@ -1,0 +1,12 @@
+<apex:page >
+
+<apex:form id="showpagescreenid">
+
+	<div style="text-align:left;font-family: 'Verdana', 'Geneva', sans-serif">
+		<font size="5"><b>DupeCatcher Convert<BR/><BR/></b></font>
+		<font size="3">An error has occurred and the conversion submit page cannot be displayed. If you continue to see this message, please notify your system administrator.
+		</font>
+	</div>
+</apex:form>
+
+</apex:page>

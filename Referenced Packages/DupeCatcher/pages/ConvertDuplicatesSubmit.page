@@ -1,0 +1,277 @@
+<apex:page controller="SFSSDupeCatcher.ConvertDuplicatesSubmitController"
+    showHeader="true"
+>
+
+<!-- common styles --><link href="/sCSS/10.0/Theme2/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet" /> 
+<!-- standard styles --><link href="/sCSS/10.0/Theme2/dStandard.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet" /> 
+<!-- elements styles --><link href="/sCSS/10.0/Theme2/elements.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet" />
+<script type="text/javascript" src="/static/101210/js/functions.js"></script>
+
+<script>
+ 
+//     window.onload=function(){
+//     openLookup('/_ui/common/data/LookupPage&#8212;lkfm=dupcatcherconvertform&amp;lknm=assigned&amp;lktp='+document.getElementById('assigned_lktp').value,670,document.getElementById('assigned_mod').value,'&amp;lksrch='+escapeUTF(document.getElementById('assigned').value),'maxw');
+//	}
+    
+    
+    function SSDupeCatcherHandleReminderDateRequired(remindersetfieldid, reminderdateelementid, remindertimeid)
+    {
+        var remindersetfieldelement = document.getElementById(remindersetfieldid);
+        var reminderdateelement = document.getElementById(reminderdateelementid);
+        var remindertimeelement = document.getElementById(remindertimeid);
+        
+        reminderdateelement.disabled = ! remindersetfieldelement.checked;
+        remindertimeelement.disabled = ! remindersetfieldelement.checked;
+        
+        
+       	if (reminderdateelement.value == '')
+       	{
+       		var currentDate = '{!CurrentDate}';
+			reminderdateelement.value = currentDate;
+       	}
+        
+    }
+     function unselectDupeCatcherRadioButtons(idsearchstring)
+    {
+        var inputelements = document.getElementsByTagName('input')
+        
+        var item = null;
+        
+        if (inputelements != null)
+        {
+            for (i=0;i< inputelements.length;i++)
+            {
+                item = inputelements[i];
+                if (item.id.indexOf(idsearchstring) != -1)
+                    item.checked = false;
+            }
+        }
+    }
+
+	function dupeCatcherOwnerIdOnChangeEvent(value)
+	{
+	
+		var ownerId = document.getElementById('owner_id_lkid').value;		
+		
+		sendOwnerIdToController(ownerId);		
+	}
+	
+    function setDupeCatcherDisabledOnTextBoxContainingStringInNameAttribute(idsearchstring, disable)
+    {
+    
+        var inputelements = document.getElementsByTagName('input');
+
+        var item = null;
+        
+        if (inputelements != null)
+        {
+            for (i=0;i< inputelements.length;i++)
+            {
+                item = inputelements[i];
+                if (item.id.indexOf(idsearchstring) != -1)
+                {
+                    item.disabled = disable;
+                    break;
+                }
+            } // for 
+        }
+    }
+
+    
+    
+    
+    function dupeCatcherAccountOptionsSelected ()
+    {
+        // find input tag of type radio with id containing dupecatcheruserentryaccountoption        
+        
+        unselectDupeCatcherRadioButtons('dupecatcheruserentryaccountoption')
+//      setDupeCatcherDisabledOnTextBoxContainingStringInNameAttribute('dupecatcheruserentryaccountnamefieldid', true);
+    }
+    
+    function dupeCatcherUserEntryAccountOptionsSelected ()
+    {
+        // find input tag of type radio with id containing dupecatcheraccountoptions        
+        
+        unselectDupeCatcherRadioButtons('dupecatcheraccountoptions')
+//        setDupeCatcherDisabledOnTextBoxContainingStringInNameAttribute('dupecatcheruserentryaccountnamefieldid', false);
+
+    }
+    
+</script>
+
+
+    <apex:sectionHeader title="" subTitle="DupeCatcher Lead Convert Submit" />
+    <apex:pageMessages />
+     <apex:form title="DupeCatcher Lead Convert Submit" >
+     
+			<!-- Hidden elements for proper lookup assign button functionality -->
+			<input type="hidden" name="owner_id_lkid" id="owner_id_lkid" value="{!proxyUser.Id}" />
+			<input type="hidden" name="owner_id_lkold" id="owner_id_lkold" value="{!proxyUser.FirstName} {!proxyUser.LastName}" />
+			<input type="hidden" name="owner_id_lktp" id="owner_id_lktp" value="StandardUserLookup" />
+			<input type="hidden" name="owner_id_lspf" id="owner_id_lspf" value="0" />
+			<input type="hidden" name="owner_id_lspfsub" id="owner_id_lspfsub" value="0" />
+			<input type="hidden" name="owner_id_mod" id="owner_id_mod" value="0" />
+   
+            <apex:outputPanel id="theErrorPanel"  rendered="{!showPageError}"> 
+             <font size="4"><b>  An error has occurred and the conversion submit page cannot be displayed. If you continue to see this message, please notify your system administrator.
+              </b></font>
+            </apex:outputPanel> 
+ 
+            <apex:outputPanel id="theDisplayPanel" layout="block" style="warningArea"  rendered="{!NOT(showPageError)}" >
+            
+            <table width="700">
+            <tr>
+            <td>
+             <font size="2"><b>  
+             {!alertDeletionMessage}<br/>
+              </b></font>
+              </td>
+              </tr>
+            </table><p/>
+                <apex:pageBlock title="DupeCatcher Lead Convert Submit" id="infosection"  mode="edit" >
+                    <apex:pageBlockButtons >
+                        <apex:commandButton value="Submit" action="{!convert}"/>
+                        <apex:commandButton value="Cancel" action="{!cancel}" immediate="true" />
+                    </apex:pageBlockButtons>
+
+                    <apex:pageBlockSection id="accountoptions" title="Convert-Leads Account Options" columns="1" collapsible="false" showHeader="true" rendered="{!showAccountOptions}" >   
+                        
+    <apex:panelGrid columns="2" id="theGrid">
+                        <apex:selectRadio id="dupecatcheraccountoptions" value="{!accountSelectionOption}" rendered="{!showAccountOptions}" onclick="dupeCatcherAccountOptionsSelected()" layout="pageDirection" >
+                            <apex:selectOptions value="{!accountSelectionOptions}">                         
+                            </apex:selectOptions>
+                            <apex:actionSupport event="onclick" rerender="dupecatcheruserentryaccountnamefieldid"  />
+                        </apex:selectRadio><p/><p/><br/>                        
+    </apex:panelGrid>
+
+                            
+    <apex:panelGrid columns="2" id="theGrid2">
+                        <apex:selectRadio id="dupecatcheruserentryaccountoption" value="{!userEnteredAccountNameOption}" rendered="{!showAccountOptions}" onclick="dupeCatcherUserEntryAccountOptionsSelected()" layout="pageDirection" >
+                            <apex:selectOptions value="{!userEnteredAccountNameOptions}">                           
+                            </apex:selectOptions>
+                            <apex:actionSupport event="onclick" rerender="accountoptions"  />
+                        </apex:selectRadio>
+                        
+                       <apex:pageblocksectionitem >
+                        <apex:outputLabel value="" for="dupecatcheruserentryaccountnamefieldid" />
+                        <apex:inputText value="{!accountName}" id="dupecatcheruserentryaccountnamefieldid" required="{!enableUserEnteredAccountName}" disabled="false" >
+                        </apex:inputText>
+                       </apex:pageblocksectionitem>
+    </apex:panelGrid>
+
+                    </apex:pageBlockSection>
+
+
+                    <apex:pageBlockSection id="conversioninformationid" title="Convert Leads Information" columns="1" collapsible="false" showHeader="true">   
+
+                       <apex:pageblocksectionitem rendered="{!NOT(showAccountOptions)}" >
+                        <apex:outputLabel value="Account Name" for="dupecatcheraccountnamefieldid" />
+                        <apex:inputText value="{!accountName}" id="dupecatcheraccountnamefieldid" disabled="true" >
+                        </apex:inputText>
+                       </apex:pageblocksectionitem>
+        
+                       <apex:pageblocksectionitem id="displayowneridfield" rendered="{!displayOwnerId}" >
+                        <apex:outputLabel value="Record Owner" for="owner_id" />
+					        <div class="requiredInput"><div class="requiredBlock"></div><span class="lookupInput">
+								<input  id="owner_id" maxlength="255" name="owner_id"  onchange="getElementByIdCS('owner_id_lkid').value='';getElementByIdCS('owner_id_mod').value='1';setTimeout('dupeCatcherOwnerIdOnChangeEvent()', 1000)" size="20" type="text" value="{!proxyUser.FirstName} {!proxyUser.LastName}" /><a href="javascript: openLookup('/_ui/common/data/LookupPage?lkfm=editPage&lknm=owner_id&lktp=' + getElementByIdCS('owner_id_lktp').value,670,'1','&lksrch=' + escapeUTF(getElementByIdCS('owner_id').value.substring(0, 80)))" id="owner_id_lkwgt" onclick="setLastMousePosition(event)" title="Record Owner Lookup (New Window)"><img src="/s.gif" alt="Record Owner Lookup (New Window)"  class="lookupIcon" onblur="this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';" onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';" title="Record Owner Lookup (New Window)"/>	
+					        </a></span></div>
+                       </apex:pageblocksectionitem>
+        
+                       <apex:pageblocksectionitem >
+                        <apex:outputLabel value="Converted Status" for="convertedstatusfieldid" /> 
+                       <apex:selectList id="convertedstatusfieldid" value="{!convertedStatus}" size="1" required="true" >
+                           <apex:selectOptions value="{!convertedStatusOptions}"/>
+                       </apex:selectList>
+                       </apex:pageblocksectionitem>
+         
+                       <apex:pageblocksectionitem id="opportunitynamefieldsectionitem" >
+                        <apex:outputLabel value="Opportunity Name" for="opportunitynamefieldid" />
+                        <apex:inputText value="{!opportunityName}" id="opportunitynamefieldid"  required="false" />
+                       </apex:pageblocksectionitem>
+
+                       <apex:pageblocksectionitem >
+                        <apex:outputLabel value="Do Not Create Opportuninty" for="donotcreateopportunintyfieldid" />
+                        <apex:inputCheckbox value="{!doNotCreateOpportunity}" id="donotcreateopportunintyfieldid" >
+                            <apex:actionSupport event="onclick" rerender="opportunitynamefieldsectionitem"  />
+                        </apex:inputCheckbox>
+                       </apex:pageblocksectionitem>
+        
+
+                       <apex:pageblocksectionitem >
+                        <apex:outputLabel value="Send Email To Owners" for="sendemailtoownersfieldid" />
+                        <apex:inputCheckbox value="{!sendEmailToOwners}" id="sendemailtoownersfieldid" />
+                       </apex:pageblocksectionitem>
+
+                       <apex:pageblocksectionitem >
+                        <apex:outputLabel value="Overwrite Lead Source" for="overwriteleadsourcefieldid" />
+                        <apex:inputCheckbox value="{!overwriteLeadSource}" id="overwriteleadsourcefieldid" />
+                       </apex:pageblocksectionitem>
+        
+                    </apex:pageBlockSection>
+
+                    <apex:pageBlockSection id="taskinformation" title="Task Information" columns="2" collapsible="false" showHeader="true"  >       
+
+
+                       
+                        <apex:inputField value="{!proxyTask.Subject}" id="tasksubjectfieldid" required="true" />                         
+        
+						<apex:pageblocksectionitem >
+						<apex:outputLabel value="Status" for="proxytaskstatus" />
+					        <apex:selectList id="proxytaskstatus" size="1" value="{!proxyTask.Status}" required="true" >
+					            <apex:selectOptions value="{!taskStatusOptions}"/>
+					        </apex:selectList>
+						</apex:pageblocksectionitem>
+        
+                        <apex:inputField value="{!proxyTask.ActivityDate}" id="taskduedatefieldid" required="false" />
+        
+					 	<apex:pageblocksectionitem >
+						<apex:outputLabel value="Priority" for="proxytaskpriority" />
+					        <apex:selectList id="proxytaskpriority" size="1" value="{!proxyTask.Priority}" required="true" >
+					            <apex:selectOptions value="{!taskPriorityOptions}"/>
+					        </apex:selectList>
+						</apex:pageblocksectionitem> 
+
+                    </apex:pageBlockSection>
+
+                    <apex:pageBlockSection id="taskemailinformation" title="Task Email Description Information" columns="2" collapsible="false" showHeader="true">   
+
+                        <apex:pageblocksectionitem >
+                        <apex:outputLabel value="Send Notification Email" for="sendemailtotaskownerfieldid" />
+                        <apex:inputCheckbox value="{!sendEmailToTaskOwner}" id="sendemailtotaskownerfieldid" />
+                        </apex:pageblocksectionitem>
+                        <apex:outputText value="" />
+
+                        <apex:pageblocksectionitem >
+                        <apex:outputLabel value="Comments For Task" for="commentsforfieldid" />
+                        <apex:inputTextArea value="{!proxyTask.Description}" id="commentsforfieldid"  cols="80" rows="5" />
+                        </apex:pageblocksectionitem>
+                        <apex:outputText value="" />
+
+                    </apex:pageBlockSection>
+
+                    <apex:pageBlockSection id="taskreminder" title="Task Reminder" columns="5" collapsible="false" showHeader="true" >   
+
+                        <apex:inputField value="{!proxyTask.IsReminderSet}" onclick="SSDupeCatcherHandleReminderDateRequired('{!$Component.taskreminder.remindersetfieldid}', '{!$Component.taskreminder.taskreminderdateid}', '{!$Component.taskreminder.taskremindertimeid}')" id="remindersetfieldid" required="false">
+                         </apex:inputField>
+
+
+                       <apex:inputField value="{!proxyRequiredFieldSupport.SFSSDupeCatcher__Reminder_Date__c}" id="taskreminderdateid" required="{!proxyTask.IsReminderSet}" />
+
+						<apex:outputLabel value="Time" for="taskremindertimeid" />
+					        <apex:selectList id="taskremindertimeid" size="1" value="{!taskReminderTimeOption}"  >
+					            <apex:selectOptions value="{!taskReminderTimeOptions}"/>
+					        </apex:selectList>
+
+
+                    </apex:pageBlockSection>
+						  	<apex:actionFunction action="{!handleOwnerId}" name="sendOwnerIdToController" rerender="displayowneridfield" immediate="true">
+								<apex:param name="OwnerId" assignTo="{!OwnerId}" value="firstParam" />
+							</apex:actionFunction>
+
+
+                </apex:pageBlock>
+            </apex:outputPanel>    
+    </apex:form>
+
+
+</apex:page>

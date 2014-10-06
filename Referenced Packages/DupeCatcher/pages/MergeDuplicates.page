@@ -1,0 +1,704 @@
+<apex:page controller="SFSSDupeCatcher.MergeDuplicatesController" showHeader="true">
+
+<apex:stylesheet value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/assets/skins/sam/skin.css')}"/> 
+<apex:stylesheet value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/fonts/fonts-min.css')}"/> 
+<apex:stylesheet value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/button/assets/skins/sam/button.css')}"/> 
+<apex:stylesheet value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/assets/skins/sam/datatable.css')}"/> 
+<apex:stylesheet value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/menu/assets/skins/sam/menu.css')}"/> 
+<apex:stylesheet value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/reset-fonts-grids/reset-fonts-grids.css')}"/> 
+<apex:includeScript value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/yahoo-dom-event/yahoo-dom-event.js')}"/> 
+<apex:includeScript value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/event/event-min.js')}"/> 
+<apex:includeScript value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/element/element-min.js')}"/> 
+<apex:includeScript value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/datatable/datatable-min.js')}"/> 
+<apex:includeScript value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/datasource/datasource-min.js')}"/> 
+<apex:includeScript value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/button/button-min.js')}"/> 
+
+<!-- YUI3 -->
+<!--<apex:stylesheet value="{!URLFOR($Resource.yui3, 'build/assets/skins/sam/skin.css')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.yui3, 'build/cssfonts/fonts-min.css')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.yui3, 'build/assets/skins/sam/widget-button.css')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.yui3, 'build/assets/skins/sam/datatable-base.css')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/menu/assets/skins/sam/menu.css')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.yui3, 'build/cssreset/cssreset-min.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.yui3, 'build/yui/yui-min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/button/button-min.js')}"/>-->
+
+
+
+	<style type="text/css">
+/*margin and padding on body element
+  can introduce errors in determining
+  element position and are not recommended;
+  we turn them off as a foundation for YUI
+  CSS treatments. */
+body {
+	margin: 0;
+	padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Verdana', 'Geneva', sans-serif;
+    font-size: 130%;
+    margin:0px;
+    display:inline;
+}
+
+</style>
+
+<script>
+
+
+	var thenamespaceprefix = 'sfss_dupecatcher_';    
+	var globalDataTable = null;
+	var globalNumberOfDuplicateRecords = null;
+	var globalMergeResults = new Array();
+	var globalMergeIDs = new Array();
+	var globalNumPopulatedFields = null;
+	var globalCurrentMaster = -1;
+	var globalRecordIds = null;
+    var globalNumberOfNonDataRows = null;
+    var noMasterSelectedYet = true;
+    var globalMergeButton = null;
+    var globalCancelButton = null;
+    var globalRadioButtonTouched = false;
+    
+    function elementMovesOnUserInput(theelement)
+    {
+    	return !elementHidden(theelement) || (elementHidden(theelement) && (theelement.value.indexOf('SSDupeCatcher_null') >= 0));
+    }
+    
+    function elementAllwaysFollowsMaster(theelement)
+    {
+    	return elementHidden(theelement) && (theelement.value.indexOf('SSDupeCatcher_null') >= 0);    
+    }
+    
+    function elementHidden(theelement)
+    {
+    	return theelement.style.display == 'none';
+    }
+    
+    function elementIsNullField(theelement)
+    {
+    	return elementHidden(theelement) && (theelement.value.indexOf('SSDupeCatcher_null') >= 0);
+    }
+    
+	function onSSEventSelectMaster(value)
+	{
+    	// parse the value parm from the invoking item
+		var delim = value.indexOf(';');
+		var columnindex = Number(value.substr(0, delim));  
+		var therest = value.substr(delim+1);
+		delim = therest.indexOf(';');
+		var recordId = therest.substr(0, delim);
+		therest = therest.substr(delim+1);
+		var recordName = therest;
+		var thecell = globalDataTable.getCell('radiomaster-' + columnindex.toString());
+		var newradiomasterbutton = thecell.firstChild.firstChild;
+		newradiomasterbutton.enable = true;
+
+        // put the display value in the Merge Results cell.
+        var resultRow = globalDataTable.getRecord(0);
+        var resultcellcolumn =  thenamespaceprefix + 'mergeresult';
+		globalDataTable.updateCell(resultRow, resultcellcolumn, recordName);
+
+		if (noMasterSelectedYet)
+		{
+			enableAllDataRadioButtons();
+			enableAllLeadSelectCheckBoxes();
+			noMasterSelectedYet = false;			
+			selectAllRadioButtonsInColumnThatSelectOnUserInput(columnindex);
+		} 
+			
+		enableAllDisabledCheckBoxes();
+
+		if ( newradiomasterbutton.checked && (columnindex != globalCurrentMaster) )
+		{
+			// this column has been selected as the new master
+			
+			// Hide the checkbox in the new column and unhide the one in the old column
+			var newleadselectcell = globalDataTable.getCell('checkboxrecordselect-' + columnindex.toString());
+			var newleadselectcheckbox = newleadselectcell.firstChild.firstChild;
+			newleadselectcheckbox.style.visibility = 'hidden';			
+            
+			if (globalCurrentMaster != -1)
+			{
+				var oldleadselectcell = globalDataTable.getCell('checkboxrecordselect-' + globalCurrentMaster.toString());
+				var oldleadselectcheckbox = oldleadselectcell.firstChild.firstChild;
+				oldleadselectcheckbox.style.visibility = 'visible';	
+				
+				moveAllSelectedFromOldMasterToNewMaster(globalCurrentMaster, columnindex)		
+			}
+		}
+
+        globalMergeResults[thenamespaceprefix + 'Master'] = recordId;
+
+		globalMergeButton.set('disabled', false, false);
+                           
+		globalCurrentMaster = columnindex;
+
+		disableLastUncheckedMergeRecord();
+			
+
+		selectLeadCheckBox(columnindex);  // the lead is considered checked when it becomes master
+				
+	}
+
+	
+  	function enableAllLeadSelectCheckBoxes()
+  	{
+  		var thecell = null;
+  		var leadselectcheckbox = null;
+  		var theelementid = null;
+  		
+		for (column=0;column < globalNumberOfDuplicateRecords ;column++)
+		{
+			theelementid = 'checkboxrecordselect-' + column.toString();
+			thecell = globalDataTable.getCell(theelementid);
+			leadselectcheckbox = thecell.firstChild.firstChild;
+			if (leadselectcheckbox != null)
+				leadselectcheckbox.disabled = false;
+		}
+		
+	}
+	
+  	function enableAllDataRadioButtons()
+  	{
+  		var thecell = null;
+  		var dataradiobutton = null;
+  		var theelementid = null;
+  		
+		for (column=0;column < globalNumberOfDuplicateRecords ;column++)
+		{
+			for (row=0;row < globalNumPopulatedFields;row++)
+			{
+				theelementid = 'dataradio-' + row.toString( ) + '-' + column.toString();
+				thecell = globalDataTable.getCell(theelementid);
+				
+				if (thecell!= null)
+				{
+					dataradiobutton = thecell.firstChild.firstChild;
+					if ((dataradiobutton != null) && !dataradiobutton.hidden)
+						dataradiobutton.disabled = false;
+				}
+			} // for 
+		}
+  	}
+
+  	function selectAllRadioButtonsInColumnThatSelectOnUserInput(columnindex)
+  	{
+  		var thecell = null;
+  		var dataradiobutton = null; 
+   		
+		for (row=0;row < globalNumPopulatedFields ;row++)
+		{
+			dataradiobutton = getRadioButtonAtRowColumn(row, columnindex);
+			if (dataradiobutton != null)
+			{
+				// pass in (display != none) to indicate update to merge data is needed
+				doClick(dataradiobutton, elementMovesOnUserInput(dataradiobutton));
+			}
+		} // for
+  	}
+	
+	
+	function getRadioButtonAtRowColumn(row, column)
+	{
+		thecell = globalDataTable.getCell('dataradio-' + row.toString() + '-' + column.toString());
+		if (thecell!= null)
+		{
+			dataradiobutton = thecell.firstChild.firstChild;
+			return dataradiobutton;
+		}
+		
+		return null;
+	}
+	
+	
+	
+	function moveAllSelectedFromOldMasterToNewMaster(oldmastercolumnindex, newmastercolumnindex)
+	{
+  		var dataradiobutton = null; 
+		
+		for (row=0;row < globalNumPopulatedFields ;row++)
+		{
+			dataradiobutton = getRadioButtonAtRowColumn(row, oldmastercolumnindex);
+			
+			
+			if ((dataradiobutton != null) && dataradiobutton.checked)
+			{
+				var dataradiobuttonnew = getRadioButtonAtRowColumn(row, newmastercolumnindex);
+				
+				if (dataradiobuttonnew != null)
+				{
+					doClick(dataradiobuttonnew, true);
+				}
+			}
+			
+			if ((dataradiobutton != null) && elementAllwaysFollowsMaster(dataradiobutton))
+			{
+				var dataradiobuttonnew = getRadioButtonAtRowColumn(row, newmastercolumnindex);
+				if (dataradiobuttonnew != null)
+				{
+					doClick(dataradiobuttonnew, false);
+				}
+			}
+		}
+	}
+	
+	function doClick(obj, updatefield) {
+
+		onSSEventProgramSelectDataRadio(obj.value, updatefield, elementIsNullField(obj))
+		if (updatefield)
+			obj.checked = true;
+	}
+
+  	  
+  	function getDataRecordID(columnindex)
+  	{
+  		var result = '';
+  		if (columnindex < globalRecordIds.length)
+  			result = globalRecordIds[columnindex];
+  		return result;
+  	}
+
+	
+  	function initializeGlobalMergeIds(columnindex)
+  	{  			
+		if ({!NOT(ShowMergeScreen)})
+				return;
+		for (var field in globalRecordIds)
+		{
+			globalMergeIDs[globalRecordIds[field]] = 'checked';
+		}
+  	}
+
+
+	function updateSelectLeadCheckBoxStatus(columnindex)
+	{
+		var thecell = globalDataTable.getCell('checkboxrecordselect-' + columnindex.toString());
+		var leadselectcheckbox = thecell.firstChild.firstChild;
+		var recordId = globalRecordIds[columnindex];
+		
+		var value = 'unchecked';
+		if (leadselectcheckbox.checked)
+			value = 'checked';
+			
+		if (value == 'checked') 
+			enableLastUncheckedMergeRecord();
+			
+		globalMergeIDs[recordId] = value;	
+		
+		if (value == 'unchecked') 
+			disableLastUncheckedMergeRecord();
+		
+		
+	}
+	
+	function selectLeadCheckBox(columnindex)
+	{
+		var thecell = globalDataTable.getCell('checkboxrecordselect-' + columnindex.toString());
+		var leadselectcheckbox = thecell.firstChild.firstChild;
+		
+		leadselectcheckbox.checked = true;
+	}
+	
+    function onSSEventChangeRecordSelect(value)
+    {
+    	// parse the value parm from the invoking item
+		var delim = value.indexOf(';');
+		var columnindex = Number(value.substr(0, delim));  
+		var recordId = value.substr(delim+1); 
+		
+		
+		updateSelectLeadCheckBoxStatus(columnindex);
+    }
+
+
+    function onSSEventSelectDataRadio(value)
+    {
+    	// parse the value parm from the invoking item
+		var delim = value.indexOf(';');
+		var rowindex = Number(value.substr(0, delim));  
+		var therest = value.substr(delim+1);
+		delim = therest.indexOf(';');
+		var columnindex = Number(therest.substr(0, delim));
+		therest = therest.substr(delim+1);
+		delim = therest.indexOf(';');
+		var fieldname = therest.substr(0, delim);
+		therest = therest.substr(delim+1);
+		delim = therest.indexOf(';');
+		var recordId = therest.substr(0, delim);
+		therest = therest.substr(delim+1);
+		delim = therest.indexOf(';');
+		var fieldvalue = therest.substr(0, delim); 
+		var blankfieldindicator = therest.substr(delim+1); 
+
+        
+        rowindex += globalNumberOfNonDataRows;  // the row is offset by the number of nondata rows
+        var resultRow = globalDataTable.getRecord(rowindex);
+        var resultcellcolumn =  thenamespaceprefix + 'mergeresult';
+
+        // put the selected value in the results table cell.
+        globalDataTable.updateCell(resultRow, resultcellcolumn, fieldvalue);
+        var recordId = getDataRecordID(columnindex);
+       	globalMergeResults[fieldname] = recordId;
+        
+    }
+
+	function removeByValue(arr, val) {
+		var i = 0;
+		for (var field in globalMergeResults)
+		{
+	        if(field == val) {
+	            arr.splice(i, 1);
+	            break;
+	        }
+			i++;
+	    }
+	}
+
+
+    function onSSEventProgramSelectDataRadio(value, updatefield, nullfield)
+    {
+    	// parse the value parm from the invoking item
+		var delim = value.indexOf(';');
+		var rowindex = Number(value.substr(0, delim));  
+		var therest = value.substr(delim+1);
+		delim = therest.indexOf(';');
+		var columnindex = Number(therest.substr(0, delim));
+		therest = therest.substr(delim+1);
+		delim = therest.indexOf(';');
+		var fieldname = therest.substr(0, delim);
+		therest = therest.substr(delim+1);
+		delim = therest.indexOf(';');
+		var recordId = therest.substr(0, delim);
+		therest = therest.substr(delim+1);
+		delim = therest.indexOf(';');
+		var fieldvalue = therest.substr(0, delim); 
+		var blankfieldindicator = therest.substr(delim+1); 
+        
+        rowindex += globalNumberOfNonDataRows;  // the row is offset by the number of nondata rows
+        var resultRow = globalDataTable.getRecord(rowindex);
+        var resultcellcolumn =  thenamespaceprefix + 'mergeresult';
+
+        // put the selected value in the results table cell.
+        globalDataTable.updateCell(resultRow, resultcellcolumn, fieldvalue);
+        var recordId = getDataRecordID(columnindex);
+        if (updatefield)
+        {
+       		globalMergeResults[fieldname] = recordId;
+		}	
+        
+    }
+
+
+	function enableAllDisabledCheckBoxes()
+	{
+		var count = 0;
+		for (var id in globalMergeIDs)
+		{
+			var status = globalMergeIDs[id]
+			var thecell = globalDataTable.getCell('checkboxrecordselect-' + count.toString());
+			var convertingselectcheckbox = thecell.firstChild.firstChild;
+			convertingselectcheckbox.disabled = false;
+
+			count++;
+		}		
+	}
+
+
+	function disableLastUncheckedMergeRecord()
+	{
+		if (numberOfCheckedMergeRecords() > 1)
+			return;
+			
+		var count = 0;
+		for (var id in globalMergeIDs)
+		{
+			var status = globalMergeIDs[id]
+			if ((count != globalCurrentMaster) &&(status == 'checked'))
+			{
+				var thecell = globalDataTable.getCell('checkboxrecordselect-' + count.toString());
+				var convertingselectcheckbox = thecell.firstChild.firstChild;
+				convertingselectcheckbox.disabled = true;
+				break;
+			}
+			count++;
+		}		
+	}
+	
+	function enableLastUncheckedMergeRecord()
+	{
+		if (numberOfCheckedMergeRecords() > 1)
+			return;
+			
+		var count = 0;
+		for (var id in globalMergeIDs)
+		{
+			var status = globalMergeIDs[id]
+			if ((count != globalCurrentMaster) && (status == 'checked'))
+			{
+				var thecell = globalDataTable.getCell('checkboxrecordselect-' + count.toString());
+				var convertingselectcheckbox = thecell.firstChild.firstChild;
+				convertingselectcheckbox.disabled = false;
+				break;
+			}
+			count++;
+		}		
+	}
+	
+  	function numberOfCheckedMergeRecords()
+  	{  		
+  		var count = 0;	
+  		var idx = 0;
+  		
+		for (var id in globalMergeIDs)
+		{
+			var status = globalMergeIDs[id]
+			if ((idx != globalCurrentMaster) && (status == 'checked'))
+				count++;
+				
+			idx++;
+		}
+					
+		return count;	
+  	}
+
+	var mergebuttonpressed = false;
+		
+	function sfss_MergeButtonPressed()
+	{
+			// make sure that this function is 
+			// not called multiple times if the 
+			// button is pressed more than once.
+			if (mergebuttonpressed)
+				return;
+				
+			mergebuttonpressed = true;
+				
+			var value;
+			var mergeresultforcontroller = '';
+			var mergeidsforcontroller = '';
+			var count = 0;
+			var masterRecordId = globalRecordIds[globalCurrentMaster];
+			// first be sure the lead select checkbox is checked for the master
+//			updateSelectLeadCheckBoxStatus(globalCurrentMaster);
+			
+			count = 0;
+			for (var field in globalMergeResults)
+			{
+				value = globalMergeResults[field];
+				if (count != 0)
+					mergeresultforcontroller += ';'
+				mergeresultforcontroller += field + ':' + value;
+				count++;
+			}
+			
+			count = 0;
+			for (var field in globalMergeIDs)
+			{
+				value = globalMergeIDs[field];
+
+				if ((value != 'checked') || (field == masterRecordId))
+					continue;
+
+				if (count != 0)
+					mergeidsforcontroller += ';'
+				mergeidsforcontroller += field + ':' + value;
+				count++;
+			}
+			
+			globalMergeButton.set('disabled', true, true);
+			globalMergeButton.set("label", "Merging...");
+			var x = mergeresultforcontroller;
+			var y = mergeidsforcontroller;
+			sendMergedDataToController(mergeresultforcontroller, mergeidsforcontroller);
+			
+			setTimeout("checkMessages()",5000);
+	}
+
+	function sfss_CancelButtonPressed()
+	{
+		sendCancelToController();
+	}
+	
+	function checkMessages()
+    {
+         sendErrorMessToController();
+    }
+	
+	function initializeDataTable(tableData, 
+                             dataTableSchema,
+                             dataTableColumnDefinition,
+                             functionObj,
+                             userSuppliedMergeFunction 
+                             )
+	{
+
+		if ({!NOT(ShowMergeScreen)})
+			return;
+
+		YAHOO.util.Event.addListener(window, "load", function() { 
+		YAHOO.example.CustomFormatting = new function() { 
+	  
+	
+		this.myData = tableData;  
+		this.myDataSource = new YAHOO.util.LocalDataSource(this.myData.userdata);       
+		this.myDataSource.responseType = YAHOO.util.LocalDataSource.TYPE_JSARRAY; 
+		this.myDataSource.responseSchema =  dataTableSchema; // {!DataTableSchema};
+		this.myColumnDefs = dataTableColumnDefinition // {!ColumnDefinition};
+		this.myDataTable = new YAHOO.widget.DataTable("duplicatestable", this.myColumnDefs, this.myDataSource, {});
+		this.myDataTable.set("selectionMode", "singlecell"); 
+		globalDataTable =  this.myDataTable;
+    
+      
+		// set te background color for the first row which is used
+		// to select the master record for the merge.
+		var rows  = new Array();
+		rows = document.getElementsByTagName('tr');
+		for(var i = 0; i < rows.length; i++)
+		{
+			var row = rows[i];
+	   		if (row.id == 'yui-rec0')
+	   		{
+	   			var cells = row.cells;
+	   			for (var i = 0; i < cells.length; i++)
+	   			{
+					var cell = cells[i];
+					cell.bgColor = '#F4E7D8';  // bandaid color
+	   			}
+	   			break;
+	   		}
+	   }
+
+	    globalMergeButton = new YAHOO.widget.Button(
+	                    "sfssmergebutton",
+	                    { 
+	                        label: "Merge"
+	                    }); 
+	                    
+	    globalCancelButton = new YAHOO.widget.Button(
+	                    "sfsscancelbutton",
+	                    { 
+	                        label: "Cancel"
+	                    }); 
+	
+		globalMergeButton.set('disabled', true, true);                          
+	    globalMergeButton.subscribe('click', sfss_MergeButtonPressed ); 
+	    globalCancelButton.subscribe('click', sfss_CancelButtonPressed ); 
+
+//		return { oDS: this.myDataSource, oDT: this.myDataTable};
+   
+	}();   //CustomFormatting()
+	});  // addListener()
+	} // initializeDataTable()
+    
+
+	
+</script>
+
+<script>
+
+
+	globalNumberOfDuplicateRecords = Number({!NumberOfDuplicateRecords});
+	globalNumPopulatedFields = Number({!NumPopulatedFields});
+	globalRecordIds = {!RecordIds};
+    globalNumberOfNonDataRows = Number({!NumberOfNonDataRows});
+
+	initializeGlobalMergeIds();
+    
+      
+	tableData = {!TableData};
+	dataTableSchema = {!DataTableSchema};
+	dataTableColumnDefinition = {!ColumnDefinition};
+ 
+
+	initializeDataTable(
+          tableData,   // main data table
+          dataTableSchema,
+          dataTableColumnDefinition,
+          this,
+          'mergeAllRecords'         
+      );
+    
+    
+    </script>
+
+<apex:outputPanel id="thePanelWrapper" >
+  <apex:outputPanel id="theErrorPanel" rendered="{!pagemessage}"> 
+              <apex:pageMessages />
+  </apex:outputPanel> 
+</apex:outputPanel>
+
+<apex:form id="mergescreenid" rendered="{!ShowMergeScreen}" >
+
+  <div class="yui-skin-sam" style="text-align:left">
+    <div style="text-align:left">
+      <h2>DupeCatcher Merge</h2>
+      <br/>
+      <br/>
+
+
+      <table width="500">
+        <tr>
+          <td>
+            First select the {!targetObjectType} Record that you would like to merge values to.   Then select values from the other records that you would like to merge to that record. Selected values will show in the "Merge Results" column.
+
+          </td>
+        </tr>
+      </table>
+      <br />
+      <br />
+    </div>
+
+    <table style="text-align:left;">
+      <tr>
+
+        <td>
+          <table  style="border-style: solid solid solid solid; border-width: thin; border-color: #E8E8E8; background-color: #F8F8F8;">
+            <tr>
+              <td>
+                <div id="duplicatestable"></div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <br />
+          <br />
+        </td>
+      </tr>
+      <tr>
+        <td  style="text-align:center">
+          <div id="sfssmergebutton"></div>
+          <div id="sfsscancelbutton"></div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <apex:actionFunction action="{!handleMergedData}" name="sendMergedDataToController" rerender="showmergescreenid,showpagescreenid">
+            <apex:param name="MergedData" assignTo="{!MergedData}" value="firstParam" />
+            <apex:param name="MergeIds" assignTo="{!MergedIds}" value="secondParam" />
+        </apex:actionFunction>
+        
+        <apex:actionFunction action="{!cancel}" name="sendCancelToController" rerender="">
+        </apex:actionFunction>
+         
+          <apex:actionFunction action="{!myerror}" name="sendErrorMessToController" rerender="thePanelWrapper">
+        </apex:actionFunction>    
+       
+</apex:form>
+
+<apex:form rendered="{!showAccessError}" >
+
+    <div style="text-align:left;font-family: 'Verdana', 'Geneva', sans-serif">
+		<font size="5"><b>DupeCatcher Merge<BR/><BR/></b></font>
+        <font size="3">  Insufficient privileges to view all duplicates for this alert.   Please notify your administrator.
+        </font>
+	</div>
+</apex:form>
+
+</apex:page>

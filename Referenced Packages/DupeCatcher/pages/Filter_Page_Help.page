@@ -1,0 +1,287 @@
+<apex:page standardStyleSheets="false" showHeader="false" >
+
+<!-- CSS Starts Here -->
+<style type="text/css">
+
+body { 
+    font-family: Calibri, Arial; font-size:13px;
+    background-color: #f8f8f8;
+    background-image:url('http://www.dupecatcher.com/images/common/footer-shade.gif');
+    background-repeat:repeat-x;
+    padding-top: 6px;
+    padding-left: 20px
+}
+
+.header{
+    padding-bottom: 15px;
+}
+
+table .col1{
+    background-color: #F2F2F2;
+    width: 150px;
+}
+   
+ul {
+	position:absolute;
+	list-style-type:none;
+	right: 25px;
+	top:5px;
+	color:white;
+	font-size: 14px;
+	font-family: Calibri, Arial;
+}
+
+.list{
+	float: right;
+}
+
+.list a {
+  color:#ffffff;
+  text-decoration:none;
+}
+
+.list a:link {
+  -webkit-transition:color 3s;
+  color:#ffffff;
+  text-decoration:none;
+}
+
+.list a:visited {
+  color:#ffffff;
+  text-decoration:none;
+}
+
+.list a:active {
+  color:#ffffff;
+  text-decoration:none;
+}
+
+.list a:hover {
+  color:#00C8F5;
+  text-decoration:none;
+  text-shadow:#969696 0 2px 4px;
+}
+
+</style>
+<!-- CSS Ends Here -->
+
+<head>
+
+    <title>DupeCatcher Help</title>
+    
+</head>
+
+<body>
+	<a name="top"></a>
+    <div class="header"><img src="http://www.dupecatcher.com/images/common/dupecatcher-logo.png" alt="DupeCatcher Logo" width="231" height="80" border="0"/></div>
+    <div class="list">
+        <ul>
+            <li><a href="#1">How to set up a DupeCatcher Filter</a></li>
+            <li><a href="#2">Field Definitions</a></li>
+        </ul>
+    </div>
+	<p>DupeCatcher offers real time identification and blocking of duplicate leads, accounts, and contacts as they are manually entered into Salesforce.   It functions based on Filters and Rules set by a Salesforce administrator.</p>
+	<center><apex:iframe height="315" width="420" src="http://www.youtube.com/embed/FZnGciZ1yMI" frameborder="false"></apex:iframe></center>
+  
+	<h3 style="COLOR: #6B6B6B; FONT-FAMILY: Calibri, Arial">What are DupeCatcher Filters and Rules?</h3>
+	<p>Filters and Rules are used to set up the logic that you would like DupeCatcher to use when blocking or reporting duplicates.  A Filter contains a set of Rules and  designates which type(s) of Salesforce Objects to match against (Account, Contact, or Lead) and what action to take.  The rules within a Filter simply indicate which fields to match against and what type of matching approach to use (e.g. Exact, Numeric_Only).</p>
+	
+	<h3 style="COLOR: #6B6B6B; FONT-FAMILY: Calibri, Arial">How does the Filters and Rules logic work?</h3>
+	<p>You can have multiple Filters and multiple Rules within individual Filters running at the same time.  The Filters operate on an OR logic, and Rules operate on an AND logic.  That is, only one filter out of multiple Filters needs to identify a duplicate for an alert to trigger.  The first Filter to trigger an alert is reported, and all subsequent Filters are not processed.  All Rules within an individual Filter must match for that Filter to trigger an alert.</p>
+	
+	<a name="1"></a>
+	<h1 style="COLOR: #000; FONT-FAMILY: Calibri, Arial">How to Set Up a DupeCatcher Filter</h1>
+	<p>The Filters setup screen is very easy to use.  Set the following parameters by either entering information, or by making selections from the drop down menus:</p>
+	
+	<h2 style="COLOR: #6B6B6B; FONT-FAMILY: Calibri, Arial">Fields on DupeCatcher Filter Edit Page</h2>
+	
+	<table cellspacing="20"  >
+	  <tr>
+	    <td></td>
+	    <td>
+	      <table frame="border" rules="all" cellpadding="4">
+	        <tr>
+	          <td class="col1">
+	            <b>Filter Name:</b>
+	          </td>
+	          <td>Create your own unique name for the filter.  We recommend using something descriptive.</td>
+	        </tr>
+	        <tr>
+	          <td class="col1">
+	            <b>Filter Type:</b>
+	          </td>
+	          <td>Select the type of record for which you want to block duplicates.</td>
+	        </tr>
+	        <tr>
+	          <td class="col1">
+	            <b>Match on Insert Action:</b>
+	          </td>
+	          <td>Select the action you want DupeCatcher to take when it identifies a duplicate that is being inserted into the Salesforce org.</td>
+	        </tr>
+	        <tr>
+	          <td class="col1">
+	            <b>Match on Update</b>
+	          </td>
+	          <td>Action:  Select the action you want DupeCatcher to take when it identifies a duplicate record that is being updated in the Salesforce org.</td>
+	        </tr>
+	        <tr>
+	          <td class="col1">
+	            <b>Error Message:</b>
+	          </td>
+	          <td>Create an optional customized error message to display when DupeCatcher identifies a duplicate based on the filter.</td>
+	        </tr>
+	        <tr>
+	          <td class="col1">
+	            <b>Bypass Security:</b>
+	          </td>
+	          <td>Checking this box directs DupeCatcher to check for matches against ALL records within the Salesforce org.  Leaving this box unchecked directs DupeCatcher to check for matches ONLY against the records visible to the individual user entering new data.</td>
+	        </tr>
+	        <tr>
+	          <td class="col1">
+	            <b>Active:</b>
+	          </td>
+	          <td>
+	            This box must be checked in order for the filter to function.  Note:  You can toggle this box to turn filters on and off as needed without deleting them.
+	            Create Tasks for Alerts:  Select an option if you want a Salesforce task to be set when a duplicate is identified.  Alerts can be set for the user or for the owner/admin of the Filter.
+	          </td>
+	        </tr>
+	      </table>
+	    </td>
+	    <td></td>
+	    <td></td>
+	  </tr>
+	</table>
+
+	<p>Once all of your options have been set, click Save to create the filter.  You will be redirected to the Filter Details page, which shows the settings you made, metrics on duplicates, Rules that apply to this filter, and any alerts that have been triggered when a duplicate is identified.</p>
+
+	<p>
+		<b style="color:Red">Important! - In order for a Filter to work, you create at least one Rule for that Filter.</b>
+	</p>
+
+	<p>From the Filter Details page, click New DupeCatcher Filter Rule in the DupeCatcher Filter Rules section.</p>
+  
+	<a name="2"></a>
+	<h2 style="COLOR: #000; FONT-FAMILY: Calibri, Arial">Field Definitions</h2>
+	<h4 style="COLOR: #6B6B6B; FONT-FAMILY: Calibri, Arial">Filter Types</h4>
+
+	<table cellspacing="15">
+	  <tr>
+	    <td></td>
+	    <td>
+	      <table frame="border" rules="all" cellpadding="4" >
+	        <tr>
+	          <td class="col1">
+	            <b>Lead:</b>
+	          </td>
+	          <td>Identifies duplicates by matching selected fields from a new lead record being entered and the same fields within lead records existing in Salesforce.</td>
+	        </tr>
+	        <tr>
+	          <td class="col1">
+	            <b>Lead to Contact:</b>
+	          </td>
+	          <td>Identifies duplicate records by matching selected fields from a new lead record being created and the same fields within a Contact record.  Filter Rules also apply when an existing lead record is being converted to an account and contact.</td>
+	        </tr>
+	        <tr>
+	          <td class="col1">
+	            <b>Lead to Account:</b>
+	          </td>
+	          <td>Identifies duplicate records by matching selected fields from a new lead record being created and the same fields within an account record.  Filter Rules also apply when an existing lead record is being converted to an account and contact.</td>
+	        </tr>
+	        <tr>
+	          <td class="col1">
+	            <b>Contact:</b>
+	          </td>
+	          <td>Identifies duplicates by matching selected fields from a new Contact record being entered and the same fields within Contact records existing in Salesforce.</td>
+	        </tr>
+	        <tr>
+	          <td class="col1">
+	            <b>Account:</b>
+	          </td>
+	          <td>Identifies duplicates by matching selected fields from a new Account record being entered and the same fields within Account records existing in Salesforce.</td>
+	        </tr>
+	      </table>
+	    </td>
+	    <td></td>
+	    <td></td>
+	  </tr>
+	</table>
+
+	<h4 style="COLOR: #6B6B6B; FONT-FAMILY: Calibri, Arial">Match on Insert Action</h4>
+	
+	<table cellspacing="15"  >
+	  <tr>
+	    <td></td>
+	    <td>
+	      <table frame="border" rules="all" cellpadding="4" >
+	        <tr>
+	          <td class="col1">
+	            <b>Do Nothing:</b>
+	          </td>
+	          <td>The rule is ignored for Insert, but the related Update rule is enforced.</td>
+	        </tr>
+	        <tr>
+	          <td class="col1">
+	            <b>Display Matching Records:</b>
+	          </td>
+	          <td>Displays a hyperlinked table of duplicate leads.</td>
+	        </tr>
+	        <tr>
+	          <td class="col1">
+	            <b>Do Not Insert:</b>
+	          </td>
+	          <td>Duplicate record is not created and an alert message is displayed on the edit page with hyperlinks to the matched record(s).</td>
+	        </tr>
+	        <tr>
+	          <td class="col1">
+	            <b>Report Duplicate:</b>
+	          </td>
+	          <td>Duplicate record is allowed, but an alert is triggered for the Salesforce admin.  Alerts are viewable from the DupeCatcher Duplicate Alerts tab, or from the individual Filter Details pages.</td>
+	        </tr>
+	      </table>
+	    </td>
+	    <td></td>
+	    <td></td>
+	  </tr>
+	</table>
+
+	<h4 style="COLOR: #6B6B6B; FONT-FAMILY: Calibri, Arial">Match on Update Action</h4>
+  
+	<table cellspacing="15"  >
+	  <tr>
+	    <td></td>
+	    <td>
+	      <table frame="border" rules="all" cellpadding="4" >
+	        <tr>
+	          <td class="col1">
+	            <b>Do Nothing:</b>
+	          </td>
+	          <td>The rule is ignored for Update, but the related Insert rule is enforced.  </td>
+	        </tr>
+	        <tr>
+	          <td class="col1">
+	            <b>Do Not Update:</b>
+	          </td>
+	          <td>Record is not updated, and an alert message is displayed on the edit page with hyperlinks to the matched record(s).</td>
+	        </tr>
+	        <tr>
+	          <td class="col1">
+	            <b>Report Duplicate:</b>
+	          </td>
+	          <td>Duplicate record is allowed, but an alert is triggered for the Salesforce admin.  Alerts are viewable from the DupeCatcher Duplicate Alerts tab, or from the individual Filter Details pages.</td>
+	        </tr>
+	      </table>
+	    </td>
+	    <td></td>
+	    <td></td>
+	  </tr>
+	</table>
+	
+	<a href="#top" color="black">Top</a>
+	
+    <div style="FONT-SIZE: 10pt; COLOR: #796a4b; FONT-FAMILY: Calibri, Arial" align="center">
+        Copyright 2010 Symphonic Source, Inc., All rights reserved. | <a href="http://www.dupecatcher.com" title="DupeCatcher Website" target="_blank" style="FONT-SIZE: 10pt; COLOR: #796a4b; FONT-FAMILY: Calibri, Arial">DupeCatcher.com</a>
+    </div>
+    
+</body>
+
+</apex:page>

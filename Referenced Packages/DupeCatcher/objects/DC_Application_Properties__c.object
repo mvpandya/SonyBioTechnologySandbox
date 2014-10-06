@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <customSettingsVisibility>Protected</customSettingsVisibility>
+    <description>Name of the Application Settings record.   This should always be set to  &apos;Application Settings&apos;;</description>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Allow_Block_Override__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Allow Override</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Bypass_Filters_For_Users__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Duplicates will not be blocked for users listed in this field.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>To bypass all DupeCatcher filters for specific users, enter the Salesforce usernames separated by commas. This can be used if you have any automated process that creates Leads, Contact or Accounts that you would like to be exempt for DupeCatcher Filters.</inlineHelpText>
+        <label>Bypass Filters For Users</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Ignore_Cloudingo_User__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Ignore_Cloudingo_User</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Ignore_Email_Domains__c</fullName>
+        <deprecated>false</deprecated>
+        <description>This is for listing email domains (e.g. mycompany.com) that a customer would like DupeCatcher filters to ignore when matching against email fields.</description>
+        <externalId>false</externalId>
+        <label>Ignore Email Domains</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Ignore_Public_Email_Domains__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Causes DupeCatcher to ignore public email domains.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is for excluding public email domains (e.g. gmail.com) that a customer would like DupeCatcher filters to ignore.</inlineHelpText>
+        <label>Ignore Public Email Domains</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Immediate_Reminder_For_Tasks__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Causes DupeCatcher to set an immediate reminder on tasks it creates due to DupeCAtcher Alerts.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Causes DupeCatcher to set an immediate reminder on tasks it creates due to DupeCAtcher Alerts.</inlineHelpText>
+        <label>Immediate Reminder For Tasks</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Org_Allowed_To_Use_API__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Hidden field that is set to true by the application settings controller if the Org is not Professional or Team type of Org.</description>
+        <externalId>false</externalId>
+        <label>Org_Allowed_To_Use_API</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Person_Account_Support__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Enables DupeCatcher Person Account Support</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Enables DupeCatcher Person Account Support</inlineHelpText>
+        <label>Person Account Support</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Web_Lead_Sources__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>List one web lead source on each line.   Web Lead sources listed here will override the insert/update actions on DupeCatcher filters and will generate an Alert instead of blocking the entry of a duplicate..</inlineHelpText>
+        <label>Web Lead Sources</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <label>DC Application Properties</label>
+</CustomObject>

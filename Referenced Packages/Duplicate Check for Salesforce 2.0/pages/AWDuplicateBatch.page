@@ -1,0 +1,491 @@
+<apex:page controller="awduplicate2.AWControllerBatch" title="Duplicate Check Batch" action="{!AddUsage}" tabStyle="awDuplicateCheckBatch__tab">
+    <apex:includeScript value="{!URLFOR($Resource.awduplicate2__jquery, 'js/jquery-1.7.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.awduplicate2__jquery, 'js/jquery-ui-1.8.21.custom.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.awduplicate2__jquery, 'css/smoothness/jquery-ui-1.8.21.custom.css')}"/>
+    <script>
+        function awconfirmSubmit() {
+            var agree=confirm("Are you sure?");
+            if (agree) return true ;
+            else return false ;
+        }
+        
+        function awconfirmMergeSubmit() {
+            var agree=confirm("Merging cannot be undone. Are you sure?");
+            if (agree) return true ;
+            else return false ;
+        }
+        
+        function awconfirmConvertSubmit() {
+            var agree=confirm("Converts cannot be undone. Are you sure?");
+            if (agree) return true ;
+            else return false ;
+        }
+        
+        
+        var j$ = jQuery.noConflict();
+        j$(document).ready(function() {
+            
+            j$('#addFilterLink').click(function() {
+                j$('.FilterCriteriaLink').hide();
+                j$('.FilterCriteriaInput').show();
+            });
+            
+                       
+            
+        });
+       
+        function addFilterAction() {
+            addFilter();
+            j$('.FilterCriteriaInput').hide();
+            j$('.FilterCriteriaLink').show();
+        }
+        
+        function showAutoConvertUser(v) {
+        	
+        	
+        	if (v.value == 'select') {
+        		j$('.autoConvertOwner').show();
+        	} else {
+        		j$('.autoConvertOwner').hide();
+        	}
+        }
+        
+        </script>
+        <apex:outputPanel layout="none" rendered="{!ScheduledAllowed}">
+         
+        <script>
+        
+        
+        
+        function showScheduled(v) {
+        	
+        	if (v.checked) {
+        		j$('.ScheduledCriteria').show();
+	        	j$('.schedButton').show();
+	        	j$('.dedupButton').hide();
+        	} else {
+        		j$('.ScheduledCriteria').hide();
+	        	j$('.schedButton').hide();
+	        	j$('.dedupButton').show();
+        	}
+        
+        }
+        
+        function changeSchedule(v) {
+        	
+        	
+        	if (v.value == 'm') {
+        		j$('.scheduleMonth').show();
+        		j$('.scheduleTime').show();
+        		j$('.scheduleWeek').hide();
+        		j$('.scheduleCustom').hide();
+        	} else if (v.value == 'c') {
+        		j$('.scheduleMonth').hide();
+        		j$('.scheduleTime').hide();
+        		j$('.scheduleWeek').hide();
+        		j$('.scheduleCustom').show();
+        	} else if (v.value == 'w') {
+        		j$('.scheduleMonth').hide();
+        		j$('.scheduleTime').show();
+        		j$('.scheduleWeek').show();
+        		j$('.scheduleCustom').hide();
+        	} else if (v.value == 'd') {
+        		j$('.scheduleMonth').hide();
+        		j$('.scheduleTime').show();
+        		j$('.scheduleWeek').hide();
+        		j$('.scheduleCustom').hide();
+        	}
+        }
+        
+    </script>
+    </apex:outputPanel>
+    
+    <div id="dialog-merge" title="Are you sure merging this job?" style="display:none;">
+        <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Merging cannot be undone. Are you sure?</p>
+    </div>
+    
+    <apex:sectionHeader title="Duplicate Check Batch" help="http://kb.duplicatecheck.com/guide/batch-deduplication/4431?utm_source=dup_for_sfdc&utm_medium=app&utm_campaign=dup_for_sfdc"/> 
+    <apex:pageMessages />
+    <c:AWAdvertFree rendered="{!IF(LicEdition==0,true,false)}"/>
+    <apex:pageBlock title="Batch overview" mode="edit">
+        <apex:form >
+            <apex:pageBlockTable value="{!JobList}" var="j" id="jlist" >
+                <apex:column headerValue="#" width="30"><apex:inputCheckbox value="{!j.jSelected}"/></apex:column>
+                <apex:column headerValue="Name" width="300">
+                    <apex:outputText value="{!j.jName}" rendered="{!NOT(j.jFinished)}"/>
+                    <apex:outputLink value="/apex/AWDuplicateBatchResults?job={!j.jId}" rendered="{!j.jFinished}"><apex:outputText value="{!j.jName}" rendered="{!j.jFinished}"/></apex:outputLink>
+                </apex:column>
+                <apex:column headerValue="Method"><apex:outputText value="{!j.jDedupMethod}"/></apex:column>
+                <apex:column headerValue="Threshold"><apex:outputText value="{!j.jDedupThreshold}"/>%</apex:column>
+                <apex:column headerValue="Object"><apex:outputText value="{!ObjectLabels[j.jObject]}"/></apex:column>
+                <apex:column headerValue="Match Object"><apex:outputText value="{!IF(j.jMatchObject==null,'Null',ObjectLabels[j.jMatchObject])}"/></apex:column>
+                <apex:column headerValue="Start"><apex:outputText value="{!j.jStart}"/></apex:column>
+                <apex:column headerValue="Progress"><apex:outputText value="{!j.jProgress}"/></apex:column>
+                <apex:column headerValue="Status"><apex:outputText value="{!j.jStatus}"/></apex:column>
+                <apex:column headerValue="Duplicates"><apex:outputText value="{!j.jCountDuplicate}"/></apex:column>
+                <apex:column headerValue="Groups"><apex:outputText value="{!j.jCountGroup}"/></apex:column>
+                <apex:column headerValue="Export" rendered="{!IF(LicEdition<3,false,true)}"><apex:outputLink target="_blank" value="/apex/AWDuplicateBatchResultsExport?job={!j.jId}" rendered="{!j.jFinished}">CSV</apex:outputLink></apex:column>
+            </apex:pageBlockTable>
+            <br/>
+            <apex:commandLink action="{!startDeleteBatch}" value="Delete Selected" onclick="return awconfirmSubmit();"/> 
+            <br/>
+            <apex:commandLink action="{!startAbortBatch}" value="Abort Selected" onclick="return awconfirmSubmit();"/>
+            <br/>
+            <apex:commandLink action="{!startDeleteTempBatch}" value="Delete Temporary Data" onclick="return awconfirmSubmit();"/>
+            
+        </apex:form>
+    </apex:pageBlock>
+    
+    <apex:pageBlock title="Scheduled Batch overview" mode="edit" rendered="{!ScheduledAllowed}">
+        <apex:form > 
+            <apex:pageBlockTable value="{!ScheduledJobList}" var="j" id="jlist" >
+                
+                <apex:column headerValue="Action" width="200">
+                	<apex:commandLink action="{!AbortScheduledJob}" value="Delete">
+                		<apex:param name="firstParam" assignTo="{!ActionJobId}" value="{!j.jId}" />	
+                	</apex:commandLink>&nbsp;|&nbsp; 
+                	<apex:commandLink action="{!ActivateScheduledJob}" value="Activate" rendered="{!IF(j.jStatus == 'Inactive',true,false)}">
+                		<apex:param name="firstParam" assignTo="{!ActionJobId}" value="{!j.jId}" />	
+                	</apex:commandLink>
+                	<apex:commandLink action="{!DeactivateScheduledJob}" value="De-Activate" rendered="{!IF(j.jStatus == 'Scheduled',true,false)}">
+                		<apex:param name="firstParam" assignTo="{!ActionJobId}" value="{!j.jId}" />	
+                	</apex:commandLink>&nbsp;|&nbsp;
+                	<apex:commandLink action="{!RunScheduledJob}" value="Start Now">
+                		<apex:param name="firstParam" assignTo="{!ActionJobId}" value="{!j.jId}" />	
+                	</apex:commandLink> 
+                	
+                </apex:column>
+                <apex:column headerValue="Name" width="300"><apex:outputText value="{!j.jName}"/></apex:column>
+                <apex:column headerValue="Method"><apex:outputText value="{!j.jDedupMethod}"/></apex:column>
+                <apex:column headerValue="Threshold"><apex:outputText value="{!j.jDedupThreshold}"/>%</apex:column>
+                <apex:column headerValue="Object"><apex:outputText value="{!ObjectLabels[j.jObject]}"/></apex:column>
+                <apex:column headerValue="Match Object"><apex:outputText value="{!IF(j.jMatchObject==null,'Null',ObjectLabels[j.jMatchObject])}"/></apex:column>
+                <apex:column headerValue="Filter"><apex:outputText value="{!j.jFilter}" rendered="{!displayFilterCriteria}"/></apex:column>
+                <apex:column headerValue="Next Start"><apex:outputText value="{!j.jStart}"/></apex:column>
+                
+            </apex:pageBlockTable>
+            
+            
+        </apex:form>
+    </apex:pageBlock>
+     
+    <apex:pageBlock title="Start Batch" mode="edit">
+        <apex:form >
+            <apex:actionFunction action="{!updateMatchObjects}"   name="updateMatchObjects"   rerender="matchobject,FilterCriteriaInput,trhreshold"  status="SearchStatus"/>
+            <apex:actionFunction action="{!updateFilterField}"   name="updateFilterField"   rerender="filterFieldInput" status="SearchStatus" />
+            
+            <apex:actionFunction action="{!addFilter}" name="addFilter" rerender="flist,FilterCriteriaInput" status="SearchStatus" />
+            <apex:actionFunction action="{!delFilter}" name="delFilter" rerender="flist" status="SearchStatus">
+                <apex:param name="firstParam" assignTo="{!delFilterField}" value="" />
+            </apex:actionFunction>
+            <apex:pageBlockSection columns="1" title="Configuration" collapsible="false" showHeader="true"> 
+                <apex:inputField value="{!jobDetails.Name}" required="true"/>
+                <apex:selectList value="{!jobDetails.awduplicate2__Object__c}" multiselect="false" id="dup__keyobject" size="1" onchange="updateMatchObjects();">
+                    <apex:selectOptions value="{!DuplicateObjects}"/>
+                </apex:selectList>
+                <apex:selectList value="{!jobDetails.awduplicate2__MatchObject__c}" multiselect="false" id="matchobject" size="1">
+                    <apex:selectOptions value="{!MatchObjects}"/>
+                </apex:selectList>
+                <apex:inputField value="{!jobDetails.awduplicate2__Threshold__c}" required="true" id="trhreshold"/>
+                <apex:inputField value="{!jobDetails.awduplicate2__DeduplicationMethod__c}" required="true"/>
+                <apex:inputField value="{!jobDetails.awduplicate2__Scheduled__c}" id="scheduled" onChange="showScheduled(this);" styleClass="scheduleSelector" rendered="{!ScheduledAllowed}"/>
+            </apex:pageBlockSection>
+            
+            <apex:outputPanel id="FilterCriteriaLinkHeader" layout="block" rendered="{!displayFilterCriteria}">
+            	<apex:pageBlockSection columns="1" title="Filters" collapsible="false" showHeader="true"/>
+            
+            </apex:outputPanel>
+            
+            <apex:outputPanel id="FilterCriteriaLink" layout="block" rendered="{!displayFilterCriteria}" styleClass="FilterCriteriaLink">
+                <apex:pageBlockSection columns="1">
+                    <apex:pageBlockSectionItem >
+                        <apex:outputlabel value=""/>
+                        <div style="float:left;"><a href="#" id="addFilterLink">Add Filter Criteria</a></div>
+                        <!--  <apex:commandLink action="{!addFilters}" value="Add filter criteria"/>  -->
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+            </apex:outputPanel>
+            
+            <apex:outputPanel id="FilterCriteriaInput" layout="block" rendered="{!displayFilterCriteria}" style="display: none;" styleClass="FilterCriteriaInput">
+                <apex:pageBlockSection columns="1">
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Field"/>
+                        <apex:selectList value="{!newFilter.Field}" multiselect="false" id="filterField" size="1" onchange="updateFilterField();">
+                            <apex:selectOptions value="{!FilterFields}"/>
+                        </apex:selectList>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Logic"/>
+                        <apex:selectList value="{!newFilter.Operator}" multiselect="false" id="filterOperator" size="1">
+                            <apex:selectOptions value="{!FilterOperators}"/>
+                        </apex:selectList>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Value"/>
+                        <apex:inputField value="{!newFilter.Value[newFilter.Field]}" id="filterFieldInput" rendered="{!renderFilterInput}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputlabel value=""/>
+                        <div style="float:left;"><a href="#" id="addFilter" onClick="addFilterAction();">Add Filter</a></div>
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+            </apex:outputPanel>
+            
+                
+            <apex:outputPanel id="FilterCriteria" layout="block" rendered="{!displayFilterCriteria}">
+                <apex:pageBlockSection columns="1">
+                    <apex:pageBlockSectionItem >
+                        <apex:outputlabel value="Filter Criteria"/>
+                        <apex:pageBlockTable value="{!Filters}" var="f" id="flist" >
+                            <apex:column headerValue="#" width="10"><a href="#" onClick="delFilter('{!JSINHTMLENCODE(f.Field)}');">Del</a></apex:column>
+                            <apex:column headerValue="Field"><apex:outputText value="{!$ObjectType[f.ObjectName].fields[f.Field].label}"/></apex:column>
+                            <apex:column headerValue="Operator"><apex:outputText value="{!f.Operator}"/></apex:column>
+                            <apex:column headerValue="Value"><apex:outputField value="{!f.Value[f.Field]}"/></apex:column>
+                        </apex:pageBlockTable>
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+            </apex:outputPanel>
+            
+           
+            
+            <apex:outputPanel id="ScheduledCriteria" layout="block" rendered="{!ScheduledAllowed}" style="display: none;" styleClass="ScheduledCriteria">
+            	<apex:pageBlockSection columns="1" title="Schedule" collapsible="false" showHeader="true">
+            		
+            		
+            		
+            		<apex:pageBlockSectionItem >
+            			<apex:outputLabel value="Frequency"/>
+            			<apex:selectRadio value="{!scheduleFrequency}" layout="pageDirection" onchange="changeSchedule(this);">
+            				  <apex:selectOption itemValue="d" itemLabel="Daily"/>
+            				  <apex:selectOption itemValue="w" itemLabel="Weekly"/>
+            				  <apex:selectOption itemValue="m" itemLabel="Monthly"/>
+            				  <apex:selectOption itemValue="c" itemLabel="Custom"/>
+            			</apex:selectRadio>
+            		</apex:pageBlockSectionItem>
+            	</apex:pageBlockSection>
+            		<apex:outputPanel id="scheduleWeek" layout="block" styleClass="scheduleWeek">
+            		<apex:pageBlockSection columns="1">
+            		<apex:pageBlockSectionItem >
+            			<apex:outputLabel value="Recurs every week on"/>
+            			<apex:selectCheckboxes value="{!scheduleWeekly}" layout="pageDirection">
+            				 <apex:selectOption itemValue="1" itemLabel="Sunday"/>
+            				  <apex:selectOption itemValue="2" itemLabel="Monday"/>
+            				  <apex:selectOption itemValue="3" itemLabel="Tuesday"/>
+            				  <apex:selectOption itemValue="4" itemLabel="Wednesday"/>
+            				  <apex:selectOption itemValue="5" itemLabel="Thursday"/>
+            				  <apex:selectOption itemValue="6" itemLabel="Friday"/>
+            				  <apex:selectOption itemValue="7" itemLabel="Saturday"/>
+            			</apex:selectCheckboxes>
+            		</apex:pageBlockSectionItem>
+            		</apex:pageBlockSection>
+            		</apex:outputPanel>
+            		
+            		<apex:outputPanel id="scheduleMonth" layout="block" style="display: none;" styleClass="scheduleMonth">
+            		<apex:pageBlockSection columns="1">
+            		<apex:pageBlockSectionItem >
+            			<apex:outputLabel value="Recurs every month on the "/>
+            			<apex:selectList value="{!scheduleMonthly}" multiselect="false" size="1">
+            				 <apex:selectOption itemValue="1" itemLabel="1st"/>
+            				  <apex:selectOption itemValue="2" itemLabel="2nd"/>
+            				  <apex:selectOption itemValue="3" itemLabel="3rd"/>
+            				  <apex:selectOption itemValue="4" itemLabel="4th"/>
+            				  <apex:selectOption itemValue="5" itemLabel="5th"/>
+            				  <apex:selectOption itemValue="6" itemLabel="6th"/>
+            				  <apex:selectOption itemValue="7" itemLabel="7th"/>
+            				  <apex:selectOption itemValue="8" itemLabel="8th"/>
+            				  <apex:selectOption itemValue="9" itemLabel="9th"/>
+            				  <apex:selectOption itemValue="10" itemLabel="10th"/>
+            				  <apex:selectOption itemValue="11" itemLabel="11th"/>
+            				  <apex:selectOption itemValue="12" itemLabel="12th"/>
+            				  <apex:selectOption itemValue="13" itemLabel="13th"/>
+            				  <apex:selectOption itemValue="14" itemLabel="14th"/>
+            				  <apex:selectOption itemValue="15" itemLabel="15th"/>
+            				  <apex:selectOption itemValue="16" itemLabel="16th"/>
+            				  <apex:selectOption itemValue="17" itemLabel="17th"/>
+            				  <apex:selectOption itemValue="18" itemLabel="18th"/>
+            				  <apex:selectOption itemValue="19" itemLabel="19th"/>
+            				  <apex:selectOption itemValue="20" itemLabel="20th"/>
+            				  <apex:selectOption itemValue="21" itemLabel="21th"/>
+            				  <apex:selectOption itemValue="22" itemLabel="22th"/>
+            				  <apex:selectOption itemValue="23" itemLabel="23th"/>
+            				  <apex:selectOption itemValue="24" itemLabel="24th"/>
+            				  <apex:selectOption itemValue="25" itemLabel="25th"/>
+            				  <apex:selectOption itemValue="26" itemLabel="26th"/>
+            				  <apex:selectOption itemValue="27" itemLabel="27th"/>
+            				  <apex:selectOption itemValue="28" itemLabel="28th"/>
+            				  <apex:selectOption itemValue="29" itemLabel="29th"/>
+            				  <apex:selectOption itemValue="30" itemLabel="30th"/>
+            				  <apex:selectOption itemValue="31" itemLabel="31th"/>
+            				  <apex:selectOption itemValue="L" itemLabel="last day"/>
+            				  
+            			</apex:selectList>
+            		</apex:pageBlockSectionItem>
+            		</apex:pageBlockSection>
+            		</apex:outputPanel>
+            		
+            		<apex:outputPanel id="scheduleTime" layout="block" styleClass="scheduleTime">
+            		<apex:pageBlockSection columns="1">
+            		<apex:pageBlockSectionItem >
+            			<apex:outputLabel value="Preferred Start Time"/>
+            			<apex:selectList value="{!scheduleStartTime}" multiselect="false" size="1">
+            				<apex:selectOption itemValue="0" itemLabel="12 AM (0:00)"/>
+            				<apex:selectOption itemValue="1" itemLabel="1 AM (1:00)"/>
+            				<apex:selectOption itemValue="2" itemLabel="2 AM (2:00)"/>
+            				<apex:selectOption itemValue="3" itemLabel="3 AM (3:00)"/>
+            				<apex:selectOption itemValue="4" itemLabel="4 AM (4:00)"/>
+            				<apex:selectOption itemValue="5" itemLabel="5 AM (5:00)"/>
+            				<apex:selectOption itemValue="6" itemLabel="6 AM (6:00)"/>
+            				<apex:selectOption itemValue="7" itemLabel="7 AM (7:00)"/>
+            				<apex:selectOption itemValue="8" itemLabel="8 AM (8:00)"/>
+            				<apex:selectOption itemValue="9" itemLabel="9 AM (9:00)"/>
+            				<apex:selectOption itemValue="10" itemLabel="10 AM (10:00)"/>
+            				<apex:selectOption itemValue="11" itemLabel="11 AM (11:00)"/>
+            				<apex:selectOption itemValue="12" itemLabel="12 PM (12:00)"/>
+            				<apex:selectOption itemValue="13" itemLabel="1 PM (13:00)"/>
+            				<apex:selectOption itemValue="14" itemLabel="2 PM (14:00)"/>
+            				<apex:selectOption itemValue="15" itemLabel="3 PM (15:00)"/>
+            				<apex:selectOption itemValue="16" itemLabel="4 PM (16:00)"/>
+            				<apex:selectOption itemValue="17" itemLabel="5 PM (17:00)"/>
+            				<apex:selectOption itemValue="18" itemLabel="6 PM (18:00)"/>
+            				<apex:selectOption itemValue="19" itemLabel="7 PM (19:00)"/>
+            				<apex:selectOption itemValue="20" itemLabel="8 PM (20:00)"/>
+            				<apex:selectOption itemValue="21" itemLabel="9 PM (21:00)"/>
+            				<apex:selectOption itemValue="22" itemLabel="10 PM (22:00)"/>
+            				<apex:selectOption itemValue="23" itemLabel="11 PM (23:00)"/>
+            			</apex:selectList>
+            		</apex:pageBlockSectionItem>
+            		</apex:pageBlockSection>
+            		</apex:outputPanel>
+            		
+            		<apex:outputPanel id="scheduleCustom" layout="block" style="display: none;" styleClass="scheduleCustom">
+            		<apex:pageBlockSection columns="1">
+            		<apex:inputField value="{!jobDetails.awduplicate2__Cron__c}" id="cron"/>
+            		</apex:pageBlockSection>
+            		</apex:outputPanel>
+            	
+            </apex:outputPanel>
+            
+            <apex:pageBlockSection columns="1">     
+                <apex:pageBlockSectionItem >
+                    <div>&nbsp;</div>
+                    <apex:commandButton action="{!startDedupBatch}" value="Start Deduplication" styleClass="dedupButton"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!ScheduledAllowed}">
+                    <div>&nbsp;</div>
+                    <apex:commandButton action="{!scheduleDedupBatch}" value="Schedule Deduplication" style="display:none;" styleClass="schedButton"/>
+                </apex:pageBlockSectionItem>
+                
+            </apex:pageBlockSection>
+            
+        </apex:form>
+    </apex:pageBlock>
+    <apex:pageBlock title="Auto Merge" rendered="{!AutoMergeAllowed}" mode="edit">
+        <apex:form >
+            <apex:actionFunction action="{!updateAutoMergeThreshold}" name="updateAutoMergeThreshold" rerender="am__threshold" status="SearchStatus" />
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Job to merge" for="am__jobname"/>
+                    <apex:selectList value="{!AutoMergeJobName}" multiselect="false" id="am__jobname" size="1" onchange="updateAutoMergeThreshold();">
+                        <apex:selectOptions value="{!AutoMergeJob}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Threshold" for="am__jobname" title="If duplicate score is higher than defined threshold"/>
+                    <apex:selectList value="{!AutoMergeThreshold}" multiselect="false" id="am__threshold" size="1">
+                        <apex:selectOptions value="{!AutoMergeThresholdList}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Master Object" for="am__mastersort" title=""/>
+                    <apex:selectRadio value="{!AutoMergeMaster}" id="am__mastersort" layout="pageDirection">
+                        <apex:selectOptions value="{!AutoMergeMasterSort}"/>
+                    </apex:selectRadio>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <div>&nbsp;</div>
+                    <apex:commandButton action="{!startAutoMerge}" value="Start Auto Merge" onClick="return awconfirmMergeSubmit();"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:form>
+    </apex:pageBlock>
+    <apex:pageBlock title="Auto Convert" rendered="{!AutoConvertAllowed}" mode="edit">
+    	<apex:form >
+            <apex:actionFunction action="{!updateAutoConvertThreshold}" name="updateAutoConvertThreshold" rerender="ac__threshold" status="SearchStatus" />
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Job to convert" for="ac__jobname"/>
+                    <apex:selectList value="{!AutoConvertJobName}" multiselect="false" id="ac__jobname" size="1" onchange="updateAutoConvertThreshold();">
+                        <apex:selectOptions value="{!AutoConvertJob}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Threshold" for="ac__threshold" title="If duplicate score is higher than defined threshold"/>
+                    <apex:selectList value="{!AutoConvertThreshold}" multiselect="false" id="ac__threshold" size="1">
+                        <apex:selectOptions value="{!AutoConvertThresholdList}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+                 <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Converted Status" />
+                    <apex:SelectList value="{!AutoConvertStatus}" multiselect="false">
+                        <apex:selectOptions value="{!ConvertStatus}"/>
+                    </apex:SelectList>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                	<apex:outputLabel value="Record Owner of created Records" />
+                	<apex:selectRadio value="{!AutoConvertOwner}" layout="pageDirection" id="ac__owner" onchange="showAutoConvertUser(this);">
+                		<apex:selectOption itemValue="me" itemLabel="Myself"/>
+                		<apex:selectOption itemValue="lead" itemLabel="Current Lead Owner"/>
+                		<apex:selectOption itemValue="select" itemLabel="Select below"/>
+                	</apex:selectRadio>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                	<apex:outputLabel value="Select Owner" styleClass="autoConvertOwner" style="display: none;"/>
+                	<apex:inputField value="{!AutoOpportunity.OwnerId}" required="false" styleClass="autoConvertOwner" style="display: none;"/>
+                </apex:pageBlockSectionItem>
+                
+				
+                
+                <apex:pageBlockSectionItem >
+                    <div>&nbsp;</div>
+                    <apex:commandButton action="{!startAutoConvert}" value="Start Auto Convert" onClick="return awconfirmConvertSubmit();"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:form>
+    
+    </apex:pageBlock>
+    
+    <apex:pageBlock title="Delta Processing" rendered="{!isDelta}" mode="edit">
+        <apex:form >
+            <apex:pageBlockSection columns="1"> 
+                <apex:inputField value="{!jobDetails.Name}" required="true" label="Delta Job Name"/>
+                <apex:pageBlockSectionItem >
+                    <div>&nbsp;</div>
+                    <apex:commandButton action="{!startDelta}" value="Start Delta Processing" onclick="return awconfirmSubmit();"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:form>
+    </apex:pageBlock>
+    
+    <apex:actionStatus id="SearchStatus">
+        <apex:facet name="start">
+                <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb;
+                       height: 100%;opacity:0.65;width:100%;">
+                    <div class="waitingHolder" style="top: 74.2px; width: 91px;">
+                        <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                        <span class="waitingDescription">Loading...</span>
+                    </div>
+                </div>
+            </apex:facet>
+    </apex:actionStatus>
+    <apex:form >
+    	<apex:actionFunction action="{!AddRecordCount}" name="addRecordCount" immediate="true" rerender="SearchStatus"/>
+    </apex:form>
+    <script type="text/javascript">
+    	addRecordCount();
+    </script>
+    
+    
+</apex:page>

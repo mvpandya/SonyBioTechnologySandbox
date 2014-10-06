@@ -1,0 +1,252 @@
+<apex:page standardcontroller="Lead" extensions="awduplicate2.AWControllerConvert" title="AW Convert Lead" action="{!AddUsage}" tabStyle="awDuplicateCheckSearch__tab">
+    <apex:includeScript value="{!URLFOR($Resource.awduplicate2__jquery, 'js/jquery-1.7.2.min.js')}"/>
+    <apex:sectionHeader subtitle="{!LeadObject.Name}" title="AW Convert Lead" help="http://kb.duplicatecheck.com/guide/convert/4481?utm_source=dup_for_sfdc&utm_medium=app&utm_campaign=dup_for_sfdc"/> 
+    <apex:pageMessages />
+    
+    <script type="text/javascript">
+        j$=jQuery.noConflict();
+        j$(document).ready(function(){
+            <apex:outputPanel id="step1-js" layout="none" rendered="{!IF(WizardStatus='step1',true,false)}">
+                doLeadSearch();
+                doAccountSearch();
+            </apex:outputPanel>
+            <apex:outputPanel id="step2-js" layout="none" rendered="{!IF(WizardStatus='step2',true,false)}">
+                doContactSearch();
+            </apex:outputPanel>
+            
+        });
+    </script>
+    <apex:form >
+    <apex:pageBlock title="Lead to Convert">
+        <apex:pageBlockButtons location="top">
+            <apex:commandButton action="{!gotoLeadMerge}" value="Merge Selected" rendered="{!IF(WizardStatus='step1',true,false)}"/>
+        </apex:pageBlockButtons>
+        <apex:pageBlockTable value="{!LeadObject}" var="LC" id="resLeadbject">
+            <apex:column width="20px" headerValue="View">
+                <a href="/{!LeadObject.Id}" target="_BLANK"><div style="height: 20px; width: 20px; background-image:url('/img/func_icons/util/lookup20.gif'); background-position:0px 0px;"></div></a>
+            </apex:column>
+            <apex:repeat value="{!ViewListFields['Lead']}" var="LCR" id="LeadRowRepeat">
+                <apex:column width="*" headerValue="{!$ObjectType['Lead'].fields[LCR].Label}"><apex:outputField value="{!LeadObject[$ObjectType['Lead'].fields[LCR].LocalName]}"/></apex:column>
+            </apex:repeat>  
+        </apex:pageBlockTable>
+        <apex:outputPanel id="step1-lead" layout="none" rendered="{!IF(WizardStatus='step1',true,false)}">
+        <apex:pageBlockSection title="Duplicate Leads" columns="1" collapsible="false"/>
+        <apex:actionFunction action="{!doLeadSearch}" name="doLeadSearch" rerender="LeadObjectResult" status="LeadStatus"/>
+            <apex:actionStatus id="LeadStatus">
+                <apex:facet name="start">
+                    <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                </apex:facet>
+                <apex:facet name="stop">
+                    <apex:pageBlockTable value="{!SearchResult['Lead']}" var="TR" id="LeadObjectResult">
+                        <apex:column headerValue="#" width="20"><apex:inputCheckbox value="{!TR.rSelected}"/></apex:column>
+                        <apex:column headerValue="Score" width="30"><apex:outputLink value="/{!TR.rId}"><apex:outputText value="{!TR.rScore}"/></apex:outputLink></apex:column>
+                        <apex:repeat value="{!ViewListFields['Lead']}" var="RR" id="rowRepeat">
+                            <apex:column width="*" headerValue="{!$ObjectType['Lead'].fields[RR].Label}"><apex:outputLink value="/{!TR.rId}"><apex:outputField value="{!TR.rObject[$ObjectType['Lead'].fields[RR].LocalName]}"/></apex:outputLink></apex:column>
+                        </apex:repeat>  
+                    </apex:pageBlockTable>
+                </apex:facet>
+            </apex:actionStatus>
+        </apex:outputPanel>
+    </apex:pageBlock>
+    <apex:pageBlock title="Selected Account" tabStyle="Account" rendered="{!NOT(ISNULL(SelectedAccountId))}">
+        <apex:pageBlockSection rendered="{!IF(SelectedAccountId=='new',true,false)}">
+            <apex:outputLabel value="A new account will be created."/>
+        </apex:pageBlockSection>
+        <apex:pageBlockTable value="{!SelectedAccount}" var="SA" id="SAbject" rendered="{!IF(SelectedAccountId!='new',true,false)}">
+            <apex:column width="20px" headerValue="View">
+                <a href="/{!SelectedAccount.Id}" target="_BLANK"><div style="height: 20px; width: 20px; background-image:url('/img/func_icons/util/lookup20.gif'); background-position:0px 0px;"></div></a>
+            </apex:column>
+            <apex:repeat value="{!ViewListFields['Account']}" var="SAR" id="SARepeat">
+                <apex:column width="*" headerValue="{!$ObjectType['Account'].fields[SAR].Label}"><apex:outputField value="{!SelectedAccount[$ObjectType['Account'].fields[SAR].LocalName]}"/></apex:column>
+            </apex:repeat>  
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+    <apex:pageBlock title="Selected Contact" tabStyle="Contact" rendered="{!NOT(ISNULL(SelectedContactId))}">
+        <apex:pageBlockSection rendered="{!IF(SelectedContactId=='new',true,false)}">
+            <apex:outputLabel value="A new contact will be created."/>
+        </apex:pageBlockSection>
+        <apex:pageBlockTable value="{!SelectedContact}" var="SC" id="SCbject" rendered="{!IF(SelectedContactId!='new',true,false)}">
+            <apex:column width="20px" headerValue="View">
+                <a href="/{!SelectedContact.Id}" target="_BLANK"><div style="height: 20px; width: 20px; background-image:url('/img/func_icons/util/lookup20.gif'); background-position:0px 0px;"></div></a>
+            </apex:column>
+            <apex:repeat value="{!ViewListFields['Contact']}" var="SCR" id="SCRepeat">
+                <apex:column width="*" headerValue="{!$ObjectType['Contact'].fields[SCR].Label}"><apex:outputField value="{!SelectedContact[$ObjectType['Contact'].fields[SCR].LocalName]}"/></apex:column>
+            </apex:repeat>  
+        </apex:pageBlockTable>
+    </apex:pageBlock>   
+        <apex:outputPanel id="step1-account" layout="none" rendered="{!IF(WizardStatus='step1',true,false)}">
+        <apex:actionFunction action="{!doAccountSearch}" name="doAccountSearch" rerender="AccountObjectResult" status="AccountStatus"/>
+        <apex:pageBlock title="Select Account" tabStyle="Account">
+            <apex:pageBlockSection title="Select option" columns="1" collapsible="false"/>
+                <table class="detaillist" border="0" cellpadding="0" cellspacing="0">
+                    <tbody>
+                        <tr>
+                            <td class="labelCol first" style="text-align:left;">
+                                <input type="radio" name="account" value="new"/>
+                                Create New Account
+                            </td>
+                            <td class="dataCol first">
+                                <apex:outputField value="{!LeadObject.Company}"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            <apex:pageBlockSection title="Or convert Lead into" columns="1" collapsible="false"/>
+            <apex:actionStatus id="AccountStatus">
+                <apex:facet name="start">
+                    <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                </apex:facet>
+                <apex:facet name="stop">
+                    <apex:pageBlockTable value="{!SearchResult['Account']}" var="TR" id="AccountObjectResult">
+                        <apex:column headerValue="#" width="20"><input type="radio" name="account" value="{!TR.rId}"/></apex:column>
+                        <apex:column headerValue="Score" width="30"><apex:outputLink value="/{!TR.rId}"><apex:outputText value="{!TR.rScore}"/></apex:outputLink></apex:column>
+                        <apex:repeat value="{!ViewListFields['Account']}" var="RR" id="rowRepeat">
+                            <apex:column width="*" headerValue="{!$ObjectType['Account'].fields[RR].Label}"><apex:outputLink value="/{!TR.rId}"><apex:outputField value="{!TR.rObject[$ObjectType['Account'].fields[RR].LocalName]}"/></apex:outputLink></apex:column>
+                        </apex:repeat>  
+                    </apex:pageBlockTable>
+                </apex:facet>
+            </apex:actionStatus>
+            <apex:pageBlockSection title="Or search other" columns="1" collapsible="false"/>
+            <apex:inputText value="{!AccountSearchString}"/>
+            <input type="button" onClick="doOtherAccountSearch();" value="Search"/>
+            <br/><br/>
+            <apex:actionFunction action="{!doOtherAccountSearch}" name="doOtherAccountSearch" rerender="OtherAccountObjectResult" status="OtherAccountStatus"/>
+            <apex:actionStatus id="OtherAccountStatus">
+                <apex:facet name="start">
+                    <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                </apex:facet>
+                <apex:facet name="stop">
+                    <apex:pageBlockTable value="{!OtherAccounts}" var="TR" id="OtherAccountObjectResult">
+                        <apex:column headerValue="#" width="20"><input type="radio" name="account" value="{!TR.Id}"/></apex:column>
+                        <apex:repeat value="{!ViewListFields['Account']}" var="RR" id="rowRepeat">
+                            <apex:column width="*" headerValue="{!$ObjectType['Account'].fields[RR].Label}"><apex:outputLink value="/{!TR.Id}"><apex:outputField value="{!TR[$ObjectType['Account'].fields[RR].LocalName]}"/></apex:outputLink></apex:column>
+                        </apex:repeat>  
+                    </apex:pageBlockTable>
+                </apex:facet>
+            </apex:actionStatus>    
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton value="Next >>" action="{!gotoStep2}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+        </apex:outputPanel>
+    </apex:form>
+    <apex:outputPanel id="step2-contact" layout="none" rendered="{!IF(WizardStatus='step2',true,false)}">
+    <script type="text/javascript">
+        
+        j$(document).ready(function(){
+            
+        });
+    </script>
+    <apex:form >
+        <apex:actionFunction action="{!doContactSearch}" name="doContactSearch" rerender="ContactObjectResult" status="ContactStatus"/>
+        <apex:pageBlock title="Matching Contacts" tabStyle="Contact">
+            <apex:pageBlockSection title="Select option" columns="1" collapsible="false"/>
+                <table class="detaillist" border="0" cellpadding="0" cellspacing="0">
+                    <tbody>
+                        <tr>
+                            <td class="labelCol first" style="text-align:left;">
+                                <input type="radio" name="contact" value="new"/>
+                                Create new contact
+                            </td>
+                            <td class="dataCol first">
+                                <apex:outputField value="{!LeadObject.Name}"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            <apex:pageBlockSection title="Or convert Lead into" columns="1" collapsible="false"></apex:pageBlockSection>
+            <apex:actionStatus id="ContactStatus">
+                <apex:facet name="start">
+                    <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                </apex:facet>
+                <apex:facet name="stop">
+                    <apex:pageBlockTable value="{!SearchResult['Contact']}" var="TR" id="ContactObjectResult">
+                        <apex:column headerValue="#" width="20"><input type="radio" name="contact" value="{!TR.rId}"/></apex:column>
+                        <apex:column headerValue="Score" width="30"><apex:outputLink value="/{!TR.rId}"><apex:outputText value="{!TR.rScore}"/></apex:outputLink></apex:column>
+                        <apex:repeat value="{!ViewListFields['Contact']}" var="RR" id="rowRepeat">
+                            <apex:column width="*" headerValue="{!$ObjectType['Contact'].fields[RR].Label}"><apex:outputLink value="/{!TR.rId}"><apex:outputField value="{!TR.rObject[$ObjectType['Contact'].fields[RR].LocalName]}"/></apex:outputLink></apex:column>
+                        </apex:repeat>  
+                    </apex:pageBlockTable>
+                </apex:facet>
+            </apex:actionStatus>
+            <apex:pageBlockSection title="Or search other" columns="1" collapsible="false"/>
+            <apex:inputText value="{!ContactSearchString}"/>
+            <input type="button" onClick="doOtherContactSearch();" value="Search"/>
+            <br/><br/>
+            <apex:actionFunction action="{!doOtherContactSearch}" name="doOtherContactSearch" rerender="OtherContactObjectResult" status="OtherContactStatus"/>
+            <apex:actionStatus id="OtherContactStatus">
+                <apex:facet name="start">
+                    <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                </apex:facet>
+                <apex:facet name="stop">
+                    <apex:pageBlockTable value="{!OtherContacts}" var="TR" id="OtherContactObjectResult">
+                        <apex:column headerValue="#" width="20"><input type="radio" name="contact" value="{!TR.Id}"/></apex:column>
+                        <apex:repeat value="{!ViewListFields['Contact']}" var="RR" id="rowRepeat">
+                            <apex:column width="*" headerValue="{!$ObjectType['Contact'].fields[RR].Label}"><apex:outputLink value="/{!TR.Id}"><apex:outputField value="{!TR[$ObjectType['Contact'].fields[RR].LocalName]}"/></apex:outputLink></apex:column>
+                        </apex:repeat>  
+                    </apex:pageBlockTable>
+                </apex:facet>
+            </apex:actionStatus>    
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton value="Next >>" action="{!gotoStep3}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+    </apex:outputPanel>
+    <apex:outputPanel id="step3-convert" layout="none" rendered="{!IF(WizardStatus='step3',true,false)}">
+        <apex:Form >
+        <apex:pageBlock title="Convert Options" tabStyle="Opportunity">
+            <apex:pageBlockSection title="Convert Lead" columns="1" collapsible="false">
+                <apex:inputField value="{!OpportunityObject.OwnerId}" label="Record Owner"/>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Send Email to the Owner" />
+                    <apex:inputCheckBox value="{!isSentOnwerChange}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Converted Status" />
+                    <apex:SelectList value="{!SelectedConvertStatus}" multiselect="false">
+                        <apex:selectOptions value="{!ConvertStatus}"/>
+                    </apex:SelectList>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Replace existing Lead Source with the value from this lead" />
+                    <apex:inputCheckBox value="{!isOverwriteContactSource}"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Opportunity Information" columns="1" collapsible="false">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Create opportunity"/>
+                    <apex:inputCheckBox value="{!isCreateOpportunity}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Opportunity Name"/>
+                    <apex:inputText value="{!OpportunityName}"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Task Information" columns="1" collapsible="false">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Create task"/>
+                    <apex:inputCheckBox value="{!isCreateTask}"/>
+                </apex:pageBlockSectionItem>
+                <apex:inputField value="{!TaskObject.Subject}"/>
+                <apex:inputField value="{!TaskObject.Status}"/>
+                <apex:inputField value="{!TaskObject.Priority}"/>
+                <apex:inputField value="{!TaskObject.ActivityDate}"/>
+                <apex:inputField value="{!TaskObject.Description}"/>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Sent Notification Email"/>
+                    <apex:inputCheckBox value="{!isSentTaskCreation}"/>
+                </apex:pageBlockSectionItem>
+                <apex:inputField value="{!TaskObject.ReminderDateTime}"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Convert" action="{!doConvert}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+        </apex:Form>
+        
+    </apex:outputPanel>
+    <script>
+        if (location.href.match(/&inline=1/)) window.top.location=location.href.replace(/&inline=1/, '');
+    </script>
+</apex:page>

@@ -1,0 +1,129 @@
+<apex:page controller="awduplicate2.AWControllerSearch" title="Duplicate Check Search" action="{!AddUsage}" tabStyle="awDuplicateCheckSearch__tab">
+    <apex:includeScript value="{!URLFOR($Resource.awduplicate2__jquery, 'js/jquery-1.7.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.awduplicate2__jquery, 'js/jquery-ui-1.8.21.custom.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.awduplicate2__jquery, 'css/smoothness/jquery-ui-1.8.21.custom.css')}"/>
+    <script type="text/javascript">
+        var j$ = jQuery.noConflict();
+        j$(document).ready(function() {
+            j$("#tabs").tabs();
+            j$("#tabs").tabs("select","tabs-{!JSINHTMLENCODE(TabInFocus)}");
+        });
+    </script>
+    
+    
+    <apex:sectionHeader title="Duplicate Check Search" help="http://kb.duplicatecheck.com/guide/search/4422?utm_source=dup_for_sfdc&utm_medium=app&utm_campaign=dup_for_sfdc"/> 
+    <apex:pageMessages />
+    
+    <c:AWAdvertFree rendered="{!IF(LicEdition==0,true,false)}"/>
+    <apex:form >
+        <apex:actionFunction action="{!doSearch}" name="doSearchJavaScript" rerender="searchResults" status="SearchStatus">
+            <apex:param name="firstParam" assignTo="{!SearchObject}" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction action="{!doSearchRT}" name="doSearchJavaScriptRT" rerender="searchResults" status="SearchStatus">
+            <apex:param name="firstParam" assignTo="{!SearchObject}" value="" />
+            <apex:param name="SecondParam" assignTo="{!RecType}" value="" />
+        </apex:actionFunction>
+        
+        
+        <div id="tabs" style="border: 0px solid #ffffff;">
+            <ul style="background: #ffffff; border: 0px solid #ffffff;">
+                <apex:repeat value="{!searchTabs}" var="T" id="tablist"> 
+                    <li><a href="#tabs-{!searchTabs[T].tabName}"><apex:outputText value="{!ObjectLabels[searchTabs[T].tabName]}"/></a></li>
+                </apex:repeat>
+            </ul>
+            <apex:repeat value="{!searchTabs}" var="TC" id="tabcontent">
+                    <div id="tabs-{!searchTabs[TC].tabName}" style="padding: 1em 0em 0em 0em; border-top: 1px solid #cccccc;">
+                        <apex:pageBlock title="Search {!ObjectLabels[searchTabs[TC].tabName]}" id="pbInput" mode="edit">
+                        
+                            <apex:pageBlockButtons location="bottom" rendered="{!NOT(searchTabs[TC].IsRecordTypes)}">
+                                <apex:outputPanel onclick="doSearchJavaScript('{!JSINHTMLENCODE(searchTabs[TC].tabName)}')" styleClass="btn">Search {!ObjectLabels[searchTabs[TC].tabName]}</apex:outputPanel>
+                            </apex:pageBlockButtons>
+                            <apex:pageBlockSection rendered="{!NOT(searchTabs[TC].IsRecordTypes)}"> 
+                                <apex:repeat value="{!searchTabs[TC].FieldSetup}" var="F" id="fieldcontent">
+                                    
+                                    <apex:pageBlockSectionItem >
+                                        <apex:outputLabel value="{!$ObjectType[searchTabs[TC].tabObjectName].fields[F.Field__c].label}"/>
+                                        <apex:outputpanel layout="none">
+                                        <apex:inputField value="{!searchTabs[TC].ObjectData[F.Field__c]}" label="true" required="false" rendered="{!IF(OR(AND(searchTabs[TC].tabName = 'Paccount',F.Field__c = 'FirstName'),AND(searchTabs[TC].tabName = 'Paccount',F.Field__c = 'LastName'),AND(searchTabs[TC].tabName = 'Paccount',F.Field__c = 'Salutation')),false,true)}"/>
+                                        
+                                        <apex:inputText value="{!FirstName}" label="true" required="false" rendered="{!IF(AND(searchTabs[TC].tabName = 'Paccount',F.Field__c = 'FirstName'),true,false)}"/>
+                                        <apex:inputText value="{!LastName}" label="true" required="false" rendered="{!IF(AND(searchTabs[TC].tabName = 'Paccount',F.Field__c = 'LastName'),true,false)}"/>
+                                        <apex:inputText value="{!Salutation}" label="true" required="false" rendered="{!IF(AND(searchTabs[TC].tabName = 'Paccount',F.Field__c = 'Salutation'),true,false)}"/>
+                                        </apex:outputpanel>
+                                        
+                                    </apex:pageBlockSectionItem>
+                                </apex:repeat>
+                            </apex:pageBlockSection>
+                            
+                            <apex:repeat value="{!searchTabs[TC].ObjectDataRecTypes}" var="RT" id="rtcontent" rendered="{!searchTabs[TC].IsRecordTypes}">
+                                <apex:pageBlockSection title="{!searchTabs[TC].RecTypeLabel[RT]}" collapsible="false"> 
+                                    <apex:repeat value="{!searchTabs[TC].FieldSetupRecTypes[RT]}" var="F" id="fieldcontent">
+                                        <apex:pageBlockSectionItem >
+                                            <apex:outputLabel value="{!$ObjectType[searchTabs[TC].tabObjectName].fields[F.Field__c].label}"/>
+                                            <apex:outputpanel layout="none">
+                                            <apex:inputField value="{!searchTabs[TC].ObjectDataRecTypes[RT][F.Field__c]}" label="true" required="false" rendered="{!IF(OR(AND(searchTabs[TC].tabName = 'Paccount',F.Field__c = 'FirstName'),AND(searchTabs[TC].tabName = 'Paccount',F.Field__c = 'LastName'),AND(searchTabs[TC].tabName = 'Paccount',F.Field__c = 'Salutation')),false,true)}"/>
+                                        
+                                        	<apex:inputText value="{!FirstName}" label="true" required="false" rendered="{!IF(AND(searchTabs[TC].tabName = 'Paccount',F.Field__c = 'FirstName'),true,false)}"/>
+                                        	<apex:inputText value="{!LastName}" label="true" required="false" rendered="{!IF(AND(searchTabs[TC].tabName = 'Paccount',F.Field__c = 'LastName'),true,false)}"/>
+                                        	<apex:inputText value="{!Salutation}" label="true" required="false" rendered="{!IF(AND(searchTabs[TC].tabName = 'Paccount',F.Field__c = 'Salutation'),true,false)}"/>
+                                            </apex:outputpanel>
+                                        </apex:pageBlockSectionItem>
+                                    </apex:repeat>
+                                    
+                                </apex:pageBlockSection>
+                                <apex:pageBlockSection collapsible="false"> 
+                                	<apex:pageBlockSectionItem >
+                                    	<div>&nbsp;</div>
+                                		<apex:outputPanel onclick="doSearchJavaScriptRT('{!JSINHTMLENCODE(searchTabs[TC].tabName)}','{!JSINHTMLENCODE(RT)}')" styleClass="btn">Search {!ObjectLabels[searchTabs[TC].tabName]} -- {!searchTabs[TC].RecTypeLabel[RT]}</apex:outputPanel>    	
+                                    </apex:pageBlockSectionItem>
+                                </apex:pageBlockSection>                                
+                            </apex:repeat>
+                        
+                        </apex:pageBlock>
+                    </div> 
+            </apex:repeat>
+        </div>
+    </apex:form>
+    <br/>
+    <apex:outputPanel id="searchResults">
+        <apex:form >
+            <apex:pageBlock title="Search Results for {!ObjectLabels[SearchObject]}" rendered="{!renderSearchResult}">
+                
+                
+                
+                <apex:repeat value="{!SearchResult}" var="RO" id="ROcontent">
+                    <apex:pageBlockSection title="Matching {!ObjectLabels[RO]}" collapsible="false" columns="1"></apex:pageBlockSection>
+                        <apex:pageBlockTable value="{!SearchResult[RO]}" id="tableRepeat" var="TR">
+                            <apex:column headerValue="#" width="20"><apex:inputCheckbox value="{!TR.rSelected}"/></apex:column>
+                            <apex:column headerValue="Score" width="30"><apex:outputLink value="/{!TR.rId}"><apex:outputText value="{!TR.rScore}"/></apex:outputLink></apex:column>
+                            
+                            <apex:repeat value="{!ViewListFields[RO]}" var="RR" id="rowRepeat">
+                                <apex:column width="*" headerValue="{!$ObjectType[ViewListFieldsObject[RO]].fields[RR].Label}"><apex:outputLink value="/{!TR.rId}"><apex:outputField value="{!TR.rObject[$ObjectType[ViewListFieldsObject[RO]].fields[RR].LocalName]}"/></apex:outputLink></apex:column>
+                                
+                            </apex:repeat>  
+                        </apex:pageBlockTable> 
+                        <apex:commandLink action="{!gotoMerge}" value="Merge">
+                            <apex:param name="MergeObject" value="{!RO}" assignTo="{!MergeObject}"/>
+                        </apex:commandLink>
+                </apex:repeat>
+            </apex:pageBlock>
+        </apex:form>
+        <apex:pageBlock title="Search Results for {!ObjectLabels[SearchObject]}" rendered="{!renderNoSearchResult}">
+            Nothing found. Please try again with different search options.
+        </apex:pageBlock>
+    <apex:actionStatus id="SearchStatus">
+        <apex:facet name="start">
+                <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb;
+                       height: 100%;opacity:0.65;width:100%;">
+                    <div class="waitingHolder" style="top: 74.2px; width: 91px;">
+                        <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                        <span class="waitingDescription">Loading...</span>
+                    </div>
+                </div>
+            </apex:facet>
+    </apex:actionStatus>
+    </apex:outputPanel>
+    
+    
+    
+</apex:page>

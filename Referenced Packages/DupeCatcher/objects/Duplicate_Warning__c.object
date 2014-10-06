@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <enableActivities>true</enableActivities>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <fields>
+        <fullName>Scenario_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The filter type of the parent filter.  This always matches the parent filter.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The type of record matching that triggered the duplicate alert.  This value always matches the filter type of the parent filter.</inlineHelpText>
+        <label>Filter Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Lead</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Contact</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Account</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lead to Contact</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lead to Account</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Scenario__c</fullName>
+        <deprecated>false</deprecated>
+        <description>This field links the duplicate alert to its parent Filter.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The Filter that is associated with this alert record.</inlineHelpText>
+        <label>Filter</label>
+        <referenceTo>Scenario__c</referenceTo>
+        <relationshipLabel>DupeCatcher Duplicate Alerts</relationshipLabel>
+        <relationshipName>Duplicate_Warnings</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Triggering_Action__c</fullName>
+        <deprecated>false</deprecated>
+        <description>This is the triggering action of the parent filter.  It always matches the triggering action of the parent.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Shows whether this warning was triggered on an insert or an update.</inlineHelpText>
+        <label>Triggering Action</label>
+        <length>60</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>DupeCatcher Duplicate Alert</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Scenario__c</columns>
+        <columns>Scenario_Type__c</columns>
+        <columns>Triggering_Action__c</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Account_Warnings</fullName>
+        <columns>NAME</columns>
+        <columns>Scenario__c</columns>
+        <columns>Scenario_Type__c</columns>
+        <columns>Triggering_Action__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Scenario_Type__c</field>
+            <operation>equals</operation>
+            <value>Account</value>
+        </filters>
+        <label>All Account Warnings</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Contact_Warnings</fullName>
+        <columns>NAME</columns>
+        <columns>Scenario__c</columns>
+        <columns>Scenario_Type__c</columns>
+        <columns>Triggering_Action__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Scenario_Type__c</field>
+            <operation>equals</operation>
+            <value>Contact</value>
+        </filters>
+        <label>All Contact Warnings</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Lead_Warnings</fullName>
+        <columns>NAME</columns>
+        <columns>Scenario__c</columns>
+        <columns>Scenario_Type__c</columns>
+        <columns>Triggering_Action__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Scenario_Type__c</field>
+            <operation>equals</operation>
+            <value>Lead</value>
+        </filters>
+        <label>All Lead Warnings</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Lead_to_Contact_Warnings</fullName>
+        <columns>NAME</columns>
+        <columns>Scenario__c</columns>
+        <columns>Scenario_Type__c</columns>
+        <columns>Triggering_Action__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Scenario_Type__c</field>
+            <operation>equals</operation>
+            <value>Lead to Contact</value>
+        </filters>
+        <label>All Lead to Contact Warnings</label>
+    </listViews>
+    <listViews>
+        <fullName>Lead_to_Account_Warnings</fullName>
+        <columns>NAME</columns>
+        <columns>Scenario__c</columns>
+        <columns>Scenario_Type__c</columns>
+        <columns>Triggering_Action__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Scenario_Type__c</field>
+            <operation>equals</operation>
+            <value>Lead to Account</value>
+        </filters>
+        <label>Lead to Account Warnings</label>
+    </listViews>
+    <nameField>
+        <displayFormat>Alert-{0}</displayFormat>
+        <label>Alert Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>DupeCatcher Duplicate Alerts</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Scenario__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Scenario_Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Triggering_Action__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CREATEDBY_USER</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>Scenario__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Scenario_Type__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Triggering_Action__c</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Scenario__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Scenario_Type__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Triggering_Action__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CREATEDBY_USER</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>Scenario__c</searchFilterFields>
+        <searchFilterFields>Scenario_Type__c</searchFilterFields>
+        <searchFilterFields>Triggering_Action__c</searchFilterFields>
+        <searchFilterFields>CREATEDBY_USER</searchFilterFields>
+        <searchResultsAdditionalFields>Scenario__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Scenario_Type__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Triggering_Action__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CREATEDBY_USER</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+    <webLinks>
+        <fullName>Browse_Dupes</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>Browse Dupes</masterLabel>
+        <openType>noSidebar</openType>
+        <protected>false</protected>
+        <url>/apex/RedirectToExisting?id={!Duplicate_Warning__c.Id}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Merge_Duplicates</fullName>
+        <availability>online</availability>
+        <description>This button can be used to merge the duplicates contained by a warning into a single record</description>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>Merge or Convert Duplicates</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <url>/apex/SFSSDupeCatcher__MergeConvertDuplicatesRedirect?id={!Duplicate_Warning__c.Id}&amp;filtertype={!Duplicate_Warning__c.Scenario_Type__c}</url>
+    </webLinks>
+</CustomObject>

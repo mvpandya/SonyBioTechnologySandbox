@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <customHelpPage>Filter_Page_Help</customHelpPage>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <enableActivities>true</enableActivities>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <fields>
+        <fullName>Blocked_Duplicates__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <description>The number of of duplicates that have been blocked by this filter through a &quot;Do Not Insert&quot;, &quot;Display Matching Records&quot; or &quot;Do not Update&quot; action.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The number of of duplicates that have been blocked by this filter through a &quot;Do Not Insert&quot;, &quot;Display Matching Records&quot; or &quot;Do not Update&quot; action.</inlineHelpText>
+        <label>Blocked Duplicates</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bypass_Security__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>If this field is checked, DupeCatcher will query all of an organization&apos;s lead, contact or account records instead of those visible only to the user entering or updating a record.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If checked, DupeCatcher checks all records, not just those the user has permissions to view.</inlineHelpText>
+        <label>Bypass Security</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Converted_Duplicates__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <description>The number of Duplicates that have been converted to a contact or account by this filter</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The number of Duplicates that have been converted to a contact or account by this filter</inlineHelpText>
+        <label>Converted Duplicates</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Create_Tasks_for_Warnings__c</fullName>
+        <deprecated>false</deprecated>
+        <description>This field can be used to create tasks whenever a potential duplicate is discovered by the &quot;Report Duplicates&quot; action.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicates whether a task is to be created and who it will be assigned to.</inlineHelpText>
+        <label>Create Tasks for Alerts</label>
+        <picklist>
+            <picklistValues>
+                <fullName>No</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Yes - User</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Yes - Filter Owner</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Deployed__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>This is used to enable/disable this filter.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicates if a DupeCatcher filter is active.</inlineHelpText>
+        <label>Active</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Duplicate_Warning_Count__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The number of Duplicate Alerts that have been generated by this filter.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The number of alerts generated by the filter.</inlineHelpText>
+        <label>Duplicate Alert Count</label>
+        <summaryForeignKey>Duplicate_Warning__c.Scenario__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Error_Message__c</fullName>
+        <defaultValue>&quot;Click on the links below to view or edit the potential duplicate records.&quot;</defaultValue>
+        <deprecated>false</deprecated>
+        <description>The error message to be displayed to the user when a &quot;Do Not Insert&apos; action is invoked.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The user-defined error message to display when a duplicate is identified.</inlineHelpText>
+        <label>Error Message</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Match_On_Insert_Action__c</fullName>
+        <deprecated>false</deprecated>
+        <description>This field indicates what DupeBlocker should do when when a user has created a record that it considers to be a potential duplicate.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The action DupeCatcher takes on identifying a potential duplicate when a new record is inserted.</inlineHelpText>
+        <label>Match on Insert Action</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Do Not Insert</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Display Matching Records</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Do Nothing</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Report Duplicate</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Match_On_Update_Action__c</fullName>
+        <deprecated>false</deprecated>
+        <description>This field indicates what DupeBlocker should do when when a user has modified a record and it considers it to be a potential duplicate.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The action DupeCatcher takes on identifying a potential duplicate when a new record is updated.</inlineHelpText>
+        <label>Match On Update Action</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Do Not Update</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Report Duplicate</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Do Nothing</fullName>
+                <default>true</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Merged_Duplicates__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <description>The number of duplicates that have been merged using DupeCatcher</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The number of duplicates that have been merged using DupeCatcher</inlineHelpText>
+        <label>Merged Duplicates</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Person_Account_Filter__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Filter is for Person Account matching.</inlineHelpText>
+        <label>Person Account Filter</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Potential_Duplicate_Count__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The number of potential duplicate records that have been generated by DupeCatcher through the &quot;Do Not Insert&quot;, &quot;Do Not Update&quot; and &quot;Display Matching Records&quot; actions.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The number of potential duplicates that have been identified by this filter.</inlineHelpText>
+        <label>Potential Duplicate Count</label>
+        <summaryForeignKey>Potential_Duplicate__c.Scenario__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Scenario_Rule_Count__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The number of scenario rules that are a part of this filter.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The number of rules that are part of a the filter.</inlineHelpText>
+        <label>Filter Rule Count</label>
+        <summaryForeignKey>Scenario_Rule__c.Scenario__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Scenario_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <description>This indicates the type of records that will be used to match on this filter.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The record types to compare.</inlineHelpText>
+        <label>FilterType</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Lead</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lead to Contact</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lead to Account</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Contact</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Account</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <label>DupeCatcher Filter</label>
+    <nameField>
+        <label>Filter Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>DupeCatcher Filters</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Scenario_Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Deployed__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>UPDATEDBY_USER</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>Scenario_Type__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Deployed__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>UPDATEDBY_USER</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Scenario_Type__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Deployed__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>UPDATEDBY_USER</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>Scenario_Type__c</searchFilterFields>
+        <searchFilterFields>Deployed__c</searchFilterFields>
+        <searchFilterFields>UPDATEDBY_USER</searchFilterFields>
+        <searchResultsAdditionalFields>Scenario_Type__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Deployed__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>UPDATEDBY_USER</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>PersonAccount_Contact_Filtertype</fullName>
+        <active>true</active>
+        <errorConditionFormula>IF(Person_Account_Filter__c, IF(ISPICKVAL(Scenario_Type__c, &quot;Contact&quot;), true, false), false)</errorConditionFormula>
+        <errorMessage>&apos;Contact&apos; is not  a valid Filter Type when the Person Account checkbox is checked.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>PersonAccount_Lead2Contact_Filtertype</fullName>
+        <active>true</active>
+        <errorConditionFormula>IF(Person_Account_Filter__c, IF(ISPICKVAL(Scenario_Type__c, &quot;Lead to Contact&quot;), true, false), false)</errorConditionFormula>
+        <errorMessage>&apos;Lead to Contact&apos; is not a valid Filter Type when the Person Account checkbox is checked.</errorMessage>
+    </validationRules>
+</CustomObject>

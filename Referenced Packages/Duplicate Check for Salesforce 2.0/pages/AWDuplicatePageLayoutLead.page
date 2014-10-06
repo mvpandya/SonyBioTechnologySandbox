@@ -1,0 +1,69 @@
+<apex:page standardController="Lead" extensions="awduplicate2.AWControllerCheck" title="AW Duplicate Check" tabStyle="awDuplicateCheckSearch__tab" readOnly="true">
+<apex:includeScript value="{!URLFOR($Resource.awduplicate2__jquery, 'js/jquery-1.7.2.min.js')}"/>
+<c:AWAdvertFree rendered="{!IF(LicEdition==0,true,false)}"/>
+<script type="text/javascript">
+        j$=jQuery.noConflict();
+        j$(document).ready(function(){
+            doObjectSearch();
+            
+        });
+    </script>
+    <apex:form >
+        
+        <apex:pageBlock title="Duplicate {!ObjectLabels[ObjectNameRT]}">
+            
+                <apex:pageBlockButtons location="top">
+                    <apex:commandLink action="{!gotoMerge}" value="Merge Selected" id="resBut" rendered="{!isMergeable}" target="_top" />
+                    
+                </apex:pageBlockButtons>
+            
+                <apex:actionFunction action="{!doObjectSearch}" name="doObjectSearch" rerender="resObject,resBut" status="ObjectStatus" oncomplete="doCrossSearch();"/>
+                <apex:actionStatus id="ObjectStatus">
+                    <apex:facet name="start">
+                        <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                    </apex:facet>
+                    <apex:facet name="stop">
+                        <apex:pageBlockTable value="{!ObjectResult[ObjectNameRT]}" var="TR" id="resObject">
+                            <apex:column headerValue="#" width="20"><apex:inputCheckbox value="{!TR.rSelected}"/></apex:column>
+                            <apex:column headerValue="Score" width="30"><apex:outputLink value="/{!TR.rId}"><apex:outputText value="{!TR.rScore}"/></apex:outputLink></apex:column>
+                            <apex:repeat value="{!ViewListFields[ObjectNameRT]}" var="RR" id="rowRepeat">
+                                <apex:column width="*" headerValue="{!$ObjectType['Account'].fields[RR].Label}" rendered="{!IF(ObjectName='Paccount',true,false)}"><apex:outputLink value="/{!TR.rId}"><apex:outputField value="{!TR.rObject[$ObjectType['Account'].fields[RR].LocalName]}"/></apex:outputLink></apex:column>
+                                <apex:column width="*" headerValue="{!$ObjectType[ViewListFieldsObject[ObjectNameRT]].fields[RR].Label}" rendered="{!IF(ObjectName='Paccount',false,true)}"><apex:outputLink value="/{!TR.rId}"><apex:outputField value="{!TR.rObject[$ObjectType[ViewListFieldsObject[ObjectNameRT]].fields[RR].LocalName]}"/></apex:outputLink></apex:column>
+                            </apex:repeat>  
+                        </apex:pageBlockTable>
+                        
+                    </apex:facet>
+                </apex:actionStatus>
+            
+        </apex:pageBlock>
+    </apex:form>
+    
+    <apex:form >
+        <apex:actionFunction action="{!doCrossSearch}" name="doCrossSearch" rerender="resCOObject" status="COObjectStatus" rendered="{!isCrossObject}"/>
+        <apex:actionStatus id="COObjectStatus" rendered="{!isCrossObject}">
+            <apex:facet name="start">
+                <apex:pageBlock title="Other Duplicate Objects">
+                    <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                </apex:pageBlock>
+            </apex:facet>
+            <apex:facet name="stop">
+                <apex:repeat value="{!CrossObjects}" var="CO" id="COcontent">
+                    <apex:pageBlock title="Duplicate {!ObjectLabels[CO]}">
+                        <apex:pageBlockTable value="{!SearchResult[CO]}" var="TR" id="resCOObject">
+                        	<apex:column headerValue="Action" width="40px" rendered="{!isConvert[CO]}">
+	                        	<apex:commandLink action="{!gotoConvert}" value="Convert" target="_top">
+	                                <apex:param name="ConvertId" value="{!TR.rId}" assignTo="{!ConvertId}"/>
+	                            </apex:commandLink>
+                        	</apex:column>
+                            <apex:column headerValue="Score" width="30px"><apex:outputLink value="/{!TR.rId}"><apex:outputText value="{!TR.rScore}"/></apex:outputLink></apex:column>
+                            <apex:repeat value="{!ViewListFields[CO]}" var="RR" id="rowRepeat">
+                                <apex:column width="*" headerValue="{!$ObjectType['Account'].fields[RR].Label}" rendered="{!IF(CO='Paccount',true,false)}"><apex:outputLink value="/{!TR.rId}"><apex:outputField value="{!TR.rObject[$ObjectType['Account'].fields[RR].LocalName]}"/></apex:outputLink></apex:column>
+                                <apex:column width="*" headerValue="{!$ObjectType[ViewListFieldsObject[CO]].fields[RR].Label}" rendered="{!IF(CO='Paccount',false,true)}"><apex:outputLink value="/{!TR.rId}"><apex:outputField value="{!TR.rObject[$ObjectType[ViewListFieldsObject[CO]].fields[RR].LocalName]}"/></apex:outputLink></apex:column>
+                            </apex:repeat>  
+                        </apex:pageBlockTable>
+                    </apex:pageBlock>
+                </apex:repeat>
+            </apex:facet>
+        </apex:actionStatus>
+       </apex:form>
+</apex:page>

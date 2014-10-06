@@ -1,0 +1,468 @@
+<apex:page controller="SFSSDupeCatcher.ConvertDuplicatesController" sidebar="false">
+
+	<apex:stylesheet value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/assets/skins/sam/skin.css')}" />
+	<apex:stylesheet value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/fonts/fonts-min.css')}" />
+	<apex:stylesheet value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/assets/skins/sam/datatable.css')}" />
+	<apex:stylesheet value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/reset-fonts-grids/reset-fonts-grids.css')}" />
+	<apex:stylesheet value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/container/assets/skins/sam/container.css')}" />
+
+	<apex:includeScript value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/yahoo-dom-event/yahoo-dom-event.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/container/container_core-min.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/event/event-min.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/element/element-min.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/datatable/datatable-min.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/datasource/datasource-min.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/button/button-min.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.SFSSDupeCatcher__yui2lite, 'build/container/container-min.js')}" />
+
+	<style type="text/css">
+/*margin and padding on body element
+  can introduce errors in determining
+  element position and are not recommended;
+  we turn them off as a foundation for YUI
+  CSS treatments. */
+body {
+	margin: 0;
+	padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Verdana', 'Geneva', sans-serif;
+    font-size: 130%;
+    margin:0px;
+    display:inline;
+}
+
+</style>
+
+
+	<script>
+	var thenamespaceprefix = 'sfss_dupecatcher_';    
+	var globalConvertToDataTable = null;
+	var globalConvertingDataTable = null;
+	var globalConvertingIds = new Array(); 
+	var globalConvertToId = ''; 
+	var globalSourceRecordIds = null;
+	var globalTargetRecordIds = null;
+
+	function onSSEventSelectConvertToRadio(value)
+	{
+    	// parse the value parm from the invoking item
+		var delim = value.indexOf(';');
+		var columnindex = Number(value.substr(0, delim));  
+		var recordId = value.substr(delim+1);
+		
+//		var thecell = globalConvertToDataTable.getCell('converttoradio-' + columnindex.toString());
+//		var converttoradiobutton = thecell.firstChild.firstChild;
+
+		globalConvertToId = recordId;
+	}
+
+    function onSSEventClickConvertingRecordSelect(value)
+    {
+    	// parse the value parm from the invoking item
+		var delim = value.indexOf(';');
+		var columnindex = Number(value.substr(0, delim));  
+		var recordId = value.substr(delim+1); 
+		
+		
+		var thecell = globalConvertingDataTable.getCell('checkboxconvertingselect-' + columnindex.toString());
+		var convertingselectcheckbox = thecell.firstChild.firstChild;
+		
+
+		var value = 'unchecked';
+		if (convertingselectcheckbox.checked)
+			value = 'checked';
+
+		if (value == 'checked') 
+			enableLastUncheckedConvertingRecord();
+
+		// set this value after enabling last remaining checked
+		// but before disabling it
+		globalConvertingIds[recordId] = value;	
+		
+		if (value == 'unchecked') 
+			disableLastUncheckedConvertingRecord();
+    }
+	
+	function disableLastUncheckedConvertingRecord()
+	{
+		if (numberOfCheckedLeads() > 1)
+			return;
+			
+		var count = 0;
+		for (var id in globalConvertingIds)
+		{
+			var status = globalConvertingIds[id]
+			if (status == 'checked')
+			{
+				var thecell = globalConvertingDataTable.getCell('checkboxconvertingselect-' + count.toString());
+				var convertingselectcheckbox = thecell.firstChild.firstChild;
+				convertingselectcheckbox.disabled = true;
+				break;
+			}
+			count++;
+		}		
+	}
+	
+
+	function enableLastUncheckedConvertingRecord()
+	{
+		if (numberOfCheckedLeads() > 1)
+			return;
+			
+		var count = 0;
+		for (var id in globalConvertingIds)
+		{
+			var status = globalConvertingIds[id]
+			if (status == 'checked')
+			{
+				var thecell = globalConvertingDataTable.getCell('checkboxconvertingselect-' + count.toString());
+				var convertingselectcheckbox = thecell.firstChild.firstChild;
+				convertingselectcheckbox.disabled = false;
+				break;
+			}
+			count++;
+		}		
+	}
+	
+  	function numberOfCheckedLeads()
+  	{  		
+  		var count = 0;	
+  		
+		for (var id in globalConvertingIds)
+		{
+			var status = globalConvertingIds[id]
+			if (status == 'checked')
+				count++;
+		}
+					
+		return count;	
+  	}
+
+
+  	function initializeConvert()
+  	{  			
+		if ({!NOT(ShowMergeScreen)})
+			return;
+
+  		// initialize all records to be checked
+		for (var field in globalSourceRecordIds)
+		{
+			globalConvertingIds[globalSourceRecordIds[field]] = 'checked';
+		}
+		
+		// set the convert to ID to the first record;
+		globalConvertToId = globalTargetRecordIds[0];
+				
+  	}
+	
+	function setDataTableProperties()
+	{
+		var count = 0;
+		var column = null;
+		var mindfieldcolumnwidth = 145;
+		var mindcolumnwidth = 160;
+
+		// set minimum column widths for source table
+		column = globalConvertingDataTable.getColumn(thenamespaceprefix + 'fieldname');
+		column.minWidth = mindfieldcolumnwidth;
+		
+		count = 0;
+		for (var field in globalSourceRecordIds)
+		{		
+			column = globalConvertingDataTable.getColumn('ssconvertcol' + count.toString());
+			column.minWidth = mindcolumnwidth;
+			count++;
+		}
+
+		// set minimum column widths for target table
+		column = globalConvertToDataTable.getColumn(thenamespaceprefix + 'fieldname');
+		column.minWidth = mindcolumnwidth;
+		count = 0;
+		for (var field in globalTargetRecordIds)
+		{		
+			column = globalConvertToDataTable.getColumn('ssconvertcol' + count.toString());
+			column.minWidth = mindcolumnwidth;
+			count++;
+		}
+		
+		// add color to the top row in both tables to set the top row apart
+		var thecell = globalConvertToDataTable.getCell('converttoradio-' + '0');
+		var idtofind1 = thecell.parentNode.id;
+		thecell = globalConvertingDataTable.getCell('checkboxconvertingselect-' + '0');
+		var idtofind2 = thecell.parentNode.id;
+		var id1found = false;
+		var id2found = false;
+		
+		var rows  = new Array();
+		rows = document.getElementsByTagName('tr');
+		for(var i = 0; i < rows.length; i++)
+		{
+			var row = rows[i];
+//	   		if (row.id == 'yui-rec0')
+	   		if ((row.id == idtofind1))
+	   		{
+	   			var cells = row.cells;
+	   			for (var j = 0; j < cells.length; j++)
+	   			{
+					var cell = cells[j];
+					cell.bgColor = '#F4E7D8';  // bandaid color
+	   			}
+	   			id1found = true;
+	   		}
+	   		
+	   		if ((row.id == idtofind2))
+	   		{
+	   			var cells = row.cells;
+	   			for (var k = 0; k < cells.length; k++)
+	   			{
+					var cell = cells[k];
+					cell.bgColor = '#F4E7D8';  // bandaid color
+	   			}
+	   			id2found = true;
+	   		}
+	   		if (id1found && id2found)
+	   			break;
+	   }
+
+
+	}
+
+	function sfss_NextButtonPressed()
+	{
+	    // convert IDs to string
+		var count = 0;
+		var idsforcontroller = '';
+		var value = '';
+		
+		idsforcontroller += 'masterid:' + globalConvertToId;
+		
+		for (var theid in globalConvertingIds)
+		{
+			value = globalConvertingIds[theid];
+
+			if (value != 'checked')
+				continue;
+
+			idsforcontroller += ';convertingid' + count.toString() + ':' + theid;
+			count++;
+		}
+		
+		sendConversionDataToController(idsforcontroller);
+	}
+
+	function sfss_CancelButtonPressed()
+	{
+	 	sendCancelToController();
+	}
+	
+	function initializeDataTables(
+	                         sourceTableData, 
+                             sourceDataTableSchema,
+                             sourceDataTableColumnDefinition,
+	                         targetTableData, 
+                             targetDataTableSchema,
+                             targetDataTableColumnDefinition
+                             )
+	{
+
+		if ({!NOT(ShowMergeScreen)})
+			return;
+
+
+		YAHOO.util.Event.addListener(window, "load", function() { 
+		YAHOO.example.CustomFormatting = new function() { 
+	  
+		this.mySourceData = sourceTableData;  
+		this.mySourceDataSource = new YAHOO.util.LocalDataSource(this.mySourceData.userdata);       
+		this.mySourceDataSource.responseType = YAHOO.util.LocalDataSource.TYPE_JSARRAY; 
+		this.mySourceDataSource.responseSchema =  sourceDataTableSchema;
+		this.mySourceColumnDefs = sourceDataTableColumnDefinition
+		this.mySourceDataTable = new YAHOO.widget.ScrollingDataTable("leadstable", this.mySourceColumnDefs, this.mySourceDataSource, {width:"60em"});
+		this.mySourceDataTable.set("selectionMode", "singlecell"); 
+		globalConvertingDataTable =  this.mySourceDataTable;
+    
+		this.myTargetData = targetTableData;  
+		this.myTargetDataSource = new YAHOO.util.LocalDataSource(this.myTargetData.userdata);       
+		this.myTargetDataSource.responseType = YAHOO.util.LocalDataSource.TYPE_JSARRAY; 
+		this.myTargetDataSource.responseSchema =  targetDataTableSchema;
+		this.myTargetColumnDefs = targetDataTableColumnDefinition
+		this.myTargetDataTable = new YAHOO.widget.ScrollingDataTable("converttotable", this.myTargetColumnDefs, this.myTargetDataSource, {width:"46em"});
+		this.myTargetDataTable.set("selectionMode", "singlecell"); 
+		globalConvertToDataTable =  this.myTargetDataTable;
+
+		setDataTableProperties();
+
+
+		// create the "Next" button
+	    theNextButton = new YAHOO.widget.Button(
+	                    "sfssnextbutton",
+	                    { 
+	                        label: "Next >>"
+	                    }); 
+	
+	    theNextButton.subscribe('click', sfss_NextButtonPressed ); 
+
+		// create the Cancel button
+	    theCancelButton = new YAHOO.widget.Button(
+	                    "sfsscancelbutton",
+	                    { 
+	                        label: "Cancel"
+	                    }); 
+	
+	    theCancelButton.subscribe('click', sfss_CancelButtonPressed ); 
+   
+		disableLastUncheckedConvertingRecord()
+		return { oDS: this.mySourceDataSource, oDT: this.mySourceDataTable};
+
+	}();   //CustomFormatting()
+	});  // addListener()
+	} // initializeDataTable()
+
+</script>
+
+
+<script>
+	globalSourceRecordIds = {!SourceRecordIds};
+	globalTargetRecordIds = {!TargetRecordIds};
+	
+
+	initializeConvert();
+
+	var sourceTableData = {!SourceTableData};
+	var sourceDataTableSchema = {!SourceDataTableSchema};
+	var sourceDataTableColumnDefinition = {!SourceColumnDefinition};
+ 
+	var targetTableData = {!TargetTableData};
+	var targetDataTableSchema = {!TargetDataTableSchema};
+	var targetDataTableColumnDefinition = {!TargetColumnDefinition};
+ 
+	initializeDataTables(
+          sourceTableData,
+          sourceDataTableSchema,
+          sourceDataTableColumnDefinition,
+          targetTableData,
+          targetDataTableSchema,
+          targetDataTableColumnDefinition
+      );
+	
+ 
+	
+</script>
+
+	<apex:form rendered="{!ShowMergeScreen}" styleClass="yui-skin-sam">
+
+    <div class="yui-skin-sam" style="text-align:left">
+      <div style="text-align:left">
+      	<br />
+        <h1>DupeCatcher Convert</h1>
+        <br />
+        <br />
+        <table width="500">
+          <tr>
+            <td>
+
+              First select the {!targetObjectType} record that you would like to
+              convert Leads to. Then select the Lead records that you would like to
+              convert. Press the "Next" button when done<br />
+
+            </td>
+          </tr>
+        </table>
+        <br />
+        <br />
+      </div>
+
+      <table style="text-align:left;">
+        <tr>
+          <td align="left"
+                      style="border-color: #E8E8E8; border-width: thin; border-style: solid solid solid solid; background-color:#F8F8F8;">
+            <div>
+              <h2>{!targetObjectType}s</h2>
+            </div>
+          </td>
+          <td>
+            <div></div>
+          </td>
+          <td align="left"
+              style="border-color: #E8E8E8; border-width: thin; border-style: solid solid solid solid; background-color:#F8F8F8;">
+
+            <div>
+              <h2>{!sourceObjectType}s</h2>
+            </div>
+          </td>
+          <td>
+            <div></div>
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align:left;vertical-align:top;">
+            <table  style="border-style: solid solid solid solid; border-width: thin; border-color: #E8E8E8; background-color: #F8F8F8; vertical-align:top;">
+              <tr>
+                <td>
+                  <div id="converttotable" style="text-align:left;vertical-align:top;"></div>
+                </td>
+              </tr>
+            </table>
+          </td>
+
+          <td width="10">
+            <div></div>
+          </td>
+
+          <td style="text-align:left;vertical-align:top;">
+            <table  style="border-style: solid solid solid solid; border-width: thin; border-color: #E8E8E8; background-color: #F8F8F8; vertical-align:top;">
+              <tr>
+                <td>
+                  <div id="leadstable" style="text-align:left;vertical-align:top;"></div>
+                </td>
+              </tr>
+            </table>
+          </td>
+
+        </tr>
+        <tr>
+          <td colspan="3">
+            <br />
+            <br />
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3" style="text-align:center">
+            <div id="sfssnextbutton"></div>
+            <div id="sfsscancelbutton"></div>
+          </td>
+        </tr>
+      </table>
+    </div>
+		<apex:actionFunction action="{!handleConversionData}"
+			name="sendConversionDataToController" rerender="">
+			<apex:param name="ConvertingIds" assignTo="{!ConvertingIds}"
+				value="firstParam" />
+		</apex:actionFunction>
+		<apex:actionFunction action="{!cancel}"
+			name="sendCancelToController" rerender="">
+		</apex:actionFunction>
+		
+		
+	</apex:form>
+	<apex:form rendered="{!showPageError}">
+	    <div style="text-align:left;font-family: 'Verdana', 'Geneva', sans-serif">
+			<font size="5"><b>DupeCatcher Lead Convert<BR />
+			<BR />
+			</b></font>
+			<font size="3">{!ErrorMessage}</font>
+		</div>
+	</apex:form>
+
+	<apex:form rendered="{!showAccessError}" >
+	
+	    <div style="text-align:left;font-family: 'Verdana', 'Geneva', sans-serif">
+			<font size="5"><b>DupeCatcher Merge<BR/><BR/></b></font>
+	        <font size="3">  Insufficient privileges to view all duplicates for this alert.   Please notify your administrator.
+	        </font>
+		</div>
+	</apex:form>
+
+</apex:page>
