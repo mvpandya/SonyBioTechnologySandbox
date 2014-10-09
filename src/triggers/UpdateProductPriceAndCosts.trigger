@@ -5,7 +5,7 @@ Objective: As the currency conversion rates are updated on a monthly basis, appl
 2. From PriceBookEntry, read all products where price is defined for From Currency
 3. Also build a map of all products from PriceBookEntry for all products where price is defined for To Currency
 4. Update PriceBookEntry for Price on products in step 3 to be price of product in step 2 times the conversion rate
-
+TEst Change
 */
 decimal conversionrate;
 string FromCurrency, ToCurrency;
